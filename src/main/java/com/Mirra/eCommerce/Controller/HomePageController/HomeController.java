@@ -86,7 +86,6 @@ public class HomeController {
             List<ProductReview> reviews = productReviewService.getReviewsByProductId(product.getId());
             double averageRating = calculateAverageRatingService.calculateAverageRating(reviews);
             product.setAverageRating(averageRating);
-            product.checkExpirationDate();
         }
 
         // Retrieve the wishlist count for the logged-in user

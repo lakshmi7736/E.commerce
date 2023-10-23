@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head data-th-replace="~{fragments/adminBasic::head}">
+</head>
+
+<body>
+<!-- Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+  <!-- Sidebar Start -->
+  <aside data-th-replace="~{fragments/adminBasic :: sidebar}" ></aside>
+  <!--  Sidebar End -->
+  <div class="body-wrapper">
+    <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
+            <div class="card mb-100">
+              <div class="card-body">
+                <div>
+                  <a th:href="@{/admin/dashboard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
+                </div>
+                <div class="table-responsive"> <!-- Added table-responsive class -->
+
+                  <form th:action="@{/admin/categories/offer}" method="post" th:object="${newOffer}" enctype="multipart/form-data">
+                    <h2>Add Category Offer</h2>
+                    <p th:if="${uploadError}" th:text="${uploadError}" style="color: red;"></p>
+
+                    <div class="mb-3">
+                      <label for="saleEvent">Sale Event :</label>
+                      <input type="text" id="saleEvent" name="saleEventcollection" th:field="*{saleEvent}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="discountPrice">Discount :</label>
+                      <input type="text" id="discountPrice" name="discountPrice" th:field="*{discountPrice}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="expirationDate">Discount :</label>
+                      <input  type="date" id="expirationDate" name="expirationDate" th:field="*{expirationDate}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="category">Category:</label>
+                      <select id="category" name="categoryId" required>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                      </select>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="imageFile">Add Image <span style="color: red;">(only one image allowed)</span></label>
+                      <input type="file" id="imageFile" name="imageFile" onchange="validateImage(event)" class="form-control" accept="image/*" required>
+                    </div>
+                    <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 300px; display: none;">
+
+
+                    <button type="submit" class="btn btn-primary col-md-12">Add Banner</button>
+
+                    <p th:if="${categoryExistsError}" th:text="${categoryExistsError}" style="color: red;"></p>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+
+
+</body>
+</html>

@@ -31,8 +31,6 @@ public class CategoryServiceImpl implements CategoryService{
                 .id(categoryDto.getId())
                 .name(categoryDto.getName())
                 .description(categoryDto.getDescription())
-                .discountPrice(categoryDto.getDiscountPrice())
-                .expirationDate(categoryDto.getExpirationDate())
                 .image(imageData)
                 .active(true)
                 .build();
@@ -79,8 +77,6 @@ public class CategoryServiceImpl implements CategoryService{
             // Update other properties like name and description
             existingCategory.setName(updatedCategory.getName());
             existingCategory.setDescription(updatedCategory.getDescription());
-            existingCategory.setDiscountPrice(updatedCategory.getDiscountPrice());
-            existingCategory.setExpirationDate(updatedCategory.getExpirationDate());
 
             // Check if a new image is provided and update it if necessary
             if (updatedCategory.getImage() != null) {
@@ -91,21 +87,9 @@ public class CategoryServiceImpl implements CategoryService{
 
             // Update discountPrice and expirationDate for each product
             for (Product product : products) {
-                product.setDiscountPrice(updatedCategory.getDiscountPrice());
-                product.setExpirationDate(updatedCategory.getExpirationDate());
-                if (updatedCategory.getDiscountPrice() != null) {
-                    // Calculate the discount amount based on the discount percentage
-                    BigDecimal discountAmount = product.getActualPrice().multiply(product.getDiscountPrice().divide(BigDecimal.valueOf(100)));
 
-                    // Calculate the final discounted price
-                    BigDecimal discountedPrice = product.getMyPrice().subtract(discountAmount);
-
-                    // Now you can use the discountedPrice for further processing or set it in your Product entity
-                    product.setActualPrice(discountedPrice);
-
-                }else {
                     product.setActualPrice(product.getMyPrice());
-                }
+
                 productRepository.save(product);
             }
 

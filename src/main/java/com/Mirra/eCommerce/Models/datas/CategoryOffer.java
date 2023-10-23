@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Base64;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -21,10 +25,22 @@ public class CategoryOffer {
     @Column(columnDefinition = "LONGBLOB",length = Integer.MAX_VALUE)
     private byte[] image;
 
+    private String saleEvent;
 
-    private String offerTitle;
+    private BigDecimal discountPrice;
 
+    private LocalDate expirationDate;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
+    //to view the image Base64-Encoder string value is returned.
+    public String getImageDataAsBase64(){
+        if(image!=null&&image.length>0){
+            return Base64.getEncoder().encodeToString(image);
+        }
+        return null;
+    }
 
 }

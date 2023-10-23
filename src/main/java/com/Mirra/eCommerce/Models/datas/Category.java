@@ -30,10 +30,6 @@ public class Category {
     private boolean active;
 
 
-    private BigDecimal discountPrice;
-
-    private LocalDate expirationDate;
-
     @Lob
     @Column(columnDefinition = "LONGBLOB",length = Integer.MAX_VALUE)
     private byte[] image;
@@ -41,7 +37,6 @@ public class Category {
 
     //to view the image Base64-Encoder string value is returned.
     public String getImageDataAsBase64(){
-        System.out.println("inside method");
         if(image!=null&&image.length>0){
             return Base64.getEncoder().encodeToString(image);
         }

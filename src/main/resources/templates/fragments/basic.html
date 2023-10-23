@@ -216,18 +216,18 @@
                                class="fa"
                                th:classappend="${starNumber <= product.averageRating ? 'fa-star' : 'fa-star-o'}">&nbsp;&nbsp;</i>
                         </div>
-                        <div th:if="${product.discountPrice == null}" class="product__price" th:text="${product.actualPrice}"></div>
-                        <div th:unless="${product.discountPrice == null}">
-                            <!-- Use inline CSS for the style -->
-                            <div style="display: inline;">
-                                <del th:text="${product.myPrice}"></del>
-                                <p style="display: inline; margin-left: 5px;" th:text="${product.discountPrice + '% OFF'}"></p>
-                            </div>
-                            <!-- Use inline CSS for the style -->
-                            <div style="display: block;">
-                                <p class="product__price" th:text="${product.actualPrice}"></p>
-                            </div>
-                        </div>
+                        <div class="product__price" th:text="${product.actualPrice}"></div>
+<!--                        <div th:unless="${product.discountPrice == null}">-->
+<!--                            &lt;!&ndash; Use inline CSS for the style &ndash;&gt;-->
+<!--                            <div style="display: inline;">-->
+<!--                                <del th:text="${product.myPrice}"></del>-->
+<!--                                <p style="display: inline; margin-left: 5px;" th:text="${product.discountPrice + '% OFF'}"></p>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash; Use inline CSS for the style &ndash;&gt;-->
+<!--                            <div style="display: block;">-->
+<!--                                <p class="product__price" th:text="${product.actualPrice}"></p>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -240,30 +240,16 @@
 
 
 <!-- Banner Section Begin -->
-<section class="banner" data-th-fragment="banner" th:style="'background-image: url(data:image/png;base64,' + ${banner.imageDataAsBase64} + ');background-size: cover; background-position: center;'">
+<section class="banner" data-th-fragment="banner"   th:style="'background-image: url(data:image/png;base64,' + ${banner.imageDataAsBase64} + ');background-size: cover; background-position: center;'">
     <div class="container">
         <div class="row">
             <div class="col-xl-7 col-lg-8 m-auto">
                 <div class="banner__slider owl-carousel">
-                    <div class="banner__item"  >
-                        <div class="banner__text">
+                    <div class="banner__item" th:each="i : ${#numbers.sequence(1, 3)}"  >
+                        <div class="banner__text" >
                             <span th:text="${banner.collection}"></span>
                             <h1 th:text="${banner.saleEvent}">The Project Jacket</h1>
-                            <a href="#">Shop now</a>
-                        </div>
-                    </div>
-                    <div class="banner__item" style="background-image: url(data:image/png;base64,${banner.imageDataAsBase64});">
-                        <div class="banner__text">
-                            <span>The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a href="#">Shop now</a>
-                        </div>
-                    </div>
-                    <div class="banner__item" style="background-image: url(data:image/png;base64,${banner.imageDataAsBase64});">
-                        <div class="banner__text">
-                            <span>The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a href="#">Shop now</a>
+                            <a th:href="@{/category/{categoryId}(categoryId=${banner.category.id})}">Shop now</a>
                         </div>
                     </div>
                 </div>

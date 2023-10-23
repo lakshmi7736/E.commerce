@@ -62,7 +62,6 @@ public class CategoryViewController {
             List<byte[]> imageDataList = serializeAndDeserialize.deserializeImageBlob(product.getImageBlob());
             String encodedImage = Base64.getEncoder().encodeToString(imageDataList.get(0));
             encodedImagesList.add(encodedImage);
-            product.checkExpirationDate();
         }
         model.addAttribute("encodedImagesList", encodedImagesList);
         return "Products/productView";

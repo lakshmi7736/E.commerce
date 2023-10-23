@@ -122,10 +122,6 @@ public class ProductController {
         product.setStock(product.getStock() + product.getUpdateStock());
         product.setActive(true);
         product.setMyPrice(product.getActualPrice());
-        product.updateStock(product.getUpdateStock());
-        product.setDiscountPrice(BigDecimal.ZERO);
-        product.setExpirationDate(product.getExpirationDate());
-        product.checkExpirationDate();
         productsService.saveProduct(product);
     }
 
@@ -313,11 +309,8 @@ public class ProductController {
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setSubCategory(newSubCategory);
-        product.setDiscountPrice(request.getProductDiscountPrice());
-        product.setExpirationDate(request.getExpirationDate());
         product.setStock(product.getStock() + request.getUpdateStock());
         product.setUpdateStock(request.getUpdateStock());
-        product.checkExpirationDate();
         if (request.getUpdateStock() > 0) {
             product.setActive(true);
         }

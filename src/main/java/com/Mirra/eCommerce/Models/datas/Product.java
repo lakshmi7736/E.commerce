@@ -31,12 +31,7 @@ public class Product {
     private BigDecimal actualPrice;
 
 
-    private BigDecimal discountPrice;
-
     private BigDecimal myPrice;
-
-
-    private LocalDate expirationDate;
 
 
     @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT true")
@@ -102,15 +97,6 @@ public class Product {
         stockHistoryEntry.setChangeTimestamp(LocalDateTime.now()); // Use the current date and time
         // Add the stock history entry to the product's stockHistory list
         this.getCurrentStock().add(stockHistoryEntry);
-    }
-
-
-    public void checkExpirationDate() {
-        LocalDate currentDate = LocalDate.now();
-        if (expirationDate != null && currentDate.isAfter(expirationDate)) {
-            // If the expiration date is in the past, set discountPrice to 0
-            discountPrice = null;
-        }
     }
 
 

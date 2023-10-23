@@ -48,17 +48,6 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="productDiscountPrice">Product Discount Price (%):</label>
-                                            <input type="number" id="productDiscountPrice" th:field="*{discountPrice}" class="form-control" min="0" max="100" step="0.01" />
-                                            <p class="text-danger" th:if="${#fields.hasErrors('discountPrice')}" th:errors="*{discountPrice}"></p>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="expirationDate">Expiration Date:</label>
-                                            <input type="date" id="expirationDate"  th:field="*{expirationDate}" class="form-control" /><br/>
-                                        </div>
-
-                                        <div class="mb-3">
                                             <label for="category">Category:</label>
                                             <select id="category" name="category.id" class="form-control">
                                                 <option value="">Select Category</option>
