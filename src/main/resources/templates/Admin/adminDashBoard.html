@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head data-th-replace="~{fragments/adminBasic :: head}">
+</head>
+
+<body>
+<!--  Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside data-th-replace="~{fragments/adminBasic :: sidebar}" ></aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+        <!--  Header Start -->
+        <header data-th-replace="~{fragments/adminBasic :: header}"></header>
+        <!--  Header End -->
+        <div class="container-fluid admin">
+
+            <h5 class="card-title fw-semibold mb-4">ADMIN PANEL</h5>
+
+            <div class="row mt-4">
+
+                <div class="col-md-4">
+                    <!--                first box-->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="container">
+                                <a th:href="@{/admin/users}"><img class="img-fluid rounded-circle" style="max-width: 125px" src="../assets/images/profile/users.png" alt="users_icon"></a>
+                            </div>
+                            <h1>123</h1>
+                            <h1 class="text-muted">USERS</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <!--              second box-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <a th:href="@{/admin/subCategories}"> <img class="img-fluid rounded-circle" style="max-width: 125px" src="../assets/images/profile/list.png" alt="users_icon">
+                            </a>
+                            <h1>234</h1>
+                            <h1 class="text-muted">SUB-CATEGORY</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <!--              third box-->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <a th:href="@{/admin/orders}">
+                                <img class="img-fluid rounded-circle" style="max-width: 125px" src="../assets/images/profile/products.png" alt="users_icon">
+                            </a>
+                            <p class="mt-2">Click here to see orders</p>
+                            <h1 class="text-muted">ORDERS</h1>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row mt-3">
+
+                <div class="col-md-6">
+
+                    <!--                first box-->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="container">
+                                <a th:href="@{/admin/categories}">  <img class="img-fluid rounded-circle" style="max-width: 125px" src="../assets/images/profile/keys.png" alt="users_icon">
+                                </a>
+                            </div>
+                            <p class="mt-2">Click here to add category</p>
+                            <h1 class="text-muted">ADD CATEGORY</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <!--              second box-->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <a th:href="@{/admin/product}">
+                                <img class="img-fluid rounded-circle" style="max-width: 125px" src="../assets/images/profile/plus.png" alt="users_icon">
+                            </a>
+                            <p class="mt-2">Click here to add products</p>
+                            <h1 class="text-muted">ADD PRODUCTS</h1>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+
+</body>
+
+</html>

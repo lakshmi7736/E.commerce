@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head data-th-replace="~{fragments/adminBasic::head}">
+</head>
+
+<body>
+<!-- Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside data-th-replace="~{fragments/adminBasic :: sidebar}" ></aside>
+    <!--  Sidebar End -->
+    <div class="body-wrapper">
+        <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+            <div class="d-flex align-items-center justify-content-center w-100">
+                <div class="row justify-content-center w-100">
+                    <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
+                        <div class="card mb-100">
+                            <div class="card-body">
+                                <a th:href="@{/index}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                    <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                                </a>
+                                <p class="text-center">PRODUCT DETAILS OF Bee&Baa</p>
+                                <h1>Product List</h1>
+                                <div class="table-responsive"> <!-- Added table-responsive class -->
+
+                                    <div th:if="${message}">
+                                        <p th:text="${message}" class="alert alert-info"></p>
+                                    </div>
+
+                                    <table  style="width: 100%; text-align: center;">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Stock</th>
+                                            <th>Actual Price</th>
+                                            <th>Sub Category</th>
+                                            <th>Image</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        <tr th:each="product, index : ${products}">
+                                            <td th:text="${product.id}"></td>
+                                            <td th:text="${product.name}"></td>
+                                            <td th:text="${product.description}"></td>
+                                            <td th:text="${product.stock}"></td>
+                                            <td th:text="${product.actualPrice}"></td>
+                                            <td th:text="${product.subCategory?.name}"></td>
+                                            <td>
+                                                <img th:src="'data:image/png;base64,' + ${encodedImagesList[index.index]}" width="100" height="100" alt="Product Image"/>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/productView/{productId}(productId=${product.id})}"><i class="ti ti-eye"></i></a>
+                                                <a th:href="@{/admin/product/edit/{productId}(productId=${product.id})}"><i class="ti ti-edit"></i></a>
+                                                <a th:href="@{/admin/product/delete/{productId}(productId=${product.id})}"><i class="ti ti-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <a href="/product">Add New Product</a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div data-th-replace="~{fragments/adminBasic :: script}"></div>
+</body>
+</html>

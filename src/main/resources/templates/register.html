@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-replace="~{fragments/adminBasic :: head}">
+</head>
+
+<body>
+<!--  Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+    <div
+            class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center w-100">
+            <div class="row justify-content-center w-100">
+                <div class="col-md-8 col-lg-6 col-xxl-3">
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <div>
+                                <a th:href="@{/}" style="color: black;"><i class="ti ti-home"></i> Home</a>
+                            </div>
+                            <a href="Admin/index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                            </a>
+                            <p class="text-center">Register to Bee&Baa</p>
+                            <form th:action="@{/userRegistration/saveUser}" method="post" th:object="${user}">                                <div th:if="${param.success}">
+                                    <div class="alert alert-info">
+                                        Registration successful !!!
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Enter Full Name</label>
+                                    <input type="text" name="name" class="form-control" required>
+                                    <p class="text-danger" th:errors="*{name}"
+                                       th:if="${#fields.hasErrors('name')}"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Enter Email</label>
+                                    <input type="text" name="email" class="form-control" required>
+                                    <p class="text-danger" th:errors="*{email}"
+                                       th:if="${#fields.hasErrors('email')}"></p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Enter Mobile Number</label>
+                                    <input type="text" name="mobileNo" class="form-control" required>
+                                    <p class="text-danger" th:errors="*{mobileNo}"
+                                       th:if="${#fields.hasErrors('mobileNo')}"></p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Enter Password</label>
+                                    <input type="password" name="password" class="form-control" required>
+                                </div>
+                                <button class="btn btn-primary col-md-12">Register</button>
+
+                            </form>
+                            <br>
+                            <div class="d-flex justify-content-center">
+                                <p class="fw-bold">Already have an account? </p>
+                                <a class="text-primary fw-bold" th:href="@{/signin}"> Sign In</a>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <p class="fw-bold">Have a referral code ? </p>
+                                <a class="text-primary fw-bold" th:href="@{/referral/referralRegister}"> Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+</body>
+
+</html>

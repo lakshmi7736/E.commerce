@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-replace="~{fragments/adminBasic :: head}">
+</head>
+
+<body>
+<!--  Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+  <!-- Sidebar Start -->
+  <aside data-th-replace="~{fragments/adminBasic :: sidebar}" ></aside>
+  <!--  Sidebar End -->
+  <div class="body-wrapper">
+    <div
+            class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-3">
+            <div class="card mb-0">
+              <div class="card-body">
+                <a href="Admin/index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                  <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                </a>
+                <p class="text-center">Register to Bee&Baa</p>
+                <form th:action="@{/admin/product/edit/{productId}(productId=${product.id})}" method="post" enctype="multipart/form-data">
+
+                  <div class="mb-3">
+                    <label>Product Name </label>
+                    <input type="text" name="name" class="form-control" required th:value="${product.name}">
+                  </div>
+                  <div class="mb-3">
+                    <label>Description </label>
+                    <input type="text" name="description" class="form-control" required th:value="${product.description}">
+                  </div>
+
+                  <div class="mb-3">
+                    <label>IN-Stock </label>
+                    <input type="number" name="stock" class="form-control" readonly th:value="${product.stock}">
+                  </div>
+
+                  <div class="mb-3">
+                    <label>Update Stock </label>
+                    <input type="number" name="updateStock" class="form-control" th:value="0">
+                  </div>
+
+
+                  <div class="mb-3">
+                    <label>Actual Price </label>
+                    <input type="number" name="actualPrice" class="form-control" required th:value="${product.myPrice}">
+                  </div>
+
+                  <div class="mb-3">
+                    <label >Product Discount Price (%):</label>
+                    <input type="number" name="productDiscountPrice" th:value="*{product.discountPrice}" class="form-control" min="0" max="100" step="0.01" />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="expirationDate">Expiration Date:</label>
+                    <input type="date" id="expirationDate" name="expirationDate"  class="form-control" /><br/>
+                  </div>
+
+
+                  <div class="mb-3">
+                    <label for="subCategory">Sub Category </label>
+                    <select id="subCategory" name="subCategoryId" required>
+                      <th:block th:each="subCategory : ${subCategories}">
+                        <option th:value="${subCategory.id}" th:selected="${subCategory.id == product.subCategory.id}" th:text="${subCategory.name}"></option>
+                      </th:block>
+                    </select>
+                    <!-- Add a hidden input field to store the subCategoryId -->
+                    <input type="hidden" name="subCategory" class="form-control" required th:value="${product.subCategory.id}">
+                  </div>
+                  <!-- Display existing images -->
+                  <div th:if="${product.imageBlob != null}">
+                    <h2>Existing Images:</h2>
+                    <div class="image-row">
+                      <div th:each="image, imageIndex : ${encodedImages}" class="image-container">
+                        <img th:src="'data:image/png;base64,' + ${image}" width="100" height="100" alt="Product Image"/>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="files">Add New Images:</label>
+                    <input type="file" id="files" name="files" class="form-control"  multiple accept="image/*" onchange="previewImages(event)">
+                  </div>
+
+                  <div id="newImagePreviews" class="image-row"></div> <!-- Container for new image previews -->
+
+                  <button class="btn btn-primary col-md-12">Update</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+<script>
+  function previewImages(event) {
+    const previewContainer = document.getElementById('newImagePreviews');
+    previewContainer.innerHTML = '';
+
+    const files = event.target.files;
+    for (const file of files) {
+      const imageContainer = document.createElement('div');
+      imageContainer.className = 'image-container';
+      const image = document.createElement('img');
+      image.src = URL.createObjectURL(file);
+      image.width = 100;
+      image.height = 100;
+      image.alt = 'New Product Image';
+      imageContainer.appendChild(image);
+      previewContainer.appendChild(imageContainer);
+    }
+  }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,162 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head data-th-replace="~{fragments/adminBasic::head}">
+</head>
+<body>
+<!-- Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside data-th-replace="~{fragments/adminBasic :: sidebar}" ></aside>
+    <!--  Sidebar End -->
+    <div class="body-wrapper">
+        <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+            <div class="d-flex align-items-center justify-content-center w-100">
+                <div class="row justify-content-center w-90">
+                    <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
+                        <div class="card mb-100">
+                            <div class="card-body">
+                                <div>
+                                    <a th:href="@{/admin/dashboard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
+                                </div>
+                                <div class="table-responsive"> <!-- Added table-responsive class -->
+
+                                    <form th:action="@{/admin/product}" th:object="${product}" method="post" enctype="multipart/form-data">
+                                        <h1>Add Product</h1>
+                                        <div class="mb-3">
+                                            <label for="productName">Product Name:</label>
+                                            <input type="text" id="productName" th:field="*{name}" class="form-control"  required /><br/>
+                                            <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productDescription">Product Description:</label>
+                                            <input type="text" id="productDescription" th:field="*{description}" class="form-control" required /><br/>
+                                            <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="updateStock">Product Stock:</label>
+                                            <input type="number" th:min="1" id="updateStock" th:field="*{updateStock}" class="form-control" required /><br/>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productActualPrice">Product ActualPrice:</label>
+                                            <input type="text" id="productActualPrice" th:field="*{actualPrice}" class="form-control" required /><br/>
+                                            <p class="text-danger" th:if="${#fields.hasErrors('actualPrice')}" th:errors="*{actualPrice}"></p>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="productDiscountPrice">Product Discount Price (%):</label>
+                                            <input type="number" id="productDiscountPrice" th:field="*{discountPrice}" class="form-control" min="0" max="100" step="0.01" />
+                                            <p class="text-danger" th:if="${#fields.hasErrors('discountPrice')}" th:errors="*{discountPrice}"></p>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="expirationDate">Expiration Date:</label>
+                                            <input type="date" id="expirationDate"  th:field="*{expirationDate}" class="form-control" /><br/>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="category">Category:</label>
+                                            <select id="category" name="category.id" class="form-control">
+                                                <option value="">Select Category</option>
+                                                <option th:each="category : ${categories}"
+                                                        th:value="${category.id}" th:text="${category.name}"></option>
+                                            </select>
+
+                                            <br>
+                                            <button type="button" onclick="window.location.href='/admin/categories'" class="btn btn-primary">Add New Category</button>
+                                        </div>
+
+                                        <br/>
+
+                                        <div class="mb-3">
+                                            <label for="subCategory">Subcategory:</label>
+                                            <select id="subCategory" name="subCategory.id" class="form-control">
+                                                <option value="">Select Subcategory</option>
+                                            </select>
+                                            <br/>
+                                            <button type="button" onclick="window.location.href='/admin/subCategories'" class="btn btn-primary">Add New Sub-Category</button>
+
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="imageFiles">Select Images:</label>
+                                            <input type="file" id="imageFiles" name="files" multiple onchange="previewImages(this);" accept="image/*"  /><br/>
+                                        </div>
+
+                                        <div id="imagePreviews" style="max-width: 300px; display: flex; flex-wrap: wrap;"></div>
+                                        <button type="submit" class="btn btn-primary col-md-12">Add Product</button>
+                                    </form>
+                                    <!-- Link to view the product list -->
+                                    <a href="/admin/product/productList">View Product List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function updateSubcategories() {
+    var categorySelect = document.getElementById("category");
+    var subCategorySelect = document.getElementById("subCategory");
+    var selectedCategoryId = categorySelect.value;
+
+    subCategorySelect.innerHTML = ""; // Clear previous options
+
+    if (selectedCategoryId) {
+        // Fetch subcategories based on the selected category
+        fetch(`/admin/subCategories/${selectedCategoryId}`)
+            .then(response => response.json())
+            .then(subCategories => {
+                subCategories.forEach(subCategory => {
+                    var option = document.createElement("option");
+                    option.value = subCategory.id;
+                    option.text = subCategory.name;
+                    subCategorySelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching subcategories:", error);
+            });
+    }
+}
+
+document.getElementById("category").addEventListener("change", updateSubcategories);
+</script>
+<script>
+function previewImages(input) {
+    var previewDiv = document.getElementById("imagePreviews");
+    previewDiv.innerHTML = ""; // Clear previous previews
+
+    if (input.files) {
+        for (var i = 0; i < input.files.length; i++) {
+            var file = input.files[i];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var previewContainer = document.createElement("div");
+                previewContainer.className = "image-preview";
+                previewContainer.style.margin = "5px"; // Add some spacing between images
+
+                var image = document.createElement("img");
+                image.src = e.target.result;
+                image.style.width = "100px";
+                image.style.height = "100px";
+                image.style.objectFit = "cover";
+
+                previewContainer.appendChild(image);
+                previewDiv.appendChild(previewContainer);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+}
+</script>
+</body>
+</html>

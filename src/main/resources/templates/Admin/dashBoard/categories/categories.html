@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head data-th-replace="~{fragments/adminBasic::head}">
+</head>
+
+<body>
+<!-- Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+  <!-- Sidebar Start -->
+  <aside data-th-replace="~{fragments/adminBasic :: sidebar}" ></aside>
+  <!--  Sidebar End -->
+  <div class="body-wrapper">
+    <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
+            <div class="card mb-100">
+              <div class="card-body">
+                <div>
+                  <a th:href="@{/admin/dashboard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
+                </div>
+                <div class="table-responsive"> <!-- Added table-responsive class -->
+
+                  <form th:action="@{/admin/categories/add}" method="post" th:object="${newCategory}" enctype="multipart/form-data">
+                    <h2>Add New Category</h2>
+                    <div class="mb-3">
+                      <label for="name">Category Name</label>
+                      <input type="text" id="name" name="name" th:field="*{name}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="description">Description</label>
+                      <input type="text" id="description" name="description" th:field="*{description}" class="form-control" required>
+                    </div>
+
+
+                    <div class="mb-3">
+                      <label for="categoryDiscountPrice">Product Discount Price (%):</label>
+                      <input type="number" id="categoryDiscountPrice" th:field="*{discountPrice}" class="form-control" min="0" max="100" step="0.01" />
+                      <p class="text-danger" th:if="${#fields.hasErrors('discountPrice')}" th:errors="*{discountPrice}"></p>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="expirationDate">Expiration Date:</label>
+                      <input type="date" id="expirationDate"  th:field="*{expirationDate}" class="form-control" /><br/>
+                    </div>
+
+
+                    <div class="mb-3">
+                      <label for="imageFile">Add Image <span style="color: red;">(only one image allowed)</span></label>
+                      <input type="file" id="imageFile" name="imageFile" onchange="validateImage(event)" class="form-control" accept="image/*" required>
+                    </div>
+                    <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 300px; display: none;">
+
+                    <button type="submit" class="btn btn-primary col-md-12">Add Category</button>
+
+                    <p th:if="${categoryExistsError}" th:text="${categoryExistsError}" style="color: red;"></p>
+                  </form>
+                </div>
+              </div>
+              <div class="card-body">
+                <a th:href="@{/index}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                  <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                </a>
+                <p class="text-center">Categories of Bee&Baa</p>
+                <h1>Category List</h1>
+                <div class="table-responsive"> <!-- Added table-responsive class -->
+                  <div th:if="${message}">
+                    <p th:text="${message}" class="alert alert-info"></p>
+                  </div>
+
+                  <table style="width: 100%; text-align: center;">
+                    <!-- Display the flash attribute message if it exists -->
+                    <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Category Name</th>
+                      <th>Description</th>
+                      <th>Active</th>
+                      <th>Image</th>
+                      <th>Edit</th>
+                      <th>Block</th>
+                      <th>Delete</th>
+                      <!-- Add more columns as needed -->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Use Thymeleaf to iterate through the list of users and populate the table rows -->
+                    <tr th:each="category : ${categories}">
+                      <td th:text="${category.id}"></td>
+                      <td th:text="${category.name}"></td>
+                      <td th:text="${category.description}"></td>
+                      <td th:text="${category.isActive}"></td>
+                      <td>
+                        <img th:src="'data:image/png;base64,' + ${category.imageDataAsBase64}" alt="Category Image" style="max-width: 100px;">
+                      </td>
+
+                      <td><a th:href="@{'/admin/categories/get/'+ ${category.id}}" >
+                        <i class="ti ti-edit"></i></a>
+                      </td>
+
+                      <td>
+                        <a th:href="@{'/admin/categories/enable/' + ${category.id}}"
+                           th:if="${category.active}"
+                           onclick="return confirm('Are you sure you want to disable this user?')">
+                          <i class="ti ti-lock-open"></i>
+                        </a>
+                        <a th:href="@{'/admin/categories/enable/' + ${category.id}}"
+                           th:unless="${category.active}"
+                           onclick="return confirm('Are you sure you want to enable this category?')">
+                          <i class="ti ti-lock"></i>
+                        </a>
+                      </td>
+
+                      <td>
+                        <a th:href="@{'/admin/categories/delete/' + ${category.id}}"
+                           onclick="return confirm('Are you sure you want to delete this category?')">
+                          <i class="ti ti-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+
+</body>
+</html>
