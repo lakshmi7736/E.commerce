@@ -22,14 +22,9 @@
                 </div>
                 <div class="table-responsive"> <!-- Added table-responsive class -->
 
-                  <form th:action="@{/admin/categories/offer}" method="post" th:object="${newOffer}" enctype="multipart/form-data">
-                    <h2>Add Category Offer</h2>
-                    <p th:if="${uploadError}" th:text="${uploadError}" style="color: red;"></p>
+                  <form th:action="@{/admin/product/offer/{productId}(productId=${product.id})}" method="post" th:object="${newOffer}" enctype="multipart/form-data">
+                    <h2>Add Product Offer</h2>
 
-                    <div class="mb-3">
-                      <label for="saleEvent">Sale Event :</label>
-                      <input type="text" id="saleEvent" name="saleEventcollection" th:field="*{saleEvent}" class="form-control" required>
-                    </div>
                     <div class="mb-3">
                       <label for="discountPrice">Discount :</label>
                       <input type="text" id="discountPrice" name="discountPrice" th:field="*{discountPrice}" class="form-control" required>
@@ -40,23 +35,9 @@
                       <input  type="date" id="expirationDate" name="expirationDate" th:field="*{expirationDate}" class="form-control" required>
                     </div>
 
-                    <div class="mb-3">
-                      <label for="category">Category:</label>
-                      <select id="category" name="categoryId" required>
-                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                      </select>
-                    </div>
-
-                    <div class="mb-3">
-                      <label for="imageFile">Add Image <span style="color: red;">(only one image allowed)</span></label>
-                      <input type="file" id="imageFile" name="imageFile" onchange="validateImage(event)" class="form-control" accept="image/*" required>
-                    </div>
-                    <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 300px; display: none;">
-
 
                     <button type="submit" class="btn btn-primary col-md-12">Add Offer</button>
 
-                    <p th:if="${categoryExistsError}" th:text="${categoryExistsError}" style="color: red;"></p>
                   </form>
                 </div>
               </div>

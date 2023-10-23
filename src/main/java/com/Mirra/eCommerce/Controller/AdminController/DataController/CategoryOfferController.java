@@ -25,12 +25,6 @@ public class CategoryOfferController {
     @Autowired
     private CategoryOfferService categoryOfferService;
 
-//    @GetMapping("/offer/{categoryId}")
-//    public String showBannerForm(Model model) {
-//        model.addAttribute("categories", categoryService.getAllCategories());
-//        model.addAttribute("newOffer", new CategoryOffer()); // Add an empty category for the form
-//        return "Admin/dashBoard/categories/CategoryOffer";
-//    }
 
     @GetMapping("/offer")
     public String categoryOffer(Model model) {
@@ -41,7 +35,7 @@ public class CategoryOfferController {
 
 
     @PostMapping("/offer")
-    public String addBanner(@ModelAttribute("newOffer") CategoryOfferDto categoryOfferDto,
+    public String addCategoryOffer(@ModelAttribute("newOffer") CategoryOfferDto categoryOfferDto,
                             @RequestParam("imageFile") MultipartFile imageFile, Model model) {
 
         // Set image data from the uploaded file

@@ -231,10 +231,11 @@ public class ProductController {
             // Handle product not found case, e.g., redirect to an error page
             return "error";
         }
+        model.addAttribute("product", product);
 
         List<SubCategory> subCategories = subCategoryService.getAllSubCategories();
         model.addAttribute("subCategories", subCategories);
-        model.addAttribute("product", product);
+
 
         // Deserialize the image data from the product's imageBlob attribute
         List<byte[]> imageDataList = serializeAndDeserialize.deserializeImageBlob(product.getImageBlob());
@@ -291,6 +292,7 @@ public class ProductController {
 
         return "redirect:/admin/product/productList";
     }
+
 
     // Helper methods
     private void calculateDiscountedPrice(Product product, BigDecimal discountPercentage) {

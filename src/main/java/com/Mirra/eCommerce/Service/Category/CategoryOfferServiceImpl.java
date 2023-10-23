@@ -28,11 +28,12 @@ public class CategoryOfferServiceImpl implements CategoryOfferService {
             imageData = Base64.getDecoder().decode(categoryOfferDto.getImageData());
         }
 
-//        // Delete the existing offer with the same category ID, if it exists
-//        CategoryOffer existingOffer = categoryOfferRepo.findOfferExist(categoryOfferDto.getCategoryId());
-//        if (existingOffer != null) {
-//            categoryOfferRepo.delete(existingOffer);
-//        }
+        Long categoryId= categoryOfferDto.getCategoryId().getId();
+        // Delete the existing offer with the same category ID, if it exists
+        CategoryOffer existingOffer = categoryOfferRepo.findCategoryOfferExistBycategoryId(categoryId);
+        if (existingOffer != null) {
+            categoryOfferRepo.delete(existingOffer);
+        }
 
         // Create and save the new CategoryOffer
         CategoryOffer offer = CategoryOffer.builder()
