@@ -652,8 +652,8 @@ ol {
 
 .discount__text {
 	background: #f4f4f4;
-	height: 390px;
-	padding: 65px 80px 45px;
+	height: 100%;
+	padding: 65px 85px 45px;
 	text-align: center;
 }
 
