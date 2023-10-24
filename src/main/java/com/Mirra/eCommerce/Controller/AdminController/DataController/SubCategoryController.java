@@ -33,6 +33,9 @@ public class SubCategoryController {
         return "Admin/dashBoard/subCategories/subCategories";
     }
 
+
+//    create sub-category
+
     @PostMapping
     public String addSubCategory(@ModelAttribute("newSubCategory") SubCategory subCategory, Model model) {
         System.out.println("POST");
@@ -53,6 +56,8 @@ public class SubCategoryController {
         return subCategoryService.getSubcategoriesByCategoryId(categoryId);
     }
 
+
+//    delete sub-category
 
     @GetMapping("/delete/{subCategoryId}")
     public String deleteUser(@PathVariable("subCategoryId") Long id, RedirectAttributes ra) {
@@ -76,10 +81,12 @@ public class SubCategoryController {
         model.addAttribute("categories",categories);
 
 
-        return "Admin/getSubCat";
+        return "Admin/dashBoard/subCategories/updateSubCategory";
     }
 
 
+
+//    update sub-category
 
     @PostMapping("/updateSubCategory/{id}")
     public String updateUser(@PathVariable Long id, @RequestBody @ModelAttribute("subCategory") SubCategory subCategory, Model model, RedirectAttributes ra) {

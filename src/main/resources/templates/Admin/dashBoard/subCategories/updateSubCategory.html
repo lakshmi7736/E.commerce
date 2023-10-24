@@ -1,10 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-replace="~{fragments/adminBasic :: head}">
 </head>
+
 <body>
+<!--  Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+    <div
+            class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center w-100">
+            <div class="row justify-content-center w-100">
+                <div class="col-md-8 col-lg-6 col-xxl-3">
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <div style="display: flex; align-items: center;">
+                                <a th:href="@{/admin/dashBoard}" style="color: black; text-decoration: none;">
+                                    <i class="ti ti-aperture"></i> Dash-Board
+                                </a>
+                                <p style="margin: 0 5px;"> > </p>
+                                <a th:href="@{/admin/subCategories}" style="color: black; text-decoration: none;">
+                                    Sub-Categories
+                                </a>
+                            </div>
+                            <a href="Admin/index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                            </a>
+                            <p class="text-center">Register to Bee&Baa</p>
+                            <form th:action="@{'/admin/subCategories/updateSubCategory/'+ ${subCategoryDetails.id}}" th:object="${subCategory}" method="post" >
+                                <div class="mb-3">
+                                    <label for="name">Category Name</label>
+                                    <input type="text" id="name" name="name" th:value="${subCategoryDetails.name}" class="form-control" required>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <label for="parentCategory">Parent-Category Name</label>
+                                    <select id="parentCategory" name="parentCategory.id">
+                                        <option th:each="category : ${categories}"
+                                                th:value="${category.id}" th:text="${category.name}"></option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary col-md-12">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
 
 </body>
+
 </html>
