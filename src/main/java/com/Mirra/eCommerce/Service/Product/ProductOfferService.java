@@ -8,4 +8,8 @@ public interface ProductOfferService {
     public void saveProductOffer(Long productId,ProductOfferDto productOfferDto) ;
 
     ProductOffer findByProductId(Long productId);
+
+    ProductOffer findById(int id);
+
+    void deleteProductOfferById(int id);
 }

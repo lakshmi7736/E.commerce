@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -58,5 +59,20 @@ public class ProductOfferController {
         return "redirect:/admin/product"; // Replace with the URL where you want to redirect after a successful submission
     }
 
+
+    @GetMapping("/deleteOffer/{productOfferId}")
+    public String deleteProduct(@PathVariable("productOfferId")  int id, RedirectAttributes ra) {
+        System.out.println("inside controler");
+        ProductOffer product = productOfferService.findById(id);
+        if (product == null) {
+            // Handle product not found case, e.g., redirect to an error page
+            return "error";
+        }
+        // Delete the product from the database
+        productOfferService.deleteProductOfferById(id);
+        ra.addFlashAttribute("message", "The  " + product.getProduct().getName()+ "'s offer has been deleted");
+
+        return "redirect:/admin/product/productList";
+    }
 
 }

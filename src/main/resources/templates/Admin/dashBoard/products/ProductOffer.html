@@ -52,10 +52,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="product : ${products}">
-                      <td th:text="${product.discountPrice}"></td>
-                      <td th:text="${product.expirationDate}"></td>
-                      <td><a ><i class="ti ti-trash"></i></a></td>
+                    <tr th:each="offer : ${products}">
+                      <td th:text="${offer.discountPrice}"></td>
+                      <td th:text="${offer.expirationDate}"></td>
+                      <td> <a th:href="@{/admin/product/deleteOffer/{productOfferId}(productOfferId=${offer.id})}"><i class="ti ti-trash"></i></a>
+                      </td>
                     </tr>
                     </tbody>
                   </table>

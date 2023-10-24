@@ -1,7 +1,6 @@
 package com.Mirra.eCommerce.Service.Product;
 
 import com.Mirra.eCommerce.DTO.ProductOfferDto;
-import com.Mirra.eCommerce.Models.datas.CategoryOffer;
 import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Models.datas.ProductOffer;
 import com.Mirra.eCommerce.Repository.Offer.ProductOfferRepo;
@@ -43,5 +42,15 @@ public class ProductOfferServiceImpl implements ProductOfferService{
     @Override
     public ProductOffer findByProductId(Long productId) {
         return productOfferRepo.findProductOfferExistByproductId(productId);
+    }
+
+    @Override
+    public ProductOffer findById(int id) {
+        return productOfferRepo.findById(id).get();
+    }
+
+    @Override
+    public void deleteProductOfferById(int id) {
+        productOfferRepo.deleteById(id);
     }
 }
