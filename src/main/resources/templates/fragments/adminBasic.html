@@ -34,7 +34,7 @@
                         <span class="hide-menu">Home</span>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" th:href="@{/sec/index}" aria-expanded="false">
+                        <a class="sidebar-link" th:href="@{/admin/dashBoard}" aria-expanded="false">
                 <span>
                   <i class="ti ti-layout-dashboard"></i>
                 </span>
@@ -78,11 +78,11 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link"  aria-expanded="false">
+                        <a class="sidebar-link"  aria-expanded="false" th:href="@{/admin/categories/offer}">
                 <span>
-                  <i class="ti ti-typography"></i>
+                  <i class="ti ti-discount"></i>
                 </span>
-                            <span class="hide-menu">Typography</span>
+                            <span class="hide-menu">Category Offer</span>
                         </a>
                     </li>
                     <li class="nav-small-cap">
@@ -98,11 +98,11 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" th:href="@{/authentication-register}" aria-expanded="false">
+                        <a class="sidebar-link" th:href="@{/admin/instagram}" aria-expanded="false">
                 <span>
                   <i class="ti ti-user-plus"></i>
                 </span>
-                            <span class="hide-menu">Register</span>
+                            <span class="hide-menu">Instagram</span>
                         </a>
                     </li>
                     <li class="nav-small-cap">
@@ -118,7 +118,7 @@
 <!--                        </a>-->
 <!--                    </li>-->
                     <li class="sidebar-item" style="position: relative;">
-                        <a class="sidebar-link" th:href="@{/admin/dashboard}" aria-expanded="false"
+                        <a class="sidebar-link" th:href="@{/admin/dashoard}" aria-expanded="false"
                            onmouseover="showDropdown()" onmouseout="hideDropdown()" onclick="toggleDropdown()">
         <span>
             <i class="ti ti-aperture"></i>

@@ -35,6 +35,10 @@ public class CategoryController {
         return "Admin/dashBoard/categories/categories";
     }
 
+
+
+//    create category
+
     @PostMapping("/add")
     public String addCategory(@ModelAttribute("newCategory") CategoryDto categoryDto,
                               @RequestParam("imageFile") MultipartFile imageFile,
@@ -58,6 +62,7 @@ public class CategoryController {
     }
 
 
+//   block/lock category
 
     @GetMapping("/enable/{categoryId}")
     public String enableCategory(@PathVariable("categoryId") Long id, RedirectAttributes ra) {
@@ -74,8 +79,11 @@ public class CategoryController {
             ra.addFlashAttribute("message", e.getMessage());
         }
         categoryService.saveCategory(category);
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
+
+
+//    delete category
 
     @GetMapping("/delete/{categoryId}")
     public String deleteUser(@PathVariable("categoryId") Long id, RedirectAttributes ra) {
@@ -87,8 +95,10 @@ public class CategoryController {
         }catch (UsernameNotFoundException e) {
             ra.addFlashAttribute("message", e.getMessage());
         }
-        return "redirect:/categories";
+        return "redirect:/admin/categories";
     }
+
+//    get categories by Id
 
     @GetMapping("/get/{categoryId}")
     public String getUser(@PathVariable("categoryId") Long id, Model model) {
@@ -96,6 +106,8 @@ public class CategoryController {
         model.addAttribute("categoryDetails", category);
         return "Admin/dashBoard/categories/getCategoryDetails";
     }
+
+//    update category
 
     @PostMapping("/updateCategory/{id}")
     public String updateUser(@PathVariable Long id, @ModelAttribute("category") Category category, @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes ra) {

@@ -18,7 +18,7 @@
             <div class="card mb-100">
               <div class="card-body">
                 <div>
-                  <a th:href="@{/admin/dashboard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
+                  <a th:href="@{/admin/dashBoard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
                 </div>
                 <div class="table-responsive" th:if="${categories != null and not #lists.isEmpty(categories)}"> <!-- Added table-responsive class -->
 
@@ -113,6 +113,10 @@
                       <td th:text="${offer.saleEvent}"></td>
                       <td th:text="${offer.discountPrice}"></td>
                       <td th:text="${offer.expirationDate}"></td>
+                      <td><a th:href="@{'/admin/categories/deleteOffer/' + ${offer.id}}"
+                             onclick="return confirm('Are you sure you want to delete this category?')">
+                        <i class="ti ti-trash"></i>
+                      </a></td>
                     </tr>
                     </tbody>
                   </table>

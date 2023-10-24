@@ -10,9 +10,8 @@ import java.util.List;
 @Repository
 public interface CategoryOfferRepo extends JpaRepository<CategoryOffer,Integer> {
 
-    CategoryOffer findCategoryOfferExistBycategoryId(Long categoryId);
 
-    List<CategoryOffer> findByCategoryId(Long categoryId);
+    CategoryOffer findByCategoryId(Long categoryId);
 
     @Query("SELECT co FROM CategoryOffer co WHERE co.expirationDate > current_timestamp")
     List<CategoryOffer> nonExpiredCategoryOffer();

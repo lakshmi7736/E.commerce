@@ -3,6 +3,7 @@ package com.Mirra.eCommerce.Controller.HomePageController;
 
 import com.Mirra.eCommerce.DTO.BannerDto;
 import com.Mirra.eCommerce.Models.ServiceImages.Banner;
+import com.Mirra.eCommerce.Models.ServiceImages.Instagram;
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Category;
@@ -16,6 +17,7 @@ import com.Mirra.eCommerce.Service.Product.CalculateAverageRatingService;
 import com.Mirra.eCommerce.Service.Product.ProductReviewService;
 import com.Mirra.eCommerce.Service.Product.ProductService;
 import com.Mirra.eCommerce.Service.ServiceImages.BannerService;
+import com.Mirra.eCommerce.Service.ServiceImages.InstagramImageService;
 import com.Mirra.eCommerce.Service.User.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,9 @@ public class HomeController {
 
     @Autowired
     private ProductReviewService productReviewService;
+
+    @Autowired
+    private InstagramImageService instagramImageService;
 
 
     @Autowired
@@ -82,6 +87,9 @@ public class HomeController {
                 .collect(Collectors.toList());
 
         model.addAttribute("products", activeProducts);
+
+        List<Instagram> instagrams=instagramImageService.findAll();
+        model.addAttribute("instagrams",instagrams);
 
 
         List<String> encodedImagesList = new ArrayList<>();

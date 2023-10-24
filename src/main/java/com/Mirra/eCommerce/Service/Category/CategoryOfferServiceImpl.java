@@ -38,7 +38,7 @@ public class CategoryOfferServiceImpl implements CategoryOfferService {
 
         Long categoryId= categoryOfferDto.getCategoryId().getId();
         // Delete the existing offer with the same category ID, if it exists
-        CategoryOffer existingOffer = categoryOfferRepo.findCategoryOfferExistBycategoryId(categoryId);
+        CategoryOffer existingOffer = categoryOfferRepo.findByCategoryId(categoryId);
         if (existingOffer != null) {
             categoryOfferRepo.delete(existingOffer);
         }
@@ -71,7 +71,7 @@ public class CategoryOfferServiceImpl implements CategoryOfferService {
             imageData = Base64.getDecoder().decode(categoryOfferDto.getImageData());
         }
 
-        CategoryOffer existingOffer = categoryOfferRepo.findCategoryOfferExistBycategoryId(categoryId);
+        CategoryOffer existingOffer = categoryOfferRepo.findByCategoryId(categoryId);
         if (existingOffer != null) {
             categoryOfferRepo.delete(existingOffer);
         }
@@ -93,12 +93,22 @@ public class CategoryOfferServiceImpl implements CategoryOfferService {
     }
 
     @Override
-    public List<CategoryOffer> findByCategoryId(Long categoryId) {
+    public CategoryOffer findByCategoryId(Long categoryId) {
         return categoryOfferRepo.findByCategoryId(categoryId);
     }
 
     @Override
     public List<CategoryOffer> findAll() {
        return categoryOfferRepo.nonExpiredCategoryOffer();
+    }
+
+    @Override
+    public void deleteByCategoryOfferId(int categoryOfferId) {
+        categoryOfferRepo.deleteById(categoryOfferId);
+    }
+
+    @Override
+    public CategoryOffer findById(int id) {
+        return categoryOfferRepo.findById(id).get();
     }
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BannerDto {
 
-    int id;
+    private int id;
 
     private String collection;
 

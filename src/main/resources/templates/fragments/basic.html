@@ -452,8 +452,8 @@
 <!--                    id="countdown-time"-->
 <!-- Discount Section Begin -->
 <section class="discount" data-th-fragment="discount">
+    <h1><span>Offer Deals</span></h1>
     <div class="container banner__slider owl-carousel">
-
         <div class="row" th:each="categoryOffer : ${categoryOffers}">
             <div class="col-lg-6 p-0">
                 <div class="discount__pic">
@@ -537,56 +537,56 @@
 <!-- Instagram Begin -->
 <div class="instagram" data-th-fragment="instagram">
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" th:each="instagram : ${instagrams}">
             <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-1.jpg">
+                <div class="instagram__item" th:style="'background-image: url(data:image/png;base64,' + ${instagram.imageDataAsBase64} + ');background-size: cover; background-position: center; border-radius: 10px;'">
                     <div class="instagram__text">
                         <i class="fa fa-instagram"></i>
-                        <a href="#">@ mirra_shop</a>
+                        <a th:href="${instagram.url}" target="_blank" th:text="'@'+${instagram.instagramId}">@ mirra_shop</a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">
-                    <div class="instagram__text">
-                        <i class="fa fa-instagram"></i>
-                        <a href="#">@ mirra_shop</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">
-                    <div class="instagram__text">
-                        <i class="fa fa-instagram"></i>
-                        <a href="#">@ mirra_shop</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">
-                    <div class="instagram__text">
-                        <i class="fa fa-instagram"></i>
-                        <a href="#">@ mirra_shop</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">
-                    <div class="instagram__text">
-                        <i class="fa fa-instagram"></i>
-                        <a href="#">@ mirra_shop</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">
-                    <div class="instagram__text">
-                        <i class="fa fa-instagram"></i>
+<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
+<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">-->
+<!--                    <div class="instagram__text">-->
+<!--                        <i class="fa fa-instagram"></i>-->
+<!--                        <a href="#">@ mirra_shop</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
+<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">-->
+<!--                    <div class="instagram__text">-->
+<!--                        <i class="fa fa-instagram"></i>-->
+<!--                        <a href="#">@ mirra_shop</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
+<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">-->
+<!--                    <div class="instagram__text">-->
+<!--                        <i class="fa fa-instagram"></i>-->
+<!--                        <a href="#">@ mirra_shop</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
+<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">-->
+<!--                    <div class="instagram__text">-->
+<!--                        <i class="fa fa-instagram"></i>-->
+<!--                        <a href="#">@ mirra_shop</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
+<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">-->
+<!--                    <div class="instagram__text">-->
+<!--                        <i class="fa fa-instagram"></i>-->
 
-                                                <a href="#">@ mirra_shop</a>
-                    </div>
-                </div>
-            </div>
+<!--                                                <a href="#">@ mirra_shop</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </div>
 </div>

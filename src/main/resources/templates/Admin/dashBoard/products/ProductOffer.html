@@ -18,7 +18,7 @@
             <div class="card mb-100">
               <div class="card-body">
                 <div>
-                  <a th:href="@{/admin/dashboard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
+                  <a th:href="@{/admin/dashBoard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
                 </div>
                 <div class="table-responsive"> <!-- Added table-responsive class -->
 
@@ -34,11 +34,31 @@
                       <label for="expirationDate">Discount :</label>
                       <input  type="date" id="expirationDate" name="expirationDate" th:field="*{expirationDate}" class="form-control" required>
                     </div>
-
-
                     <button type="submit" class="btn btn-primary col-md-12">Add Offer</button>
-
                   </form>
+                </div>
+              </div>
+
+              <div class="card-body" th:if="${products != null and not #lists.isEmpty(products)}">
+                <p th:style="'color: red; text-align: center;'">*While adding new offer, the existing offer will be removed</p>
+                <div class="table-responsive">
+                  <table style="width: 100%; text-align: center;">
+                    <!-- Display the flash attribute message if it exists -->
+                    <thead>
+                    <tr>
+                      <th>Discount %</th>
+                      <th>Expiry</th>
+                      <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${products}">
+                      <td th:text="${product.discountPrice}"></td>
+                      <td th:text="${product.expirationDate}"></td>
+                      <td><a ><i class="ti ti-trash"></i></a></td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

@@ -39,4 +39,9 @@ public class ProductOfferServiceImpl implements ProductOfferService{
 
         productOfferRepo.save(offer);
     }
+
+    @Override
+    public ProductOffer findByProductId(Long productId) {
+        return productOfferRepo.findProductOfferExistByproductId(productId);
+    }
 }

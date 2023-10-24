@@ -11,8 +11,12 @@ public interface CategoryOfferService {
 
     public void saveCategoryOffer(Long categoryId,CategoryOfferDto categoryOfferDto) ;
 
-    public List<CategoryOffer> findByCategoryId(Long categoryId);
+    public CategoryOffer findByCategoryId(Long categoryId);
 
     List<CategoryOffer> findAll();
+
+    void deleteByCategoryOfferId(int categoryOfferId);
+
+    CategoryOffer findById(int id);
 
 }

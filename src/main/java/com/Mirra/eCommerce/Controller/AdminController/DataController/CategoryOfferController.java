@@ -2,16 +2,19 @@ package com.Mirra.eCommerce.Controller.AdminController.DataController;
 
 import com.Mirra.eCommerce.DTO.BannerDto;
 import com.Mirra.eCommerce.DTO.CategoryOfferDto;
+import com.Mirra.eCommerce.Exception.OfferNotFound;
 import com.Mirra.eCommerce.Models.datas.Category;
 import com.Mirra.eCommerce.Models.datas.CategoryOffer;
 import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Service.Category.CategoryOfferService;
 import com.Mirra.eCommerce.Service.Category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -73,7 +76,7 @@ public class CategoryOfferController {
 
 
         Category category = categoryService.findById(categoryId);
-        List<CategoryOffer> offers=categoryOfferService.findByCategoryId(categoryId);
+        CategoryOffer offers=categoryOfferService.findByCategoryId(categoryId);
         model.addAttribute("offers",offers);
 
         if (category == null) {
@@ -113,6 +116,21 @@ public class CategoryOfferController {
 
         // Redirect to a success page or another appropriate URL
         return "redirect:/admin/categories"; // Replace with the URL where you want to redirect after a successful submission
+    }
+
+
+//    delete offer
+    @GetMapping("/deleteOffer/{categoryOfferId}")
+    public String deleteUser(@PathVariable("categoryOfferId") Integer id, RedirectAttributes ra) {
+        CategoryOffer category=categoryOfferService.findById(id) ;
+        String name= category.getSaleEvent();
+        try {
+            categoryOfferService.deleteByCategoryOfferId(id);
+            ra.addFlashAttribute("message", "The category offer " + name + " has been deleted.");
+        }catch (OfferNotFound e) {
+            ra.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:/admin/categories";
     }
 
 

@@ -650,6 +650,15 @@ ol {
 	height: 100%;
 }
 
+.discount h1{
+    text-align:center;
+	font-size: 60px;
+	color: #ca1515;
+	font-family: "Cookie", cursive;
+	line-height: 60px;
+	margin-bottom: 10px;
+}
+
 .discount__text {
 	background: #f4f4f4;
 	height: 100%;

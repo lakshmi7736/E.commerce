@@ -36,6 +36,9 @@ public class ProductOfferController {
         }
         model.addAttribute("product", product);
         model.addAttribute("newOffer", new ProductOffer()); // Add an empty category for the form
+
+        ProductOffer products=productOfferService.findByProductId(productId);
+        model.addAttribute("products",products);
         return "Admin/dashBoard/products/ProductOffer";
     }
 
@@ -48,7 +51,6 @@ public class ProductOfferController {
             // Handle product not found case, e.g., redirect to an error page
             return "error";
         }
-
         // Call your service to add the offer
         productOfferService.saveProductOffer(productId,productOfferDto);
 
