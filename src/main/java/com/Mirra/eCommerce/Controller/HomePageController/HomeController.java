@@ -6,8 +6,10 @@ import com.Mirra.eCommerce.Models.ServiceImages.Banner;
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Category;
+import com.Mirra.eCommerce.Models.datas.CategoryOffer;
 import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Models.datas.ProductReview;
+import com.Mirra.eCommerce.Service.Category.CategoryOfferService;
 import com.Mirra.eCommerce.Service.Category.CategoryService;
 import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeserialize;
 import com.Mirra.eCommerce.Service.Product.CalculateAverageRatingService;
@@ -53,6 +55,9 @@ public class HomeController {
     @Autowired
     private CalculateAverageRatingService calculateAverageRatingService;
 
+    @Autowired
+    private CategoryOfferService categoryOfferService;
+
 
     @GetMapping
     public String index(Model model, HttpSession session) throws IOException, ClassNotFoundException {
@@ -64,6 +69,9 @@ public class HomeController {
 
         Banner existingBanner = bannerService.getExistingBanner();
         model.addAttribute("banner", existingBanner);
+
+        List<CategoryOffer> categoryOffers=categoryOfferService.findAll();
+        model.addAttribute("categoryOffers",categoryOffers);
 
 
         List<Product> products = productsService.getAllProducts();

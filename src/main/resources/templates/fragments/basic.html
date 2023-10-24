@@ -449,42 +449,44 @@
     </div>
 </section>
 <!-- Trend Section End -->
-
+<!--                    id="countdown-time"-->
 <!-- Discount Section Begin -->
 <section class="discount" data-th-fragment="discount">
     <div class="container">
-        <div class="row">
+        <div class="row" th:each="categoryOffer : ${categoryOffers}">
             <div class="col-lg-6 p-0">
                 <div class="discount__pic">
-                    <img src="img/discount.jpg" alt="">
+                    <img th:src="'data:image/png;base64,' + ${categoryOffer.imageDataAsBase64}" alt="" />
                 </div>
             </div>
             <div class="col-lg-6 p-0">
                 <div class="discount__text">
                     <div class="discount__text__title">
                         <span>Discount</span>
-                        <h2>Summer 2019</h2>
-                        <h5><span>Sale</span> 50%</h5>
+                        <h2 th:text="${categoryOffer.saleEvent}"></h2>
+                       <span>Sale</span> <h5 th:text="${categoryOffer.discountPrice + '%'}"></h5>
                     </div>
-                    <div class="discount__countdown" id="countdown-time">
+                    <div class="countdown__countdown" th:attr="data-expiration-date=${categoryOffer.expirationDate}" th:id="'countdown_' + ${categoryOffer.category.id}">
+
                         <div class="countdown__item">
-                            <span>22</span>
+                            <span id="days"></span>
                             <p>Days</p>
                         </div>
                         <div class="countdown__item">
-                            <span>18</span>
-                            <p>Hour</p>
+                            <span id="hours"></span>
+                            <p>Hours</p>
                         </div>
                         <div class="countdown__item">
-                            <span>46</span>
-                            <p>Min</p>
+                            <span id="minutes"></span>
+                            <p>Minutes</p>
                         </div>
                         <div class="countdown__item">
-                            <span>05</span>
-                            <p>Sec</p>
+                            <span id="seconds"></span>
+                            <p>Seconds</p>
                         </div>
                     </div>
-                    <a href="#">Shop now</a>
+
+                    <a th:href="@{/category/{categoryId}(categoryId=${categoryOffer.category.id})}">Shop now</a>
                 </div>
             </div>
         </div>
@@ -758,6 +760,7 @@ $(document).ready(function () {
 });
 </script>
 
+<!--update cartlist-quantity-->
 <script>
         $(document).ready(function () {
     // Handle item increment and decrement
@@ -797,6 +800,54 @@ $(document).ready(function () {
 });
 
     </script>
+
+<!--Count-down script-->
+    <script>
+    // Get all countdown elements using a class selector
+    var countdowns = document.querySelectorAll(".countdown__countdown");
+
+    // Function to update the countdown for a specific element
+    function updateCountdown(countdownElement) {
+        // Get the expiration date string from the current element
+        var expirationDateStr = countdownElement.getAttribute("data-expiration-date");
+
+        // Parse the date string and create a Date object
+        var dateParts = expirationDateStr.split("-");
+        var expirationDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+
+        function updateCountdownDisplay() {
+            var currentDate = new Date();
+            var timeRemaining = expirationDate - currentDate;
+
+            if (timeRemaining <= 0) {
+                // Handle the case when the countdown has expired
+                countdownElement.innerHTML = "Countdown Expired";
+            } else {
+                var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                // Update the countdown elements in your HTML
+                countdownElement.querySelector("#days").textContent = days;
+                countdownElement.querySelector("#hours").textContent = hours;
+                countdownElement.querySelector("#minutes").textContent = minutes;
+                countdownElement.querySelector("#seconds").textContent = seconds;
+            }
+        }
+
+        // Call the updateCountdownDisplay function immediately to set the countdown
+        updateCountdownDisplay();
+
+        // Call the updateCountdownDisplay function every second
+        setInterval(updateCountdownDisplay, 1000);
+    }
+
+    // Call the updateCountdown function for each countdown
+    countdowns.forEach(function (countdownElement) {
+        updateCountdown(countdownElement);
+    });
+</script>
 </div>
 
 

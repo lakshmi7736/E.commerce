@@ -2,6 +2,8 @@ package com.Mirra.eCommerce.Controller.AdminController.DataController;
 
 import com.Mirra.eCommerce.DTO.CategoryDto;
 import com.Mirra.eCommerce.Models.datas.Category;
+import com.Mirra.eCommerce.Models.datas.CategoryOffer;
+import com.Mirra.eCommerce.Service.Category.CategoryOfferService;
 import com.Mirra.eCommerce.Service.Category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +23,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CategoryOfferService categoryOfferService;
 
     @GetMapping
     public String showCategories(Model model) {

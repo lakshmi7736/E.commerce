@@ -20,7 +20,7 @@
                 <div>
                   <a th:href="@{/admin/dashboard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
                 </div>
-                <div class="table-responsive"> <!-- Added table-responsive class -->
+                <div class="table-responsive" th:if="${categories != null and not #lists.isEmpty(categories)}"> <!-- Added table-responsive class -->
 
                   <form th:action="@{/admin/categories/offer}" method="post" th:object="${newOffer}" enctype="multipart/form-data">
                     <h2>Add Category Offer</h2>
@@ -58,6 +58,64 @@
 
                     <p th:if="${categoryExistsError}" th:text="${categoryExistsError}" style="color: red;"></p>
                   </form>
+                </div>
+                <div class="table-responsive" th:unless="${categories != null and not #lists.isEmpty(categories)}"> <!-- Added table-responsive class -->
+
+                  <form th:action="@{/admin/categories/offer/{categoryId}(categoryId=${category.id})}" method="post" th:object="${newOffer}" enctype="multipart/form-data">
+                    <h2>Add Category Offer</h2>
+                    <p th:if="${uploadError}" th:text="${uploadError}" style="color: red;"></p>
+
+                    <div class="mb-3">
+                      <label for="salesEvent">Sale Event :</label>
+                      <input type="text" id="salesEvent" name="saleEventcollection" th:field="*{saleEvent}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="discountsPrice">Discount :</label>
+                      <input type="text" id="discountsPrice" name="discountPrice" th:field="*{discountPrice}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="expirationsDate">Discount :</label>
+                      <input  type="date" id="expirationsDate" name="expirationDate" th:field="*{expirationDate}" class="form-control" required>
+                    </div>
+
+
+                    <div class="mb-3">
+                      <label for="imageFile">Add Image <span style="color: red;">(only one image allowed)</span></label>
+                      <input type="file" id="imagesFile" name="imageFile" onchange="validateImage(event)" class="form-control" accept="image/*" required>
+                    </div>
+                    <img id="imagesPreview" src="#" alt="Image Preview" style="max-width: 300px; display: none;">
+
+
+                    <button type="submit" class="btn btn-primary col-md-12">Add Offer</button>
+
+                    <p th:if="${categoryExistsError}" th:text="${categoryExistsError}" style="color: red;"></p>
+                  </form>
+                </div>
+
+              </div>
+
+              <div class="card-body" th:if="${offers != null and not #lists.isEmpty(offers)}">
+                <p th:style="'color: red; text-align: center;'">*While adding new offer, the existing offer will be removed</p>
+                <div class="table-responsive">
+                  <table style="width: 100%; text-align: center;">
+                    <!-- Display the flash attribute message if it exists -->
+                    <thead>
+                    <tr>
+                      <th>Sale Event </th>
+                      <th>Discount %</th>
+                      <th>Expiry</th>
+                      <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="offer : ${offers}">
+                      <td th:text="${offer.saleEvent}"></td>
+                      <td th:text="${offer.discountPrice}"></td>
+                      <td th:text="${offer.expirationDate}"></td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
