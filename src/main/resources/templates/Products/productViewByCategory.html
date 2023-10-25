@@ -56,7 +56,7 @@
                                         <div class="card-body">
                                             <ul>
                                                 <li th:each="subCategory : ${subCategories}" th:if="${subCategory.parentCategory.id == category.id}" >
-                                                    <a th:href="'/sub/' + ${subCategory.id}" th:text="${subCategory.name}"></a>
+                                                    <a th:href="'/subCategory/' + ${subCategory.id}" th:text="${subCategory.name}"></a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -218,18 +218,18 @@
                                        class="fa"
                                        th:classappend="${starNumber <= product.averageRating ? 'fa-star' : 'fa-star-o'}">&nbsp;&nbsp;</i>
                                 </div>
-                                <div th:if="${product.discountPrice == null}" class="product__price" th:text="${product.actualPrice}"></div>
-                                <div th:unless="${product.discountPrice == null}">
-                                    <!-- Use inline CSS for the style -->
-                                    <div style="display: inline;">
-                                        <del th:text="${product.myPrice}"></del>
-                                        <p style="display: inline; margin-left: 5px;" th:text="${product.discountPrice + '% OFF'}"></p>
-                                    </div>
-                                    <!-- Use inline CSS for the style -->
-                                    <div style="display: block;">
-                                        <p class="product__price" th:text="${product.actualPrice}"></p>
-                                    </div>
-                                </div>
+                                <div class="product__price" th:text="${product.actualPrice}"></div>
+<!--                                <div th:unless="${product.discountPrice == null}">-->
+<!--                                    &lt;!&ndash; Use inline CSS for the style &ndash;&gt;-->
+<!--                                    <div style="display: inline;">-->
+<!--                                        <del th:text="${product.myPrice}"></del>-->
+<!--                                        <p style="display: inline; margin-left: 5px;" th:text="${product.discountPrice + '% OFF'}"></p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; Use inline CSS for the style &ndash;&gt;-->
+<!--                                    <div style="display: block;">-->
+<!--                                        <p class="product__price" th:text="${product.actualPrice}"></p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                         </div>
                     </div>

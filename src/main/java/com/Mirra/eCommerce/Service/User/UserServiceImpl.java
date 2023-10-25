@@ -67,7 +67,7 @@ public class UserServiceImpl  implements UserService{
     @Override
     public boolean isValidName(String name) {
         // Define the pattern to match a valid name (no special characters except underscore)
-        String nameRegex = "^[a-zA-Z0-9_]+$";
+        String nameRegex = "^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*(\\.[a-zA-Z0-9_]+)?$";
 
         // Check if the name is not empty and matches the pattern
         return !name.isEmpty() && name.matches(nameRegex);

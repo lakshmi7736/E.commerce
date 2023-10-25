@@ -38,4 +38,9 @@ public class InstagramImageServiceImpl implements InstagramImageService{
     public List<Instagram> findAll() {
         return instagramRepo.findAll();
     }
+
+    @Override
+    public void deleteById(int id) {
+        instagramRepo.deleteById(id);
+    }
 }

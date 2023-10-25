@@ -12,5 +12,7 @@ public interface InstagramImageService {
 
     List<Instagram> findAll();
 
+    void deleteById(int id);
+
 
 }

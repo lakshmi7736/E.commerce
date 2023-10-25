@@ -65,6 +65,7 @@ public class ProductController {
         return "Admin/dashBoard/products/products";
     }
 
+//    create product
     @PostMapping
     public String saveProduct(@Valid @ModelAttribute Product product,
                               BindingResult bindingResult,
@@ -143,20 +144,7 @@ public class ProductController {
 
 
 
-//    private double calculateAverageRating(List<ProductReview> reviews) {
-//        if (reviews.isEmpty()) {
-//            return 0.0;
-//        }
-//
-//        int totalRating = 0;
-//        for (ProductReview review : reviews) {
-//            totalRating += review.getRating();
-//        }
-//
-//        return (double) totalRating / reviews.size();
-//    }
-
-
+//    view product Lists
     @GetMapping("/productList")
     public String productList(Model model) throws IOException, ClassNotFoundException {
         List<Product> products = productsService.getAllProducts();
@@ -182,6 +170,7 @@ public class ProductController {
     }
 
 
+//    view out of stock products
     @GetMapping("/productStockOutList")
     public String productStockOutList(Model model) throws IOException, ClassNotFoundException {
         List<Product> products = productsService.getAllProducts();
@@ -208,6 +197,7 @@ public class ProductController {
         return "Admin/dashBoard/products/productList"; // Return the name of the view template for the product list page
     }
 
+//    disable productById
     @GetMapping("/delete/{productId}")
     public String deleteProduct(@PathVariable Long productId, RedirectAttributes ra) {
         Product product = productsService.getProductById(productId);
@@ -251,6 +241,7 @@ public class ProductController {
         return "Admin/dashBoard/products/ProductUpdateForm";
     }
 
+//    updtae product
 
     @PostMapping("/edit/{productId}")
     public String updateProduct(@PathVariable Long productId,

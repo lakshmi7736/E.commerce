@@ -2,13 +2,17 @@ package com.Mirra.eCommerce.Controller.AdminController.ServiceImageController;
 
 
 import com.Mirra.eCommerce.DTO.InstagramDto;
+import com.Mirra.eCommerce.Exception.InstagramIdNotFound;
 import com.Mirra.eCommerce.Models.ServiceImages.Instagram;
+import com.Mirra.eCommerce.Models.datas.Category;
 import com.Mirra.eCommerce.Service.ServiceImages.InstagramImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -33,6 +37,7 @@ public class InstagramController {
     }
 
 
+//    create instagram images
     @PostMapping("/addInstagram")
     public String addBanner(@ModelAttribute("newInstagramImage") InstagramDto instagramDto,
                             @RequestParam("imageFile") MultipartFile imageFile, Model model) {
@@ -54,5 +59,21 @@ public class InstagramController {
         // Redirect to a success page or another appropriate URL
         return "redirect:/admin/instagram"; // Replace with the URL where you want to redirect after a successful submission
     }
+
+
+//    delete image By id
+
+
+    @GetMapping("/instagram/deleteImages/{instagramId}")
+    public String delete(@PathVariable("instagramId") int id, RedirectAttributes ra){
+        try {
+            instagramImageService.deleteById(id);
+        }
+        catch (InstagramIdNotFound e){
+            ra.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:/admin/instagram";
+    }
+
 
 }

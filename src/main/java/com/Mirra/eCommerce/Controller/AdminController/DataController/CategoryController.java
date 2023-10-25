@@ -1,6 +1,7 @@
 package com.Mirra.eCommerce.Controller.AdminController.DataController;
 
 import com.Mirra.eCommerce.DTO.CategoryDto;
+import com.Mirra.eCommerce.Exception.CategoryNotFound;
 import com.Mirra.eCommerce.Models.datas.Category;
 import com.Mirra.eCommerce.Models.datas.CategoryOffer;
 import com.Mirra.eCommerce.Service.Category.CategoryOfferService;
@@ -92,7 +93,7 @@ public class CategoryController {
         try {
             categoryService.deleteCategory(id);
             ra.addFlashAttribute("message", "The category " + name + " has been deleted.");
-        }catch (UsernameNotFoundException e) {
+        }catch (CategoryNotFound e) {
             ra.addFlashAttribute("message", e.getMessage());
         }
         return "redirect:/admin/categories";

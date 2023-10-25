@@ -77,7 +77,9 @@
                     <ul>
                         <li class="active"><a th:href="@{/}">Home</a></li>
                         <li th:each="category, iterStat : ${categories}" th:if="${iterStat.index <= 2 }">
-                            <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{categoryId}(categoryId=${category.id})}"></a>
+<!--                            <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{categoryId}(categoryId=${category.id})}"></a>-->
+                            <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{Id}(Id=${category.id})}"></a>
+
                         </li>
                         <li>
                             <a href="#">Pages</a>
@@ -90,7 +92,8 @@
                         </li>
                         <li><a th:href="@{/blog}">Blog</a></li>
                         <li><a th:href="@{/contact}">Contact</a></li>
-                        <li th:if="${session.jwtResponse != null}"> <a href=""> <i class="fa fa-user"></i><span th:text="${session.jwtResponse.name}"></span></a>
+                        <li th:if="${session.jwtResponse != null}"> <a href=""> <i class="fa fa-user"></i><span th:text="${#strings.substringBefore(session.jwtResponse.name, ' ')}"></span>
+                        </a>
                             <ul class="dropdown">
                                 <li><a th:href="@{/user/profile}">My Profile</a></li>
                                 <li><a th:href="@{/user/myOrders}">Orders</a></li>
@@ -537,56 +540,15 @@
 <!-- Instagram Begin -->
 <div class="instagram" data-th-fragment="instagram">
     <div class="container-fluid">
-        <div class="row" th:each="instagram : ${instagrams}">
-            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                <div class="instagram__item" th:style="'background-image: url(data:image/png;base64,' + ${instagram.imageDataAsBase64} + ');background-size: cover; background-position: center; border-radius: 10px;'">
+        <div class="row" >
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0 " th:each="instagram : ${instagrams}">
+                <div class="instagram__item" th:style="'background-image: url(data:image/png;base64,' + ${instagram.imageDataAsBase64} + ');background-size: cover; background-position: center;'">
                     <div class="instagram__text">
                         <i class="fa fa-instagram"></i>
                         <a th:href="${instagram.url}" target="_blank" th:text="'@'+${instagram.instagramId}">@ mirra_shop</a>
                     </div>
                 </div>
             </div>
-<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
-<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">-->
-<!--                    <div class="instagram__text">-->
-<!--                        <i class="fa fa-instagram"></i>-->
-<!--                        <a href="#">@ mirra_shop</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
-<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">-->
-<!--                    <div class="instagram__text">-->
-<!--                        <i class="fa fa-instagram"></i>-->
-<!--                        <a href="#">@ mirra_shop</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
-<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">-->
-<!--                    <div class="instagram__text">-->
-<!--                        <i class="fa fa-instagram"></i>-->
-<!--                        <a href="#">@ mirra_shop</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
-<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">-->
-<!--                    <div class="instagram__text">-->
-<!--                        <i class="fa fa-instagram"></i>-->
-<!--                        <a href="#">@ mirra_shop</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-lg-2 col-md-4 col-sm-4 p-0">-->
-<!--                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">-->
-<!--                    <div class="instagram__text">-->
-<!--                        <i class="fa fa-instagram"></i>-->
-
-<!--                                                <a href="#">@ mirra_shop</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
         </div>
     </div>
 </div>
