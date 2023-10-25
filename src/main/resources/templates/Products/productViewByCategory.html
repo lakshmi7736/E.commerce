@@ -56,7 +56,7 @@
                                         <div class="card-body">
                                             <ul>
                                                 <li th:each="subCategory : ${subCategories}" th:if="${subCategory.parentCategory.id == category.id}" >
-                                                    <a th:href="'/subCategory/' + ${subCategory.id}" th:text="${subCategory.name}"></a>
+                                                    <a th:href="@{/category/{Id}/{type} (Id=${subCategory.id},type='subCategory')}" th:text="${subCategory.name}"></a>
                                                 </li>
                                             </ul>
                                         </div>

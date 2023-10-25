@@ -17,14 +17,14 @@
           rel="stylesheet">
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="../frontEnd/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="../frontEnd/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="../frontEnd/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="../frontEnd/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="../frontEnd/css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="../frontEnd/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="../frontEnd/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="../frontEnd/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/frontEnd/css/style.css" type="text/css">
 </head>
 
 
@@ -49,7 +49,7 @@
         </a></li>
     </ul>
     <div class="offcanvas__logo">
-        <a href="../basicTemplates/index.html"><img src="../frontEnd/img/logo.png" alt=""></a>
+        <a href="../basicTemplates/index.html"><img src="/frontEnd/img/logo.png" alt=""></a>
     </div>
     <div id="mobile-menu-wrap"></div>
     <div class="offcanvas__auth">
@@ -77,8 +77,7 @@
                     <ul>
                         <li class="active"><a th:href="@{/}">Home</a></li>
                         <li th:each="category, iterStat : ${categories}" th:if="${iterStat.index <= 2 }">
-<!--                            <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{categoryId}(categoryId=${category.id})}"></a>-->
-                            <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{Id}(Id=${category.id})}"></a>
+                            <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{Id}/{type}(Id=${category.id},type='category')}"></a>
 
                         </li>
                         <li>
@@ -152,7 +151,7 @@
                     <div class="categories__text">
                         <h1 th:text="${categories[0].name}">Category Name</h1>
                         <p th:text="${categories[0].description}">Category Description</p>
-                        <a th:href="@{/category/{categoryId}(categoryId=${categories[0].id})}">Shop now</a>
+                        <a th:href="@{/category/{Id}/{type}(Id=${categories[0].id},type='category')}">Shop now</a>
                     </div>
                 </div>
             </div>
@@ -164,7 +163,8 @@
                             <div class="categories__text">
                                 <h4 th:text="${category.name}">Category Name</h4>
                                 <p th:text="${category.description}">Category Description</p>
-                                <a th:href="@{/category/{categoryId}(categoryId=${category.id})}">Shop now</a>
+
+                                <a th:href="@{/category/{Id}/{type}(Id=${category.id},type='category')}">Shop now</a>
                             </div>
                         </div>
                     </div>
@@ -252,7 +252,7 @@
                         <div class="banner__text" >
                             <span th:text="${banner.collection}"></span>
                             <h1 th:text="${banner.saleEvent}">The Project Jacket</h1>
-                            <a th:href="@{/category/{categoryId}(categoryId=${banner.category.id})}">Shop now</a>
+                            <a th:href="@{/category/{Id}/{type}(Id=${banner.category.id},type='category')}">Shop now</a>
                         </div>
                     </div>
                 </div>
@@ -490,7 +490,7 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/category/{categoryId}(categoryId=${categoryOffer.category.id})}">Shop now</a>
+                    <a th:href="@{/category/{Id}/{type}(Id=${categoryOffer.category.id},type='category')}">Shop now</a>
                 </div>
             </div>
         </div>
@@ -640,18 +640,18 @@
 <!-- Js Plugins -->
 <div data-th-fragment="script" data-th-remove="tag">
 
-<script src="../frontEnd/js/jquery-3.3.1.min.js"></script>
+<script src="/frontEnd/js/jquery-3.3.1.min.js"></script>
     <!-- Include jQuery (required by Magnify) -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="../frontEnd/js/bootstrap.min.js"></script>
-<script src="../frontEnd/js/jquery.magnific-popup.min.js"></script>
-<script src="../frontEnd/js/jquery-ui.min.js"></script>
-<script src="../frontEnd/js/mixitup.min.js"></script>
-<script src="../frontEnd/js/jquery.countdown.min.js"></script>
-<script src="../frontEnd/js/jquery.slicknav.js"></script>
-<script src="../frontEnd/js/owl.carousel.min.js"></script>
-<script src="../frontEnd/js/jquery.nicescroll.min.js"></script>
-<script src="../frontEnd/js/main.js"></script>
+<script src="/frontEnd/js/bootstrap.min.js"></script>
+<script src="/frontEnd/js/jquery.magnific-popup.min.js"></script>
+<script src="/frontEnd/js/jquery-ui.min.js"></script>
+<script src="/frontEnd/js/mixitup.min.js"></script>
+<script src="/frontEnd/js/jquery.countdown.min.js"></script>
+<script src="/frontEnd/js/jquery.slicknav.js"></script>
+<script src="/frontEnd/js/owl.carousel.min.js"></script>
+<script src="/frontEnd/js/jquery.nicescroll.min.js"></script>
+<script src="/frontEnd/js/main.js"></script>
  <script>
 $(document).ready(function () {
     $(".add-to-wishlist").click(function () {

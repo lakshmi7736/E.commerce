@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/category/{categoryId}")
+//@RequestMapping("/category/{categoryId}")
 public class CategoryViewController {
 
     @Autowired
@@ -38,32 +38,49 @@ public class CategoryViewController {
     private SerializeAndDeserialize serializeAndDeserialize;
 
 
-    @GetMapping
-    public String viewCategory(@PathVariable Long categoryId, Model model) throws IOException, ClassNotFoundException {
+
+
+    @GetMapping("/category/{Id}/{type}")
+    public String viewCategory(@PathVariable Long Id, @PathVariable String type, Model model) throws IOException, ClassNotFoundException {
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
 
         List<SubCategory> subCategories= subCategoryService.getAllSubCategories();
         model.addAttribute("subCategories",subCategories);
 
-        List<Product> products = productsService.getProductsByCategoryId(categoryId);
+        List<Product> products = new ArrayList<>();
 
+        if ("category".equals(type)) {
+            products = productsService.getProductsByCategoryId(Id);
+        } else if ("subCategory".equals(type)) {
+            products = productsService.getProductsBySubCategoryId(Id);
+        } else {
+            // Handle invalid 'type' parameter, perhaps by returning an error view
+            return "errorView";
+        }
+
+        // Filter and process products
         List<Product> activeProducts = products.stream()
-                .filter(product -> product.isActive())
+                .filter(Product::isActive)
                 .collect(Collectors.toList());
+        Collections.reverse(activeProducts);
+
+        List<String> encodedImagesList = encodeImages(activeProducts);
 
         model.addAttribute("products", activeProducts);
+        model.addAttribute("encodedImagesList", encodedImagesList);
 
+        return "Products/productViewByCategory";
+    }
 
-        Collections.reverse(products);
+    private List<String> encodeImages(List<Product> products) throws IOException, ClassNotFoundException {
         List<String> encodedImagesList = new ArrayList<>();
-
-        for (Product product : activeProducts) {
+        for (Product product : products) {
             List<byte[]> imageDataList = serializeAndDeserialize.deserializeImageBlob(product.getImageBlob());
             String encodedImage = Base64.getEncoder().encodeToString(imageDataList.get(0));
             encodedImagesList.add(encodedImage);
         }
-        model.addAttribute("encodedImagesList", encodedImagesList);
-        return "Products/productViewByCategory";
+        return encodedImagesList;
     }
+
 }
