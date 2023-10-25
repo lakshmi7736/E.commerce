@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,16 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public void saveAllProducts(List<Product> products) {
         productRepository.saveAll(products);
+    }
+
+    @Override
+    public BigDecimal findMaxActualPrice() {
+        return productRepository.findMaxActualPrice();
+    }
+
+    @Override
+    public List<Product> findProductsUnderPrice(BigDecimal minPrice,BigDecimal maxPrice) {
+        return productRepository.findByActualPriceBetween(minPrice,maxPrice);
     }
 
 }

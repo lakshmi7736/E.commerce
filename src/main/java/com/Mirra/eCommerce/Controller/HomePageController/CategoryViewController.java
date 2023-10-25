@@ -13,8 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -22,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-//@RequestMapping("/category/{categoryId}")
+@RequestMapping("/category")
 public class CategoryViewController {
 
     @Autowired
@@ -40,7 +42,7 @@ public class CategoryViewController {
 
 
 
-    @GetMapping("/category/{Id}/{type}")
+    @GetMapping("/{Id}/{type}")
     public String viewCategory(@PathVariable Long Id, @PathVariable String type, Model model) throws IOException, ClassNotFoundException {
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
@@ -66,6 +68,8 @@ public class CategoryViewController {
         Collections.reverse(activeProducts);
 
         List<String> encodedImagesList = encodeImages(activeProducts);
+        BigDecimal maxPrice=productsService.findMaxActualPrice();
+        model.addAttribute("maxPrice",maxPrice);
 
         model.addAttribute("products", activeProducts);
         model.addAttribute("encodedImagesList", encodedImagesList);
@@ -81,6 +85,28 @@ public class CategoryViewController {
             encodedImagesList.add(encodedImage);
         }
         return encodedImagesList;
+    }
+
+
+    @GetMapping("/filter/{minAmount}/{maxAmount}")
+    public String filterByAmount(@PathVariable(name = "minAmount") BigDecimal minPrice, @PathVariable("maxAmount") BigDecimal maxPrice, Model model) throws IOException, ClassNotFoundException {
+
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
+
+        List<SubCategory> subCategories= subCategoryService.getAllSubCategories();
+        model.addAttribute("subCategories",subCategories);
+
+        List<Product> products=productsService.findProductsUnderPrice(minPrice,maxPrice);
+        model.addAttribute("products", products);
+
+
+        BigDecimal maxAmount=productsService.findMaxActualPrice();
+        model.addAttribute("maxPrice",maxAmount);
+
+        List<String> encodedImagesList = encodeImages(products);
+        model.addAttribute("encodedImagesList", encodedImagesList);
+        return "Products/productViewByCategory";
     }
 
 }
