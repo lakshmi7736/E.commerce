@@ -6,6 +6,7 @@ import com.Mirra.eCommerce.Models.datas.SubCategory;
 import com.Mirra.eCommerce.Service.Category.CategoryService;
 import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeserialize;
 import com.Mirra.eCommerce.Service.Product.ProductService;
+import com.Mirra.eCommerce.Service.Product.ProductsAdditionalService;
 import com.Mirra.eCommerce.Service.SubCategory.SubCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,19 +37,21 @@ public class CategoryViewController {
     @Autowired
     private ProductService productsService;
 
+
+    @Autowired
+    private ProductsAdditionalService productsAdditionalService;
+
     @Autowired
     private SerializeAndDeserialize serializeAndDeserialize;
 
 
 
 
+
+
     @GetMapping("/{Id}/{type}")
     public String viewCategory(@PathVariable Long Id, @PathVariable String type, Model model) throws IOException, ClassNotFoundException {
-        List<Category> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
-
-        List<SubCategory> subCategories= subCategoryService.getAllSubCategories();
-        model.addAttribute("subCategories",subCategories);
+        commonCode(model);
 
         List<Product> products = new ArrayList<>();
 
@@ -61,21 +64,66 @@ public class CategoryViewController {
             return "errorView";
         }
 
-        // Filter and process products
         List<Product> activeProducts = products.stream()
                 .filter(Product::isActive)
                 .collect(Collectors.toList());
         Collections.reverse(activeProducts);
 
         List<String> encodedImagesList = encodeImages(activeProducts);
-        BigDecimal maxPrice=productsService.findMaxActualPrice();
-        model.addAttribute("maxPrice",maxPrice);
 
         model.addAttribute("products", activeProducts);
         model.addAttribute("encodedImagesList", encodedImagesList);
 
         return "Products/productViewByCategory";
     }
+
+    @GetMapping("/search")
+    public String searchProducts(@RequestParam("alphabet") String alphabet, Model model) throws IOException, ClassNotFoundException {
+        commonCode(model);
+
+        List<Product> products = productsAdditionalService.searchProducts(alphabet);
+
+        List<Product> activeProducts = products.stream()
+                .filter(Product::isActive)
+                .collect(Collectors.toList());
+        Collections.reverse(activeProducts);
+
+        List<String> encodedImagesList = encodeImages(activeProducts);
+
+        model.addAttribute("products", activeProducts);
+        model.addAttribute("encodedImagesList", encodedImagesList);
+
+        return "Products/productViewByCategory";
+    }
+
+
+    @GetMapping("/filter/{minAmount}/{maxAmount}")
+    public String filterByAmount(@PathVariable(name = "minAmount") BigDecimal minPrice, @PathVariable("maxAmount") BigDecimal maxPrice, Model model) throws IOException, ClassNotFoundException {
+
+
+        List<Product> products=productsAdditionalService.findProductsUnderPrice(minPrice,maxPrice);
+        model.addAttribute("products", products);
+
+        commonCode(model);
+
+
+        List<String> encodedImagesList = encodeImages(products);
+        model.addAttribute("encodedImagesList", encodedImagesList);
+        return "Products/productViewByCategory";
+    }
+
+
+    private void commonCode(Model model) {
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
+
+        List<SubCategory> subCategories = subCategoryService.getAllSubCategories();
+        model.addAttribute("subCategories", subCategories);
+
+        BigDecimal maxPrice = productsAdditionalService.findMaxActualPrice();
+        model.addAttribute("maxPrice", maxPrice);
+    }
+
 
     private List<String> encodeImages(List<Product> products) throws IOException, ClassNotFoundException {
         List<String> encodedImagesList = new ArrayList<>();
@@ -88,25 +136,5 @@ public class CategoryViewController {
     }
 
 
-    @GetMapping("/filter/{minAmount}/{maxAmount}")
-    public String filterByAmount(@PathVariable(name = "minAmount") BigDecimal minPrice, @PathVariable("maxAmount") BigDecimal maxPrice, Model model) throws IOException, ClassNotFoundException {
-
-        List<Category> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
-
-        List<SubCategory> subCategories= subCategoryService.getAllSubCategories();
-        model.addAttribute("subCategories",subCategories);
-
-        List<Product> products=productsService.findProductsUnderPrice(minPrice,maxPrice);
-        model.addAttribute("products", products);
-
-
-        BigDecimal maxAmount=productsService.findMaxActualPrice();
-        model.addAttribute("maxPrice",maxAmount);
-
-        List<String> encodedImagesList = encodeImages(products);
-        model.addAttribute("encodedImagesList", encodedImagesList);
-        return "Products/productViewByCategory";
-    }
 
 }

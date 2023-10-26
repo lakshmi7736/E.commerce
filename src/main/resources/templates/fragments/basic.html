@@ -617,7 +617,7 @@
             <div class="col-lg-12">
                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                 <div class="footer__copyright__text">
-                    <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
+                    <p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All rights reserved | This E-commerce is made with <i class="fa fa-heart" aria-hidden="true"></i> for <a href="https://colorlib.com" target="_blank">Bee&Baa</a></p>
                 </div>
                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
             </div>
@@ -630,12 +630,14 @@
 <div class="search-model" data-th-fragment="search">
     <div class="h-100 d-flex align-items-center justify-content-center">
         <div class="search-close-switch">+</div>
-        <form class="search-model-form">
-            <input type="text" id="search-input" placeholder="Search here.....">
+        <form class="search-model-form" action="/category/search" method="get">
+            <input type="text" id="search-input" name="alphabet" placeholder="Search here.....">
+            <button type="submit">Search</button>
         </form>
     </div>
 </div>
 <!-- Search End -->
+
 
 <!-- Js Plugins -->
 <div data-th-fragment="script" data-th-remove="tag">
@@ -652,6 +654,8 @@
 <script src="/frontEnd/js/owl.carousel.min.js"></script>
 <script src="/frontEnd/js/jquery.nicescroll.min.js"></script>
 <script src="/frontEnd/js/main.js"></script>
+
+<!--    add to wish-list-->
  <script>
 $(document).ready(function () {
     $(".add-to-wishlist").click(function () {
@@ -684,6 +688,8 @@ $(document).ready(function () {
     });
 });
 </script>
+
+<!--    add to cart-list-->
     <script>$(document).ready(function () {
     $(".add-to-cartlist").click(function () {
         var productId = parseInt($(this).data("product-id")); // Parse as integer

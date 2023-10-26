@@ -56,14 +56,6 @@ public class ProductServiceImpl implements ProductService{
         productRepository.saveAll(products);
     }
 
-    @Override
-    public BigDecimal findMaxActualPrice() {
-        return productRepository.findMaxActualPrice();
-    }
 
-    @Override
-    public List<Product> findProductsUnderPrice(BigDecimal minPrice,BigDecimal maxPrice) {
-        return productRepository.findByActualPriceBetween(minPrice,maxPrice);
-    }
 
 }

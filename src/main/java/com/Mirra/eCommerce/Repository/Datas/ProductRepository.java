@@ -19,4 +19,6 @@ public interface ProductRepository  extends JpaRepository<Product,Long> {
     BigDecimal findMaxActualPrice();
 
     List<Product> findByActualPriceBetween(BigDecimal minPrice,BigDecimal maxPrice);
+
+    List<Product> findByNameContaining(String search);
 }

@@ -21,8 +21,5 @@ public interface ProductService {
 
     public void saveAllProducts(List<Product> products);
 
-    public BigDecimal findMaxActualPrice();
-
-    public List<Product> findProductsUnderPrice(BigDecimal minPrice,BigDecimal maxPrice);
 
 }
