@@ -1,6 +1,7 @@
 package com.Mirra.eCommerce.Service.SubCategory;
 
 import com.Mirra.eCommerce.Models.datas.Category;
+import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Models.datas.SubCategory;
 
 import java.util.List;
@@ -21,5 +22,7 @@ public interface SubCategoryService {
     public SubCategory updateSubCategory(Long id, SubCategory subCategory);
 
     public SubCategory getSubCategoryById(Long subCategoryId);
+
+
 
 }

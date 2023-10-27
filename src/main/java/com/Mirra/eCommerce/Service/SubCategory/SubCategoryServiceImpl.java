@@ -1,6 +1,7 @@
 package com.Mirra.eCommerce.Service.SubCategory;
 
 import com.Mirra.eCommerce.Models.datas.Category;
+import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Models.datas.SubCategory;
 import com.Mirra.eCommerce.Repository.Datas.CategoryRepository;
 import com.Mirra.eCommerce.Repository.Datas.SubCategoryRepository;
@@ -71,6 +72,8 @@ public class SubCategoryServiceImpl implements SubCategoryService{
     public SubCategory getSubCategoryById(Long subCategoryId) {
         return subCategoryRepository.findById(subCategoryId).orElse(null);
     }
+
+
 
 
 }
