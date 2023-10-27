@@ -19,7 +19,6 @@ public class ProductReviewServiceImpl implements ProductReviewService{
 
     @Override
     public List<ProductReview> getReviewsByProductId(Long productId) {
-        System.out.println("INSIDE SERVISE TO GET LIST WITH PRODUCT ID"+productId);
         // Use the productReviewRepository to find reviews by product ID
         return productReviewRepository.findByProductId(productId);
     }

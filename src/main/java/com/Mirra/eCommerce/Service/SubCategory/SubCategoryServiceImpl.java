@@ -51,7 +51,6 @@ public class SubCategoryServiceImpl implements SubCategoryService{
     @Override
     public SubCategory updateSubCategory(Long id, SubCategory subCategory) {
         SubCategory sr = subCategoryRepository.findById(id).orElse(null);
-        System.out.println("BEFORE EDIT " + sr);
 
         if (sr != null) {
             sr.setName(subCategory.getName());

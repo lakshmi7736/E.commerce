@@ -59,6 +59,10 @@ public class CategoryViewController {
             products = productsService.getProductsByCategoryId(Id);
         } else if ("subCategory".equals(type)) {
             products = productsService.getProductsBySubCategoryId(Id);
+            for (Product product : products) {
+                System.out.println("Product ID: " + product.getId());
+                System.out.println("Product Name: " + product.getName());
+            }
         } else {
             // Handle invalid 'type' parameter, perhaps by returning an error view
             return "errorView";

@@ -35,6 +35,7 @@ public class ProductOffer {
         public void checkExpirationDate() {
         LocalDate currentDate = LocalDate.now();
         if (expirationDate != null && currentDate.isAfter(expirationDate)) {
+            product.setMyPrice(BigDecimal.ZERO);
             // If the expiration date is in the past, set discountPrice to 0
             discountPrice = null;
         }

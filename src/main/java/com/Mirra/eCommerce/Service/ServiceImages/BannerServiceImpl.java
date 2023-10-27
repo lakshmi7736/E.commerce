@@ -25,7 +25,6 @@ public class BannerServiceImpl implements BannerService{
 
     @Override
     public void addBanner(BannerDto bannerDto) {
-        System.out.println("inside banner service");
         byte[] imageData = null;
         if (bannerDto.getImageData() != null) {
             imageData = Base64.getDecoder().decode(bannerDto.getImageData());

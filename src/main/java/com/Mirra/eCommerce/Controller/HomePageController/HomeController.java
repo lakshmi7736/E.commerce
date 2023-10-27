@@ -6,14 +6,12 @@ import com.Mirra.eCommerce.Models.ServiceImages.Banner;
 import com.Mirra.eCommerce.Models.ServiceImages.Instagram;
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.User;
-import com.Mirra.eCommerce.Models.datas.Category;
-import com.Mirra.eCommerce.Models.datas.CategoryOffer;
-import com.Mirra.eCommerce.Models.datas.Product;
-import com.Mirra.eCommerce.Models.datas.ProductReview;
+import com.Mirra.eCommerce.Models.datas.*;
 import com.Mirra.eCommerce.Service.Category.CategoryOfferService;
 import com.Mirra.eCommerce.Service.Category.CategoryService;
 import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeserialize;
 import com.Mirra.eCommerce.Service.Product.CalculateAverageRatingService;
+import com.Mirra.eCommerce.Service.Product.ProductOfferService;
 import com.Mirra.eCommerce.Service.Product.ProductReviewService;
 import com.Mirra.eCommerce.Service.Product.ProductService;
 import com.Mirra.eCommerce.Service.ServiceImages.BannerService;
@@ -63,10 +61,12 @@ public class HomeController {
     @Autowired
     private CategoryOfferService categoryOfferService;
 
+    @Autowired
+    private ProductOfferService productOfferService;
+
 
     @GetMapping
     public String index(Model model, HttpSession session) throws IOException, ClassNotFoundException {
-        System.out.println("inisde hoem page");
 
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
@@ -75,8 +75,9 @@ public class HomeController {
         Banner existingBanner = bannerService.getExistingBanner();
         model.addAttribute("banner", existingBanner);
 
-        List<CategoryOffer> categoryOffers=categoryOfferService.findAll();
-        model.addAttribute("categoryOffers",categoryOffers);
+        List<CategoryOffer> categoryOffers = categoryOfferService.findAll();
+        model.addAttribute("categoryOffers", categoryOffers);
+
 
 
         List<Product> products = productsService.getAllProducts();

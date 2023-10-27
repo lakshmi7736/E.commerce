@@ -10,7 +10,6 @@ import java.time.LocalDate;
 public class ProductUpdateRequest {
     private String name;
     private String description;
-    private BigDecimal productDiscountPrice;
     private BigDecimal actualPrice;
     private LocalDate expirationDate;
     private int updateStock;

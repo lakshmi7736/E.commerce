@@ -56,6 +56,7 @@
                                         <div class="card-body">
                                             <ul>
                                                 <li th:each="subCategory : ${subCategories}" th:if="${subCategory.parentCategory.id == category.id}" >
+
                                                     <a th:href="@{/category/{Id}/{type} (Id=${subCategory.id},type='subCategory')}" th:text="${subCategory.name}"></a>
                                                 </li>
                                             </ul>
@@ -127,7 +128,7 @@
                                     <li><button class="add-to-cartlist" th:data-product-id="${product.id}" style="background: none; border: none;">
                                         <a><span class="icon_bag_alt"></span></a></button>
                                     </li>
-                                    <li><a th:href="@{/product/{productId}(productId=${product.id})}"><span class="icon_bag_alt"></span></a></li>
+                                    <li><a th:href="@{/productView/{productId}(productId=${product.id})}"><span class="fa fa-eye"></span></a></li>
                                 </ul>
 
                             </div>
@@ -138,7 +139,45 @@
                                        class="fa"
                                        th:classappend="${starNumber <= product.averageRating ? 'fa-star' : 'fa-star-o'}">&nbsp;&nbsp;</i>
                                 </div>
-                                <div class="product__price" th:text="${product.actualPrice}"></div>
+
+                                <div class="product__price" th:if="${product.myPrice.compareTo(0.00) == 0}" th:text="${product.actualPrice}"></div>
+
+                                <div th:unless="${product.myPrice.compareTo(0.00) == 0}" >
+                                    <!-- Use inline CSS for the style -->
+                                    <div style="display: inline;">
+                                        <del th:text="${product.actualPrice}"></del>
+<!--                                        <p style="display: inline; margin-left: 5px;" th:text="${product.productOffer.discountPrice + '% OFF'}"></p>-->
+                                    </div>
+                                    <!-- Use inline CSS for the style -->
+                                    <div style="display: block;">
+                                        <p class="product__price" th:text="${product.myPrice}"></p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+<!--                    pagination-->
+
+
+<!--                    <div class="col-lg-12 text-center">-->
+<!--                        <div class="pagination__option">-->
+<!--                            <a href="tata">1</a>-->
+<!--                            <a href="#">2</a>-->
+<!--                            <a href="#">3</a>-->
+<!--                            <a href="#"><i class="fa fa-angle-right"></i></a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shop Section End -->
+
+
 <!--                                <div th:unless="${product.discountPrice == null}">-->
 <!--                                    &lt;!&ndash; Use inline CSS for the style &ndash;&gt;-->
 <!--                                    <div style="display: inline;">-->
@@ -150,24 +189,6 @@
 <!--                                        <p class="product__price" th:text="${product.actualPrice}"></p>-->
 <!--                                    </div>-->
 <!--                                </div>-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 text-center">
-                        <div class="pagination__option">
-                            <a href="#">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <a href="#"><i class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Shop Section End -->
 
 <!-- Instagram Begin -->
 <div data-th-replace="~{fragments/basic::instagram}" ></div>

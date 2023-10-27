@@ -7,6 +7,8 @@ import com.Mirra.eCommerce.Repository.Offer.ProductOfferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductOfferServiceImpl implements ProductOfferService{
 
@@ -53,4 +55,6 @@ public class ProductOfferServiceImpl implements ProductOfferService{
     public void deleteProductOfferById(int id) {
         productOfferRepo.deleteById(id);
     }
+
+
 }

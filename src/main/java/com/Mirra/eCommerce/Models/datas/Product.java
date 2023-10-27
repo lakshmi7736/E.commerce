@@ -61,6 +61,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<ProductReview> productReviews;
 
+    @OneToOne(mappedBy = "product")
+    private ProductOffer productOffer;
+
+
 
 
     @Transient // Mark this field as transient to exclude it from database mapping

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+
 
 @Controller
 @RequestMapping("/admin/product")
@@ -27,6 +29,8 @@ public class ProductOfferController {
 
     @Autowired
     private ProductOfferService productOfferService;
+
+//    get offer form
 
     @GetMapping("/offer/{productId}")
     public String categoryOffer(@PathVariable Long productId, Model model) {
@@ -44,6 +48,8 @@ public class ProductOfferController {
     }
 
 
+//    add offer
+
     @PostMapping("/offer/{productId}")
     public String addProductOffer(@PathVariable Long productId,@ModelAttribute("newOffer") ProductOfferDto productOfferDto, Model model) {
 
@@ -52,6 +58,8 @@ public class ProductOfferController {
             // Handle product not found case, e.g., redirect to an error page
             return "error";
         }
+
+        calculateDiscountedPrice(product, productOfferDto.getDiscountPrice());
         // Call your service to add the offer
         productOfferService.saveProductOffer(productId,productOfferDto);
 
@@ -59,6 +67,8 @@ public class ProductOfferController {
         return "redirect:/admin/product"; // Replace with the URL where you want to redirect after a successful submission
     }
 
+
+//    delete offer
 
     @GetMapping("/deleteOffer/{productOfferId}")
     public String deleteProduct(@PathVariable("productOfferId")  int id, RedirectAttributes ra) {
@@ -68,11 +78,25 @@ public class ProductOfferController {
             // Handle product not found case, e.g., redirect to an error page
             return "error";
         }
+        ProductOffer productInOffer=productOfferService.findById(id);
+        Product offerdProduct=productsService.getProductById(productInOffer.getProduct().getId());
+        offerdProduct.setMyPrice(BigDecimal.ZERO);
+        productsService.saveProduct(offerdProduct);
         // Delete the product from the database
         productOfferService.deleteProductOfferById(id);
         ra.addFlashAttribute("message", "The  " + product.getProduct().getName()+ "'s offer has been deleted");
 
         return "redirect:/admin/product/productList";
+    }
+
+
+
+    // Helper methods
+    private void calculateDiscountedPrice(Product product, BigDecimal discountPercentage) {
+        BigDecimal discountAmount = product.getActualPrice().multiply(discountPercentage.divide(BigDecimal.valueOf(100)));
+        BigDecimal discountedPrice = product.getActualPrice().subtract(discountAmount);
+        product.setMyPrice(discountedPrice);
+        productsService.saveProduct(product);
     }
 
 }

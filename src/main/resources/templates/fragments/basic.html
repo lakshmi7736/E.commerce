@@ -219,18 +219,19 @@
                                class="fa"
                                th:classappend="${starNumber <= product.averageRating ? 'fa-star' : 'fa-star-o'}">&nbsp;&nbsp;</i>
                         </div>
-                        <div class="product__price" th:text="${product.actualPrice}"></div>
-<!--                        <div th:unless="${product.discountPrice == null}">-->
-<!--                            &lt;!&ndash; Use inline CSS for the style &ndash;&gt;-->
-<!--                            <div style="display: inline;">-->
-<!--                                <del th:text="${product.myPrice}"></del>-->
-<!--                                <p style="display: inline; margin-left: 5px;" th:text="${product.discountPrice + '% OFF'}"></p>-->
-<!--                            </div>-->
-<!--                            &lt;!&ndash; Use inline CSS for the style &ndash;&gt;-->
-<!--                            <div style="display: block;">-->
-<!--                                <p class="product__price" th:text="${product.actualPrice}"></p>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div class="product__price" th:if="${product.myPrice.compareTo(0.00) == 0}" th:text="${product.actualPrice}"></div>
+
+                        <div th:unless="${product.myPrice.compareTo(0.00) == 0}" >
+                            <!-- Use inline CSS for the style -->
+                            <div style="display: inline;">
+                                <del th:text="${product.actualPrice}"></del>
+                                <!--                                        <p style="display: inline; margin-left: 5px;" th:text="${product.productOffer.discountPrice + '% OFF'}"></p>-->
+                            </div>
+                            <!-- Use inline CSS for the style -->
+                            <div style="display: block;">
+                                <p class="product__price" th:text="${product.myPrice}"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

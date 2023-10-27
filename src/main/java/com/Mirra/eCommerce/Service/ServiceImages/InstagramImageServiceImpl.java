@@ -22,7 +22,6 @@ public class InstagramImageServiceImpl implements InstagramImageService{
             imageData = Base64.getDecoder().decode(instagramDto.getImageData());
         }
         if(instagramDto!=null){
-            System.out.println("tadada "+instagramDto.getId());
             Instagram instagram=Instagram.builder()
                     .id(instagramDto.getId())
                     .instagramId(instagramDto.getInstagramId())

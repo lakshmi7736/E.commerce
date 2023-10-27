@@ -122,7 +122,7 @@ public class ProductController {
         product.setImageBlob(imageBlob);
         product.setStock(product.getStock() + product.getUpdateStock());
         product.setActive(true);
-        product.setMyPrice(product.getActualPrice());
+        product.setMyPrice(BigDecimal.ZERO);
         productsService.saveProduct(product);
     }
 
@@ -258,16 +258,13 @@ public class ProductController {
                 return "error"; // Handle sub-category not found
             }
 
-            if (request.getProductDiscountPrice() != null) {
-                calculateDiscountedPrice(product, request.getProductDiscountPrice());
-            } else {
-                resetPrice(product, request.getActualPrice());
-            }
 
-            updateProductDetails(product, request, newSubCategory);
+             resetPrice(product, request.getActualPrice());
 
 
             updateStockInformation(product, request);
+
+            updateProductDetails(product, request, newSubCategory);
 
 
             updateImages(product, request.getNewImages());
@@ -285,17 +282,9 @@ public class ProductController {
     }
 
 
-    // Helper methods
-    private void calculateDiscountedPrice(Product product, BigDecimal discountPercentage) {
-        BigDecimal discountAmount = product.getActualPrice().multiply(discountPercentage.divide(BigDecimal.valueOf(100)));
-        BigDecimal discountedPrice = product.getActualPrice().subtract(discountAmount);
-        product.setActualPrice(discountedPrice);
-        product.setMyPrice(product.getActualPrice());
-    }
-
     private void resetPrice(Product product, BigDecimal actualPrice) {
         product.setActualPrice(actualPrice);
-        product.setMyPrice(actualPrice);
+        product.setMyPrice(BigDecimal.ZERO);
     }
 
     private void updateProductDetails(Product product, ProductUpdateRequest request, SubCategory newSubCategory) {
@@ -312,6 +301,7 @@ public class ProductController {
     private void updateStockInformation(Product product, ProductUpdateRequest request) {
         if (request.getUpdateStock() != 0) {
             product.updateStock(request.getUpdateStock());
+            product.currentStock(product.getStock());
         }
     }
 
