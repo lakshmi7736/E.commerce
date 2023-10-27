@@ -66,11 +66,13 @@ public class ProductController {
     }
 
 //    create product
-    @PostMapping
+    @PostMapping("/add")
     public String saveProduct(@Valid @ModelAttribute Product product,
                               BindingResult bindingResult,
                               @RequestParam("files") MultipartFile[] files,
                               Model model) {
+        System.out.println("inside controller of post product");
+
         if (bindingResult.hasErrors()) {
             // Handle validation errors (e.g., show error messages)
             return handleValidationErrors(model);
@@ -81,7 +83,8 @@ public class ProductController {
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 if (file.getSize() > MAX_IMAGE_SIZE) {
-                    return handleImageSizeExceeded();
+                    model.addAttribute("imageSizeError", "Image size exceeds the allowed limit.");
+                    return "Admin/dashBoard/products/products";
                 }
 
                 try {
@@ -126,11 +129,6 @@ public class ProductController {
         productsService.saveProduct(product);
     }
 
-    private String handleImageSizeExceeded() {
-        // Handle large image size, e.g., show an error message to the user
-        // or resize/compress the image before saving
-        return "redirect:/product?error=Image size exceeds the allowed limit.";
-    }
 
     private void handleImageProcessingError(Exception e) {
         // Handle the exception (e.g., logging, displaying an error message)

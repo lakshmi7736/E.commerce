@@ -76,20 +76,20 @@
                 <nav class="header__menu">
                     <ul>
                         <li class="active"><a th:href="@{/}">Home</a></li>
-                        <li th:each="category, iterStat : ${categories}" th:if="${iterStat.index <= 2 }">
+                        <li th:each="category : ${categories}">
                             <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{Id}/{type}(Id=${category.id},type='category')}"></a>
 
                         </li>
-                        <li>
-                            <a href="#">Pages</a>
-                            <ul class="dropdown">
-                                <li><a th:href="@{/product-details}">Product Details</a></li>
-                                <li><a th:href="@{/shop-cart}">Shop Cart</a></li>
-                                <li><a th:href="@{/checkout}">Checkout</a></li>
-                                <li><a th:href="@{/blog-details}">Blog Details</a></li>
-                            </ul>
-                        </li>
-                        <li><a th:href="@{/blog}">Blog</a></li>
+<!--                        <li>-->
+<!--                            <a href="#">Pages</a>-->
+<!--                            <ul class="dropdown">-->
+<!--                                <li><a th:href="@{/product-details}">Product Details</a></li>-->
+<!--                                <li><a th:href="@{/shop-cart}">Shop Cart</a></li>-->
+<!--                                <li><a th:href="@{/checkout}">Checkout</a></li>-->
+<!--                                <li><a th:href="@{/blog-details}">Blog Details</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li><a th:href="@{/blog}">Blog</a></li>-->
                         <li><a th:href="@{/contact}">Contact</a></li>
                         <li th:if="${session.jwtResponse != null}"> <a href=""> <i class="fa fa-user"></i><span th:text="${#strings.substringBefore(session.jwtResponse.name, ' ')}"></span>
                         </a>

@@ -20,7 +20,7 @@
                                 </div>
                                 <div class="table-responsive"> <!-- Added table-responsive class -->
 
-                                    <form th:action="@{/admin/product}" th:object="${product}" method="post" enctype="multipart/form-data">
+                                    <form th:action="@{/admin/product/add}" th:object="${product}" method="post" enctype="multipart/form-data">
                                         <h1>Add Product</h1>
                                         <div class="mb-3">
                                             <label for="productName">Product Name:</label>
@@ -73,6 +73,9 @@
                                         <div class="mb-3">
                                             <label for="imageFiles">Select Images:</label>
                                             <input type="file" id="imageFiles" name="files" multiple onchange="previewImages(this);" accept="image/*"  /><br/>
+                                        </div>
+                                        <div th:if="${imageSizeError}" class="alert alert-danger">
+                                            <p th:text="${imageSizeError}"></p>
                                         </div>
 
                                         <div id="imagePreviews" style="max-width: 300px; display: flex; flex-wrap: wrap;"></div>
