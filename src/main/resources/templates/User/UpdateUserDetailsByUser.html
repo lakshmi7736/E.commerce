@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-replace="~{fragments/adminBasic :: head}">
+</head>
+
+<body>
+<!--  Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+    <div
+            class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center w-100">
+            <div class="row justify-content-center w-100">
+                <div class="col-md-8 col-lg-6 col-xxl-3">
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <a href="Admin/index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                            </a>
+                            <p class="text-center">Register to Bee&Baa</p>
+                            <form th:action="@{'/user/updateUser/'+ ${userDetails.id}}" th:object="${userDetails}" method="post">
+
+                                <div class="mb-3">
+                                    <label>Enter Full Name</label>
+                                    <input type="text" name="name" class="form-control" required th:value="${userDetails.name}">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+                                </div>
+                                <div class="mb-3">
+                                    <label>Enter Email</label>
+                                    <input type="text" name="email" class="form-control" required th:value="${userDetails.email}">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Enter Mobile Number</label>
+                                    <input type="text" name="mobileNo" class="form-control" required th:value="${userDetails.mobileNo}">
+                                    <p class="text-danger" th:if="${#fields.hasErrors('mobileNo')}" th:errors="*{mobileNo}"></p>
+
+                                </div>
+
+                                <input type="hidden" name="referrer" th:value="${referrerUrl}" />
+
+                                <button class="btn btn-primary col-md-12">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+</body>
+
+</html>

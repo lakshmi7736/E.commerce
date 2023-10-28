@@ -2,6 +2,7 @@ package com.Mirra.eCommerce.Handler;
 
 
 import com.Mirra.eCommerce.Models.Users.User;
+import com.Mirra.eCommerce.Service.User.UserAdditionalService;
 import com.Mirra.eCommerce.Service.User.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserAdditionalService userAdditionalService;
 
     @Autowired
     public LoginFailureHandler(UserService userService) {
@@ -36,14 +39,14 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         if (user != null) {
             if (user.isEnable() && user.isAccountNonLocked()) {
                 if (user.getFailedAttempt() < 2) {
-                    userService.increaseFailedAttempts(user);
+                    userAdditionalService.increaseFailedAttempts(user);
                 } else {
-                    userService.lockUser(user);
+                    userAdditionalService.lockUser(user);
                     exception = new LockedException("Your account has been locked due to too many login attempts. Please try again after one minute.");
                     request.getSession().setAttribute("lockedExceptionMessage", exception.getMessage());
                 }
             } else if (!user.isAccountNonLocked()) {
-                boolean unlocked = userService.unlockUser(user);
+                boolean unlocked = userAdditionalService.unlockUser(user);
                 if (unlocked) {
                     exception = new LockedException("Your account has been unlocked. Please try to login again.");
                     request.getSession().setAttribute("lockedExceptionMessage", exception.getMessage());

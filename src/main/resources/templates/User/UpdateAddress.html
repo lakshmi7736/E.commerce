@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-replace="~{fragments/adminBasic :: head}">
+</head>
+
+<body>
+<!--  Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+  <div
+          class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center w-100">
+      <div class="row justify-content-center w-100">
+        <div class="col-md-8 col-lg-6 col-xxl-3">
+          <div class="card mb-0">
+            <div class="card-body">
+              <a href="Admin/index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+              </a>
+              <p class="text-center">Register to Bee&Baa</p>
+              <form th:action="@{'/user/editAddress/'+ ${updateAddress.id}}" th:object="${updateAddress}" method="post">
+                <div class="mb-3">
+                  <label for="country">Country</label>
+                  <input type="text" id="country" name="country" class="form-control"   th:value="${updateAddress.country}" required>
+                </div>
+                <div class="mb-3">
+                  <label for="state">State</label>
+                  <input type="text" id="state" name="state" class="form-control" th:value="${updateAddress.state}" required>
+                </div>
+                <div class="mb-3">
+                  <label for="city">City</label>
+                  <input type="text" id="city" name="city" class="form-control" th:value="${updateAddress.city}" required>
+                </div>
+                <div class="mb-3">
+                  <label for="address">Address</label>
+                  <input type="text" id="address" name="address" class="form-control" th:value="${updateAddress.address}"  required>
+                </div>
+
+                <div class="mb-3">
+                  <label for="postcode">Postcode/Zip</label>
+                  <input type="text" id="postcode" name="postcode" class="form-control" th:value="${updateAddress.postcode}" required>
+                </div>
+                <input type="hidden" name="referrer" th:value="${referrerUrl}" />
+
+                <button class="btn btn-primary col-md-12" type="submit">Update Address</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+</body>
+
+</html>

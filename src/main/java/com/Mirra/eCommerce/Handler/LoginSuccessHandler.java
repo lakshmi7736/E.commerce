@@ -9,6 +9,7 @@ import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Token.RefreshToken;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Service.Token.RefreshTokenService;
+import com.Mirra.eCommerce.Service.User.UserAdditionalService;
 import com.Mirra.eCommerce.Service.User.UserService;
 
 
@@ -28,12 +29,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-	@Autowired
-	private UserService userService;
 
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private UserAdditionalService userAdditionalService;
 
 	@Autowired
 	private JwtHelper helper;
@@ -67,7 +69,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 
 		if (user.getFailedAttempt() > 0) {
-			userService.resetFailedAttempts(user.getEmail());
+			userAdditionalService.resetFailedAttempts(user.getEmail());
 		}
 		System.out.println("bububuu");
 

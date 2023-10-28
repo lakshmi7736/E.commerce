@@ -60,4 +60,21 @@ public class AddressServiceImpl implements AddressService{
     public List<Address> findAddressesByUserId(int userId) {
         return addressRepo.findByUser_Id(userId);
     }
+
+    @Override
+    public Address getAddressById(int addressId) {
+        // Use the repository to retrieve the address by its ID
+        return addressRepo.findById(addressId).orElse(null);
+    }
+
+    @Override
+    public void deleteAddress(Address address) {
+        address.setActive(false);
+        addressRepo.save(address);
+    }
+
+    @Override
+    public Address updateAddress(Address address) {
+        return addressRepo.save(address);
+    }
 }
