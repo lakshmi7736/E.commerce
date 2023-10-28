@@ -24,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -87,6 +88,7 @@ public class HomeController {
                 .filter(product -> product.isActive())
                 .collect(Collectors.toList());
 
+
         model.addAttribute("products", activeProducts);
 
         List<Instagram> instagrams=instagramImageService.findAll();
@@ -103,7 +105,21 @@ public class HomeController {
             List<ProductReview> reviews = productReviewService.getReviewsByProductId(product.getId());
             double averageRating = calculateAverageRatingService.calculateAverageRating(reviews);
             product.setAverageRating(averageRating);
+
+
+            if(product.getProductOffer()!=null){
+                product.getProductOffer().checkExpirationDate();
+            }
+            if(product.getCategory().getCategoryOffer()!=null){
+                product.getCategory().checkExpirationDate();
+                if(product.getCategory().getCategoryOffer().getDiscountPrice()==null){
+                    product.setMyPrice(BigDecimal.ZERO);
+                }
+            }
+
+
         }
+
 
         // Retrieve the wishlist count for the logged-in user
         int wishListCount = 0;

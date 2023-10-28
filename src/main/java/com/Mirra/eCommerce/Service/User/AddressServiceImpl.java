@@ -9,6 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AddressServiceImpl implements AddressService{
 
@@ -51,5 +53,11 @@ public class AddressServiceImpl implements AddressService{
                 .state(addressDto.getState())
                 .country(addressDto.getCountry())
                 .build();
+    }
+
+
+    @Override
+    public List<Address> findAddressesByUserId(int userId) {
+        return addressRepo.findByUser_Id(userId);
     }
 }

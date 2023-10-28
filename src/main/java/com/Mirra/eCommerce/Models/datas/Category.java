@@ -29,6 +29,9 @@ public class Category {
 
     private boolean active;
 
+    @OneToOne(mappedBy = "category")
+    private CategoryOffer categoryOffer;
+
 
     @Lob
     @Column(columnDefinition = "LONGBLOB",length = Integer.MAX_VALUE)
@@ -41,6 +44,14 @@ public class Category {
             return Base64.getEncoder().encodeToString(image);
         }
         return null;
+    }
+
+    public void checkExpirationDate() {
+        LocalDate currentDate = LocalDate.now();
+        if (categoryOffer.getExpirationDate() != null && currentDate.isAfter(categoryOffer.getExpirationDate())) {
+            // If the expiration date is in the past, set discountPrice to 0
+            categoryOffer.setDiscountPrice(null);
+        }
     }
 
 

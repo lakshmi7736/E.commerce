@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -59,10 +60,7 @@ public class CategoryViewController {
             products = productsService.getProductsByCategoryId(Id);
         } else if ("subCategory".equals(type)) {
             products = productsService.getProductsBySubCategoryId(Id);
-            for (Product product : products) {
-                System.out.println("Product ID: " + product.getId());
-                System.out.println("Product Name: " + product.getName());
-            }
+
         } else {
             // Handle invalid 'type' parameter, perhaps by returning an error view
             return "errorView";
@@ -80,6 +78,8 @@ public class CategoryViewController {
 
         return "Products/productViewByCategory";
     }
+
+
 
     @GetMapping("/search")
     public String searchProducts(@RequestParam("alphabet") String alphabet, Model model) throws IOException, ClassNotFoundException {
@@ -135,6 +135,15 @@ public class CategoryViewController {
             List<byte[]> imageDataList = serializeAndDeserialize.deserializeImageBlob(product.getImageBlob());
             String encodedImage = Base64.getEncoder().encodeToString(imageDataList.get(0));
             encodedImagesList.add(encodedImage);
+            if(product.getProductOffer()!=null){
+                product.getProductOffer().checkExpirationDate();
+            }
+            if(product.getCategory().getCategoryOffer()!=null){
+                product.getCategory().checkExpirationDate();
+                if(product.getCategory().getCategoryOffer().getDiscountPrice()==null){
+                    product.setMyPrice(BigDecimal.ZERO);
+                }
+            }
         }
         return encodedImagesList;
     }

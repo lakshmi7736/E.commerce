@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -73,6 +74,15 @@ public class ProductViewController {
             List<ProductReview> reviews = productReviewService.getReviewsByProductId(product.getId());
             double averageRating = calculateAverageRatingService.calculateAverageRating(reviews);
             product.setAverageRating(averageRating);
+            if(product.getProductOffer()!=null){
+                product.getProductOffer().checkExpirationDate();
+            }
+            if(product.getCategory().getCategoryOffer()!=null){
+                product.getCategory().checkExpirationDate();
+                if(product.getCategory().getCategoryOffer().getDiscountPrice()==null){
+                    product.setMyPrice(BigDecimal.ZERO);
+                }
+            }
         }
         model.addAttribute("encodedRelatedImagesLists", encodedRelatedImagesLists);
 
