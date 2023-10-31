@@ -126,7 +126,9 @@ public class HomeController {
         int totalQuantity = 0; // Initialize totalQuantity here
 
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-        if (jwtResponse != null) {
+        if (jwtResponse == null) {
+            return "redirect:/signin";
+        }
             String username = jwtResponse.getUsername();
             User user = userService.findByEmail(username);
             if (user != null) {
@@ -145,7 +147,7 @@ public class HomeController {
 //                // Get the count of wishlist items for the logged-in user
 //                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
             }
-        }
+
 
 
         // Add the count of Cart and Wishlist
@@ -183,8 +185,9 @@ public class HomeController {
     @GetMapping("/signin")
     public String login(HttpSession session) {
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-        if(jwtResponse==null){
-            return "login";
+
+        if (jwtResponse == null) {
+            return "redirect:/signin";
         }
         else {
             return "redirect:/";

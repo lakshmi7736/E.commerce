@@ -26,4 +26,11 @@ public interface UserAdditionalService {
     List<User> getExpiredLockedUsers();
 
     List<User> findByRole();
+
+
+    public boolean isCurrentPasswordValid(User user, String currentPassword);
+
+    public void updateUserPassword(User user, String newPassword);
+
+
 }

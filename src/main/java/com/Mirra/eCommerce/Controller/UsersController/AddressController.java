@@ -40,12 +40,15 @@ public class AddressController {
 
         System.out.println("referal :"+referrer);
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-        if (jwtResponse != null) {
+
+        if (jwtResponse == null) {
+            return "redirect:/signin";
+        }
 
             String username = jwtResponse.getUsername();
 
             addressService.saveAddress(username, address);
-        }
+
 
         // Redirect back to the referrer URL
         return "redirect:" + referrer;

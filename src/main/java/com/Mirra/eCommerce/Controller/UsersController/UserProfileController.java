@@ -31,10 +31,15 @@ public class UserProfileController {
     @Autowired
     private AddressService addressService;
 
+
+//    show user profile
     @GetMapping("/profile")
     public String profile(Model model, HttpSession session) {
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-        if (jwtResponse != null) {
+
+        if (jwtResponse == null) {
+            return "redirect:/signin";
+        }
             String username = jwtResponse.getUsername();
             User user = userService.findByEmail(username);
 
@@ -47,23 +52,25 @@ public class UserProfileController {
 
             model.addAttribute("addresses", activeAddresses); // Add the list of active addresses to the model
             model.addAttribute("user", user); // Add the user object to the model
-        }else {
-            System.out.println("NULL");
-        }
+
         return "User/UserProfile";
     }
 
 
+
+
+
+//    to edit showimg details of user
     @GetMapping("/get/{id}")
     public String getUser(@PathVariable("id") Integer id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("userDetails", user); // Note the change in the attribute name
 
-        return "User/updateByUser";
+        return "User/UpdateUserDetailsByUser";
     }
 
 
-
+//    to update user details
     @PostMapping("/updateUser/{id}")
     public String updateUser(
             @PathVariable Integer id,
@@ -114,4 +121,49 @@ public class UserProfileController {
             return "user/updateByUser"; // Return to the same page with the name error message.
         }
     }
+
+
+//    to change password
+    @GetMapping("/getPass/{id}")
+    public String getUserPass(@PathVariable("id") Integer id, Model model) {
+        User user = userService.findById(id);
+        model.addAttribute("userDetails", user); // Note the change in the attribute name
+
+        return "User/ChangePassword";
+    }
+
+
+//    to save changed password
+    @PostMapping("/updateUserPass/{id}")
+    public String updateUserPassword(
+            @PathVariable Integer id,
+            RedirectAttributes ra,
+            @RequestParam("password") String password,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("rePassword") String rePassword,
+            Model model) {
+
+        // Retrieve the user from the database
+        User user = userService.findById(id);
+
+        // Check if the entered current password matches the user's password
+        if (!userAdditionalService.isCurrentPasswordValid(user, password)) {
+            ra.addFlashAttribute("error", "Current password is incorrect");
+            return "redirect:/user/getPass/" + id; // Redirect back to the form with an error message
+        }
+
+        // Check if the new password and re-entered password match
+        if (!newPassword.equals(rePassword)) {
+            ra.addFlashAttribute("error", "New passwords do not match");
+            return "redirect:/user/getPass/" + id; // Redirect back to the form with an error message
+        }
+
+        // Update the user's password
+        userAdditionalService.updateUserPassword(user, newPassword);
+
+        ra.addFlashAttribute("userMessage", "Password changed successfully.");
+
+        return "redirect:/user/profile";
+    }
+
 }

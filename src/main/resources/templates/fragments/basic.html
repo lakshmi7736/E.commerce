@@ -80,16 +80,6 @@
                             <a th:text="${#strings.arraySplit(category.name, ' ')[0]}" th:href="@{/category/{Id}/{type}(Id=${category.id},type='category')}"></a>
 
                         </li>
-<!--                        <li>-->
-<!--                            <a href="#">Pages</a>-->
-<!--                            <ul class="dropdown">-->
-<!--                                <li><a th:href="@{/product-details}">Product Details</a></li>-->
-<!--                                <li><a th:href="@{/shop-cart}">Shop Cart</a></li>-->
-<!--                                <li><a th:href="@{/checkout}">Checkout</a></li>-->
-<!--                                <li><a th:href="@{/blog-details}">Blog Details</a></li>-->
-<!--                            </ul>-->
-<!--                        </li>-->
-<!--                        <li><a th:href="@{/blog}">Blog</a></li>-->
                         <li><a th:href="@{/contact}">Contact</a></li>
                         <li th:if="${session.jwtResponse != null}"> <a href=""> <i class="fa fa-user"></i><span th:text="${#strings.substringBefore(session.jwtResponse.name, ' ')}"></span>
                         </a>
@@ -116,7 +106,7 @@
 
                         <!-- Conditionally render the heart icon -->
                         <li th:if="${session.jwtResponse != null}">
-                            <a th:href="@{/wishList}">
+                            <a th:href="@{/user/wishlist}">
                                 <span class="icon_heart_alt"></span>
                                 <div class="tip" th:text="${wishListCount}"></div>
                             </a>
@@ -186,12 +176,35 @@
                 </div>
             </div>
         </div>
+        <div th:if="${error != null}" class="alert alert-danger" id="error-alert">
+            <p th:text="${error}"></p>
+        </div>
+        <div th:if="${success != null}" class="alert alert-success" id="success-alert">
+            <p th:text="${success}"></p>
+        </div>
+
+        <script type="text/javascript">
+    // Function to hide alerts after 30 seconds
+    function hideAlerts() {
+        setTimeout(function () {
+            document.getElementById("error-alert").style.display = "none";
+            document.getElementById("success-alert").style.display = "none";
+        }, 3000); // 3 seconds in milliseconds
+    }
+
+    // Call the hideAlerts function when the page is loaded
+    window.onload = function () {
+        hideAlerts();
+    };
+</script>
+
         <div class="row property__gallery">
             <div class="col-lg-3 col-md-4 col-sm-6 mix" th:each="product, iterStat : ${products}" th:if="${iterStat.index} &lt; 8">
                 <div class="product__item">
                         <div class="product__item__pic"
                              th:style="'background-image: url(data:image/png;base64,' + ${encodedImagesList[__${iterStat.index}__]} + '); background-size: cover; background-position: center;'">
-                            <div class="label new">New</div>
+                            <div class="label new">New</div>   <!-- Add this block to display error message -->
+
                             <ul class="product__hover">
                                 <li>
                                     <a th:href="'data:image/png;base64,' + ${encodedImagesList[__${iterStat.index}__]}" class="image-popup">
@@ -200,9 +213,7 @@
                                 </li>
 
                                 <li>
-                                    <button class="add-to-wishlist" th:data-product-id="${product.id}" style="background: none; border: none;" >
-                                        <a><span class="icon_heart_alt"></span></a>
-                                    </button>
+                                        <a th:href="'/user/wishlist/add/' + ${product.id}" ><span class="icon_heart_alt"></span></a>
                                 </li>
 
                                 <!-- Inside the th:each loop for products -->
@@ -656,39 +667,6 @@
 <script src="/frontEnd/js/jquery.nicescroll.min.js"></script>
 <script src="/frontEnd/js/main.js"></script>
 
-<!--    add to wish-list-->
- <script>
-$(document).ready(function () {
-    $(".add-to-wishlist").click(function () {
-        var productId = parseInt($(this).data("product-id")); // Parse as integer
-        $.ajax({
-            type: "POST",
-            url: "/wishlist/add",
-            data: { productId: productId },
-            dataType: "json", // Specify the expected data type as JSON
-            success: function (response) {
-                console.log("Response from server:", response); // Log the entire JSON response
-
-                var message = response.message; // Extract the message from the JSON response
-
-                if (message === "Product added to wishlist.") {
-                    console.log("Product added successfully to your wishlist.");
-                    alert("Product added successfully to your wishlist.");
-                }
-                  // Perform a full page refresh
-                window.location.reload();
-            },
-            error: function (response) {
-                console.log("Error occurred.");
-                console.log(response);
-                alert(response.responseText);
-                  // Perform a full page refresh
-                window.location.reload();
-            }
-        });
-    });
-});
-</script>
 
 <!--    add to cart-list-->
     <script>$(document).ready(function () {

@@ -3,6 +3,7 @@ package com.Mirra.eCommerce.Service.User;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Repository.User.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,9 @@ public class UserAdditionalServiceImpl implements UserAdditionalService{
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
 
@@ -101,4 +105,24 @@ public class UserAdditionalServiceImpl implements UserAdditionalService{
     public List<User> findByRole() {
         return userRepo.findByRole("ROLE_USER");
     }
+
+    @Override
+    public boolean isCurrentPasswordValid(User user, String currentPassword) {
+        // Retrieve the user's hashed password from the database
+        String hashedPasswordFromDatabase = user.getPassword();
+
+        // Compare the entered current password with the stored hashed password
+        return passwordEncoder.matches(currentPassword, hashedPasswordFromDatabase);
+    }
+
+    @Override
+    public void updateUserPassword(User user, String newPassword) {
+        // Hash the new password
+        String hashedPassword = passwordEncoder.encode(newPassword);
+
+        // Update the user's password in the database
+        user.setPassword(hashedPassword);
+        userRepo.save(user);
+    }
+
 }
