@@ -10,12 +10,11 @@ import com.Mirra.eCommerce.Models.datas.*;
 import com.Mirra.eCommerce.Service.Category.CategoryOfferService;
 import com.Mirra.eCommerce.Service.Category.CategoryService;
 import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeserialize;
-import com.Mirra.eCommerce.Service.Product.CalculateAverageRatingService;
-import com.Mirra.eCommerce.Service.Product.ProductOfferService;
-import com.Mirra.eCommerce.Service.Product.ProductReviewService;
-import com.Mirra.eCommerce.Service.Product.ProductService;
+import com.Mirra.eCommerce.Service.Product.*;
 import com.Mirra.eCommerce.Service.ServiceImages.BannerService;
 import com.Mirra.eCommerce.Service.ServiceImages.InstagramImageService;
+import com.Mirra.eCommerce.Service.User.Related.CartlistService;
+import com.Mirra.eCommerce.Service.User.Related.WishlistService;
 import com.Mirra.eCommerce.Service.User.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +56,12 @@ public class HomeController {
     private BannerService bannerService;
 
     @Autowired
+    private CartlistService cartlistService;
+
+    @Autowired
+    private WishlistService wishlistService;
+
+    @Autowired
     private CalculateAverageRatingService calculateAverageRatingService;
 
     @Autowired
@@ -65,13 +70,13 @@ public class HomeController {
     @Autowired
     private ProductOfferService productOfferService;
 
+    @Autowired
+    private ProductsAdditionalService productsAdditionalService;
 
     @GetMapping
     public String index(Model model, HttpSession session) throws IOException, ClassNotFoundException {
-
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
-
 
         Banner existingBanner = bannerService.getExistingBanner();
         model.addAttribute("banner", existingBanner);
@@ -79,100 +84,46 @@ public class HomeController {
         List<CategoryOffer> categoryOffers = categoryOfferService.findAll();
         model.addAttribute("categoryOffers", categoryOffers);
 
-
-
-        List<Product> products = productsService.getAllProducts();
-        Collections.reverse(products);
-
-        List<Product> activeProducts = products.stream()
-                .filter(product -> product.isActive())
-                .collect(Collectors.toList());
-
-
+        List<Product> activeProducts = getActiveProducts(); // Define this method
         model.addAttribute("products", activeProducts);
 
-        List<Instagram> instagrams=instagramImageService.findAll();
-        model.addAttribute("instagrams",instagrams);
+        List<Instagram> instagrams = instagramImageService.findAll();
+        model.addAttribute("instagrams", instagrams);
 
+        List<String> encodedImagesList = productsAdditionalService.getEncodedImagesList(activeProducts);
+        model.addAttribute("encodedImagesList", encodedImagesList);
 
-        List<String> encodedImagesList = new ArrayList<>();
-        for (Product product : activeProducts) {
-            List<byte[]> imageDataList = serializeAndDeserialize.deserializeImageBlob(product.getImageBlob());
-            String encodedImage = Base64.getEncoder().encodeToString(imageDataList.get(0));
-            encodedImagesList.add(encodedImage);
-
-            // Calculate the average rating for each product and add it to the product object
-            List<ProductReview> reviews = productReviewService.getReviewsByProductId(product.getId());
-            double averageRating = calculateAverageRatingService.calculateAverageRating(reviews);
-            product.setAverageRating(averageRating);
-
-
-            if(product.getProductOffer()!=null){
-                product.getProductOffer().checkExpirationDate();
-            }
-            if(product.getCategory().getCategoryOffer()!=null){
-                product.getCategory().checkExpirationDate();
-                if(product.getCategory().getCategoryOffer().getDiscountPrice()==null){
-                    product.setMyPrice(BigDecimal.ZERO);
-                }
-            }
-
-
-        }
-
-
-        // Retrieve the wishlist count for the logged-in user
+        int totalQuantity = 0;
         int wishListCount = 0;
-        int totalQuantity = 0; // Initialize totalQuantity here
-
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-        if (jwtResponse == null) {
-            return "redirect:/signin";
-        }
+
+        if (jwtResponse != null) {
             String username = jwtResponse.getUsername();
             User user = userService.findByEmail(username);
+
             if (user != null) {
                 int loggedInUserId = user.getId();
-
-
-
-//                // Retrieve the user's cart items from the database
-//                List<AddToCart> cartList = cartService.getCartItemsByUserId(loggedInUserId);
-//
-//                // Calculate the total quantity of products added to the cart
-//                totalQuantity = cartList.stream()
-//                        .mapToInt(AddToCart::getQuantity)
-//                        .sum();
-//
-//                // Get the count of wishlist items for the logged-in user
-//                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+                totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
             }
+        }
 
-
-
-        // Add the count of Cart and Wishlist
         model.addAttribute("totalQuantity", totalQuantity);
         model.addAttribute("wishListCount", wishListCount);
-
-        model.addAttribute("encodedImagesList", encodedImagesList);
 
         return "basicTemplates/index";
     }
 
+    private List<Product> getActiveProducts() {
+        List<Product> products = productsService.getAllProducts();
+        Collections.reverse(products);
+
+        return products.stream()
+                .filter(Product::isActive)
+                .collect(Collectors.toList());
+    }
 
 
-//    private double calculateAverageRating(List<ProductReview> reviews) {
-//        if (reviews.isEmpty()) {
-//            return 0.0;
-//        }
-//
-//        int totalRating = 0;
-//        for (ProductReview review : reviews) {
-//            totalRating += review.getRating();
-//        }
-//
-//        return (double) totalRating / reviews.size();
-//    }
 
 
     @GetMapping("/register")
@@ -187,7 +138,7 @@ public class HomeController {
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
 
         if (jwtResponse == null) {
-            return "redirect:/signin";
+            return "login";
         }
         else {
             return "redirect:/";

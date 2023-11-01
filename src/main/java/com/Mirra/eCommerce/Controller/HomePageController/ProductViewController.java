@@ -1,5 +1,7 @@
 package com.Mirra.eCommerce.Controller.HomePageController;
 
+import com.Mirra.eCommerce.Models.Token.JwtResponse;
+import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Models.datas.ProductReview;
 import com.Mirra.eCommerce.Models.datas.SubCategory;
@@ -7,7 +9,12 @@ import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeseri
 import com.Mirra.eCommerce.Service.Product.CalculateAverageRatingService;
 import com.Mirra.eCommerce.Service.Product.ProductReviewService;
 import com.Mirra.eCommerce.Service.Product.ProductService;
+import com.Mirra.eCommerce.Service.Product.ProductsAdditionalService;
 import com.Mirra.eCommerce.Service.SubCategory.SubCategoryService;
+import com.Mirra.eCommerce.Service.User.Related.CartlistService;
+import com.Mirra.eCommerce.Service.User.Related.WishlistService;
+import com.Mirra.eCommerce.Service.User.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +40,15 @@ public class ProductViewController {
     private SerializeAndDeserialize serializeAndDeserialize;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private WishlistService wishlistService;
+
+    @Autowired
+    private CartlistService cartlistService;
+
+    @Autowired
     private CalculateAverageRatingService calculateAverageRatingService;
 
     @Autowired
@@ -41,71 +57,77 @@ public class ProductViewController {
     @Autowired
     private ProductReviewService productReviewService;
 
+    @Autowired
+    private ProductsAdditionalService productsAdditionalService;
+
 
     @GetMapping("/{productId}")
-    public String viewProduct(@PathVariable Long productId, Model model) throws IOException, ClassNotFoundException {
+    public String viewProduct(@PathVariable Long productId, Model model, HttpSession session) throws IOException, ClassNotFoundException {
         Product product = productsService.getProductById(productId);
+
         if (product == null) {
             // Handle product not found case, e.g., redirect to an error page
             return "error";
         }
+        int totalQuantity = 0;
+        int wishListCount = 0;
+        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
 
-        // Deserialize the image data from the product's imageBlob attribute
+        if (jwtResponse != null) {
+            String username = jwtResponse.getUsername();
+            User user = userService.findByEmail(username);
+
+            if (user != null) {
+                int loggedInUserId = user.getId();
+                totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+            }
+        }
+
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("wishListCount", wishListCount);
+
+        List<String> encodedImages = encodeProductImages(product);
+
+        SubCategory subCategory = product.getSubCategory();
+        List<Product> relatedProducts = productsService.getProductsBySubCategoryId(subCategory.getId());
+        List<String> encodedRelatedImages = productsAdditionalService.getEncodedImagesList(relatedProducts);
+
+        setProductAttributes(model, product, encodedImages, relatedProducts, encodedRelatedImages);
+
+        return "Products/ProductPage";
+    }
+
+    private List<String> encodeProductImages(Product product) throws IOException, ClassNotFoundException {
         List<byte[]> imageDataList = serializeAndDeserialize.deserializeImageBlob(product.getImageBlob());
-
-        // Encode the image data as Base64 strings
         List<String> encodedImages = new ArrayList<>();
+
         for (byte[] imageData : imageDataList) {
             String encodedImage = Base64.getEncoder().encodeToString(imageData);
             encodedImages.add(encodedImage);
         }
-        SubCategory subCategory=product.getSubCategory();
 
-        List<Product> relatedProducts=productsService.getProductsBySubCategoryId(subCategory.getId());
-        model.addAttribute("relatedProducts",relatedProducts);
+        return encodedImages;
+    }
 
-        List<String> encodedRelatedImagesLists = new ArrayList<>();
-        for (Product relatedImages : relatedProducts) {
-            List<byte[]> imagesRealtedDataList = serializeAndDeserialize.deserializeImageBlob(relatedImages.getImageBlob());
-            String encodedImage = Base64.getEncoder().encodeToString(imagesRealtedDataList.get(0));
-            encodedRelatedImagesLists.add(encodedImage);
 
-            // Calculate the average rating for each product and add it to the product object
-            List<ProductReview> reviews = productReviewService.getReviewsByProductId(product.getId());
-            double averageRating = calculateAverageRatingService.calculateAverageRating(reviews);
-            product.setAverageRating(averageRating);
-            if(product.getProductOffer()!=null){
-                product.getProductOffer().checkExpirationDate();
-            }
-            if(product.getCategory().getCategoryOffer()!=null){
-                product.getCategory().checkExpirationDate();
-                if(product.getCategory().getCategoryOffer().getDiscountPrice()==null){
-                    product.setMyPrice(BigDecimal.ZERO);
-                }
-            }
-        }
-        model.addAttribute("encodedRelatedImagesLists", encodedRelatedImagesLists);
+    private void setProductAttributes(Model model, Product product, List<String> encodedImages, List<Product> relatedProducts, List<String> encodedRelatedImages) {
+        model.addAttribute("product", product);
+        model.addAttribute("encodedImages", encodedImages);
+        model.addAttribute("relatedProducts", relatedProducts);
+        model.addAttribute("encodedRelatedImagesLists", encodedRelatedImages);
 
-        // Create an empty ProductReview object to use for the review form
         ProductReview review = new ProductReview();
         model.addAttribute("review", review);
 
-        // Retrieve the product reviews associated with the product
-        List<ProductReview> reviews = productReviewService.getReviewsByProductId(productId);
+        List<ProductReview> reviews = productReviewService.getReviewsByProductId(product.getId());
+        double averageRating = calculateAverageRatingService.calculateAverageRating(reviews);
+
         model.addAttribute("reviews", reviews);
-
-        // Calculate the average rating for the product
-        double averageRating =calculateAverageRatingService.calculateAverageRating(reviews);
         model.addAttribute("averageRating", averageRating);
-
-        // Calculate the number of reviews for the product
-        int reviewCount = reviews.size();
-        model.addAttribute("reviewCount", reviewCount);
-
-        model.addAttribute("product", product);
-        model.addAttribute("encodedImages", encodedImages);
-
-        return "Products/ProductPage"; // Return the name of the view template for product details
+        model.addAttribute("reviewCount", reviews.size());
     }
+
+
 
 }

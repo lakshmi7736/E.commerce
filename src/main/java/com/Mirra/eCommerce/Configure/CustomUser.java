@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import com.Mirra.eCommerce.Models.Users.User;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Getter
-@Setter
+@Data
 public class CustomUser implements UserDetails {
 
 	private User user;

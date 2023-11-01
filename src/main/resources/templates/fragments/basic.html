@@ -114,7 +114,7 @@
 
                         <!-- Conditionally render the bag icon -->
                         <li th:if="${session.jwtResponse != null}">
-                            <a th:href="@{/cart}">
+                            <a th:href="@{/user/cart}">
                                 <span class="icon_bag_alt"></span>
                                 <div id="cart-count" class="tip" th:text="${totalQuantity}"></div>
                             </a>
@@ -215,10 +215,8 @@
                                 <li>
                                         <a th:href="'/user/wishlist/add/' + ${product.id}" ><span class="icon_heart_alt"></span></a>
                                 </li>
-
-                                <!-- Inside the th:each loop for products -->
-                                <li><button class="add-to-cartlist" th:data-product-id="${product.id}" style="background: none; border: none;">
-                                    <a><span class="icon_bag_alt"></span></a></button>
+                                <li>
+                                    <a th:href="'/user/cart/add/' + ${product.id}"><span class="icon_bag_alt"></span></a>
                                 </li>
                                 <li><a th:href="@{/productView/{productId}(productId=${product.id})}"><span class="fa fa-eye"></span></a></li>
                             </ul>
@@ -668,45 +666,45 @@
 <script src="/frontEnd/js/main.js"></script>
 
 
-<!--    add to cart-list-->
-    <script>$(document).ready(function () {
-    $(".add-to-cartlist").click(function () {
-        var productId = parseInt($(this).data("product-id")); // Parse as integer
-        console.log("Product ID:", productId);
+<!--&lt;!&ndash;    add to cart-list&ndash;&gt;-->
+<!--    <script>$(document).ready(function () {-->
+<!--    $(".add-to-cartlist").click(function () {-->
+<!--        var productId = parseInt($(this).data("product-id")); // Parse as integer-->
+<!--        console.log("Product ID:", productId);-->
 
-        $.ajax({
-            type: "POST",
-            url: "/cartlist/add",
-            data: { productId: productId },
-            dataType: "json",
-            success: function (response) {
-                console.log("Response from server:", response);
+<!--        $.ajax({-->
+<!--            type: "POST",-->
+<!--            url: "/cartlist/add",-->
+<!--            data: { productId: productId },-->
+<!--            dataType: "json",-->
+<!--            success: function (response) {-->
+<!--                console.log("Response from server:", response);-->
 
-                var message = response.message;
+<!--                var message = response.message;-->
 
-                if (message === "Product added to cart.") {
-                    console.log("Product added successfully to your cart.");
-                    alert("Product added successfully to your cart.");
-                } else if (message === "Product quantity updated.") {
-                    console.log("Product quantity updated in your cart.");
-                    alert("Product quantity updated in your cart.");
-                }
+<!--                if (message === "Product added to cart.") {-->
+<!--                    console.log("Product added successfully to your cart.");-->
+<!--                    alert("Product added successfully to your cart.");-->
+<!--                } else if (message === "Product quantity updated.") {-->
+<!--                    console.log("Product quantity updated in your cart.");-->
+<!--                    alert("Product quantity updated in your cart.");-->
+<!--                }-->
 
-                // Perform a full page refresh
-                window.location.reload();
-            },
-            error: function (response) {
-                console.log("Error occurred.");
-                console.log(response);
-                alert(response.responseText);
+<!--                // Perform a full page refresh-->
+<!--                window.location.reload();-->
+<!--            },-->
+<!--            error: function (response) {-->
+<!--                console.log("Error occurred.");-->
+<!--                console.log(response);-->
+<!--                alert(response.responseText);-->
 
-                 // Perform a full page refresh
-                window.location.reload();
-            }
-        });
-    });
-});
-</script>
+<!--                 // Perform a full page refresh-->
+<!--                window.location.reload();-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
 
 <!--update cartlist-quantity-->
 <script>

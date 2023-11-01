@@ -1,5 +1,8 @@
 package com.Mirra.eCommerce.Controller.HomePageController;
 
+
+import com.Mirra.eCommerce.Models.Token.JwtResponse;
+import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Category;
 import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Models.datas.SubCategory;
@@ -8,6 +11,10 @@ import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeseri
 import com.Mirra.eCommerce.Service.Product.ProductService;
 import com.Mirra.eCommerce.Service.Product.ProductsAdditionalService;
 import com.Mirra.eCommerce.Service.SubCategory.SubCategoryService;
+import com.Mirra.eCommerce.Service.User.Related.CartlistService;
+import com.Mirra.eCommerce.Service.User.Related.WishlistService;
+import com.Mirra.eCommerce.Service.User.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -38,6 +45,15 @@ public class CategoryViewController {
     @Autowired
     private ProductService productsService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CartlistService cartlistService;
+
+    @Autowired
+    private WishlistService wishlistService;
+
 
     @Autowired
     private ProductsAdditionalService productsAdditionalService;
@@ -51,7 +67,7 @@ public class CategoryViewController {
 
 
     @GetMapping("/{Id}/{type}")
-    public String viewCategory(@PathVariable Long Id, @PathVariable String type, Model model) throws IOException, ClassNotFoundException {
+    public String viewCategory(@PathVariable Long Id, @PathVariable String type, Model model, HttpSession session) throws IOException, ClassNotFoundException {
         commonCode(model);
 
         List<Product> products = new ArrayList<>();
@@ -73,8 +89,28 @@ public class CategoryViewController {
 
         List<String> encodedImagesList = encodeImages(activeProducts);
 
+
         model.addAttribute("products", activeProducts);
         model.addAttribute("encodedImagesList", encodedImagesList);
+
+
+        int totalQuantity = 0;
+        int wishListCount = 0;
+        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
+
+        if (jwtResponse != null) {
+            String username = jwtResponse.getUsername();
+            User user = userService.findByEmail(username);
+
+            if (user != null) {
+                int loggedInUserId = user.getId();
+                totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+            }
+        }
+
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("wishListCount", wishListCount);
 
         return "Products/productViewByCategory";
     }
@@ -82,7 +118,7 @@ public class CategoryViewController {
 
 
     @GetMapping("/search")
-    public String searchProducts(@RequestParam("alphabet") String alphabet, Model model) throws IOException, ClassNotFoundException {
+    public String searchProducts(@RequestParam("alphabet") String alphabet, Model model,HttpSession session) throws IOException, ClassNotFoundException {
         commonCode(model);
 
         List<Product> products = productsAdditionalService.searchProducts(alphabet);
@@ -96,13 +132,30 @@ public class CategoryViewController {
 
         model.addAttribute("products", activeProducts);
         model.addAttribute("encodedImagesList", encodedImagesList);
+        int totalQuantity = 0;
+        int wishListCount = 0;
+        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
+
+        if (jwtResponse != null) {
+            String username = jwtResponse.getUsername();
+            User user = userService.findByEmail(username);
+
+            if (user != null) {
+                int loggedInUserId = user.getId();
+                totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+            }
+        }
+
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("wishListCount", wishListCount);
 
         return "Products/productViewByCategory";
     }
 
 
     @GetMapping("/filter/{minAmount}/{maxAmount}")
-    public String filterByAmount(@PathVariable(name = "minAmount") BigDecimal minPrice, @PathVariable("maxAmount") BigDecimal maxPrice, Model model) throws IOException, ClassNotFoundException {
+    public String filterByAmount(@PathVariable(name = "minAmount") BigDecimal minPrice, @PathVariable("maxAmount") BigDecimal maxPrice, Model model,HttpSession session) throws IOException, ClassNotFoundException {
 
 
         List<Product> products=productsAdditionalService.findProductsUnderPrice(minPrice,maxPrice);
@@ -113,11 +166,30 @@ public class CategoryViewController {
 
         List<String> encodedImagesList = encodeImages(products);
         model.addAttribute("encodedImagesList", encodedImagesList);
+        int totalQuantity = 0;
+        int wishListCount = 0;
+        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
+
+        if (jwtResponse != null) {
+            String username = jwtResponse.getUsername();
+            User user = userService.findByEmail(username);
+
+            if (user != null) {
+                int loggedInUserId = user.getId();
+                totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+            }
+        }
+
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("wishListCount", wishListCount);
         return "Products/productViewByCategory";
     }
 
 
-    private void commonCode(Model model) {
+    private void commonCode(Model model ){
+
+
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
 
@@ -147,6 +219,8 @@ public class CategoryViewController {
         }
         return encodedImagesList;
     }
+
+
 
 
 

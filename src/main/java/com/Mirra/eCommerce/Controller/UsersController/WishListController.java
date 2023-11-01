@@ -1,18 +1,17 @@
 package com.Mirra.eCommerce.Controller.UsersController;
 
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
-import com.Mirra.eCommerce.Models.Users.Related.AddToCart;
 import com.Mirra.eCommerce.Models.Users.Related.WishList;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeserialize;
 import com.Mirra.eCommerce.Service.Product.ProductService;
+import com.Mirra.eCommerce.Service.User.Related.CartlistService;
 import com.Mirra.eCommerce.Service.User.Related.WishlistService;
 import com.Mirra.eCommerce.Service.User.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +30,9 @@ public class WishListController {
     private UserService userService;
 
     @Autowired
+    private CartlistService cartlistService;
+
+    @Autowired
     private WishlistService wishlistService;
 
     @Autowired
@@ -40,7 +42,7 @@ public class WishListController {
     private SerializeAndDeserialize serializeAndDeserialize;
 
     @GetMapping("/add/{productId}")
-    public String addToWishlist(@PathVariable Long productId, HttpSession session, RedirectAttributes ra) {
+    public String addToWishlist(@PathVariable Long productId, HttpSession session, RedirectAttributes ra, HttpServletRequest request) {
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
 
         if (jwtResponse == null) {
@@ -52,7 +54,7 @@ public class WishListController {
 
         if (productId == null) {
             ra.addFlashAttribute("error", "Product is null");
-            return "redirect:/";
+            return "redirect:" + request.getHeader("Referer");
         }
 
         Product product = productService.getProductById(productId);
@@ -64,7 +66,7 @@ public class WishListController {
             ra.addFlashAttribute("success", "Added to the wishlist");
         }
 
-        return "redirect:/";
+        return "redirect:" + request.getHeader("Referer");
     }
 
 
@@ -72,7 +74,10 @@ public class WishListController {
     public String wishList(Model model, HttpSession session) throws IOException, ClassNotFoundException {
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
 
-        if (jwtResponse != null) {
+        if (jwtResponse == null) {
+            return "redirect:/sigin";
+
+        }
             String username = jwtResponse.getUsername();
             User user = userService.findByEmail(username);
 
@@ -97,27 +102,18 @@ public class WishListController {
                         encodedImagesList.add(encodedImage);
                     }
                 }
-//                // Retrieve the user's cart items from the database
-//                List<AddToCart> cartList = cartService.getCartItemsByUserId(loggedInUserId);
-//
-//                // Calculate the total quantity of products added to the cart
-//                int totalQuantity = cartList.stream()
-//                        .mapToInt(AddToCart::getQuantity)
-//                        .sum();
 
-                // Get the count of wishlist items for the logged-in user
+                // Get the count of wishlist items and cart items for the logged-in user
+                int totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
                 int wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
-//
-//                //To Add Count of Cart
-//                model.addAttribute("totalQuantity", totalQuantity);
-
-                // Add the wishlist count to the model
+                model.addAttribute("totalQuantity", totalQuantity);
                 model.addAttribute("wishListCount", wishListCount);
+
                 // Add the wishlist and encoded images to the model
                 model.addAttribute("wishlist", wishList);
                 model.addAttribute("encodedImagesList", encodedImagesList);
             }
-        }
+
 
         return "User/Related/Wishlist";
 
