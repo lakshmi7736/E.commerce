@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDateTime;
 
 @Controller
-@RequestMapping("/message")
+@RequestMapping("/admin/message")
 public class ProductReviewController {
     @Autowired
     private UserService userService;

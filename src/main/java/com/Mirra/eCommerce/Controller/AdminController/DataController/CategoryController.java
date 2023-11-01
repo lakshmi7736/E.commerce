@@ -3,7 +3,6 @@ package com.Mirra.eCommerce.Controller.AdminController.DataController;
 import com.Mirra.eCommerce.DTO.CategoryDto;
 import com.Mirra.eCommerce.Exception.CategoryNotFound;
 import com.Mirra.eCommerce.Models.datas.Category;
-import com.Mirra.eCommerce.Models.datas.CategoryOffer;
 import com.Mirra.eCommerce.Service.Category.CategoryOfferService;
 import com.Mirra.eCommerce.Service.Category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -94,19 +94,19 @@
               </td>
               <td><b th:text="${cartlistItem.products.name}"></b></td>
               <!-- Display the product price or discounted price based on the presence of a coupon -->
-              <td th:text="${cartlistItem.products.actualPrice}"></td>
+              <td th:if="${cartlistItem.products.myPrice ne 0}"  th:text="${cartlistItem.products.myPrice}"></td>
+              <td th:unless="${cartlistItem.products.myPrice ne 0}"  th:text="${cartlistItem.products.actualPrice}"></td>
 
-              <!--              <td th:text="${cartlistItem.products.actualPrice}"></td>-->
               <td>
                 <div class="quantity-controls">
                   <a th:href="'/user/cart/add/' + ${cartlistItem.products.id} + '?add=false'">-</a>
                   <b><span th:text="${cartlistItem.quantity}"></span></b>
-
-                  <a th:href="'/user/cart/add/' + ${cartlistItem.products.id}">+</a>
+                    <a th:href="'/user/cart/add/' + ${cartlistItem.products.id}">+</a>
                 </div>
               </td>
               <!-- Display the product price or discounted price based on the presence of a coupon -->
-              <td th:text="${cartlistItem.products.actualPrice * cartlistItem.quantity}"></td>
+              <td  th:text="${cartlistItem.products.myPrice * cartlistItem.quantity}"></td>
+
               <td>
                 <a onclick="return confirm('Are you sure you want to delete this product?')" th:href="@{'/user/cart/removeProduct/' + ${cartlistItem.id}}" class="remove-item">x</a>
               </td>

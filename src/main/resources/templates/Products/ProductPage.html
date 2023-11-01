@@ -73,25 +73,43 @@
                         <span>(<span th:text="${reviewCount}"></span> review)</span>
                     </div>
 
-                    <div class="product__details__price" th:text="${product.actualPrice}">price <span>$ 83.0</span></div>
+                    <div style="display: inline;">
+                        <del th:text="${product.actualPrice}" th:if="${product.myPrice < product.actualPrice}"></del>
+                    </div>
+
+                    <div class="product__details__price" th:text="${product.myPrice}">price <span>$ 83.0</span></div>
                     <p>Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
                         magni lores eos qui ratione voluptatem sequi nesciunt.</p>
 
                     <div class="product__details__button">
+                        <div th:if="${error != null}" class="alert alert-danger" id="error-alert">
+                            <p th:text="${error}"></p>
+                        </div>
+
+<!--                        <div th:if="${success != null}" class="alert alert-success" id="success-alert">-->
+<!--                            <p th:text="${success}"></p>-->
+<!--                        </div>-->
+
+                    <div class="quantity">
+                       <span>Quantity:</span>
+                       <div class="pro-qty">
+                         <span class="dec qtybtn"><a th:href="'/user/cart/add/' + ${product.id} + '?add=false'">-</a></span>
+                           <input type="text" th:if="${productQuantity}" th:value="${productQuantity}" th:max="${product.stock}" />
+                           <input type="text" th:unless="${productQuantity}" th:value="0" th:max="${product.stock}" />
+                              <span  class="inc qtybtn"><a th:href="'/user/cart/add/' + ${product.id}" >+</a></span>
+                         </div>
+                    </div>
 
 
-                        <!--                        <div class="quantity">-->
-                        <!--                            <span>Quantity:</span>-->
-                        <!--                            <div class="pro-qty">-->
-                        <!--                                <input type="text" th:value="1" th:max="2">-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
+                        <a class="cart-btn" ><span class="icon_heart_alt"></span> Add to cart</a>
 
-
-
-                        <a href="#" class="cart-btn add-to-cartlist" th:data-product-id="${product.id}" ><span class="icon_bag_alt" ></span> Add to cart</a>
                         <ul>
-                            <li><a href="#"><span  class="icon_heart_alt add-to-wishlist" th:data-product-id="${product.id}"></span></a></li>
+                            <li >
+                                <a th:href="'/user/wishlist/add/' + ${product.id}"
+                                   th:style="${productInList} ? 'background-color: #ca1515;' : ''">
+                                    <span  th:style="${productInList} ? 'color: #ffffff;' : ''" class="icon_heart_alt"></span>
+                                </a>
+                            </li>
                             <li>
                                 <a th:href="@{'/checkOut/check?productId=' + ${product.id}}"
                                    onclick="return checkStock(${product.stock});">
@@ -154,7 +172,7 @@
 
 
 
-                            <form action="/message/submit-review" method="POST">
+                            <form action="/admin/message/submit-review" method="POST">
                                 <textarea id="reviewText" placeholder="review" name="reviewText" rows="2" cols="50" required></textarea>
 
                                 <div class="rating">
@@ -247,18 +265,12 @@
                                class="fa"
                                th:classappend="${starNumber <= relatedProduct.averageRating ? 'fa-star' : 'fa-star-o'}">&nbsp;&nbsp;</i>
                         </div>
-                        <div class="product__price" th:if="${relatedProduct.myPrice.compareTo(0.00) == 0}" th:text="${relatedProduct.actualPrice}"></div>
-
-                        <div th:unless="${relatedProduct.myPrice.compareTo(0.00) == 0}" >
-                            <!-- Use inline CSS for the style -->
-                            <div style="display: inline;">
-                                <del th:text="${relatedProduct.actualPrice}"></del>
-                                <!--                                        <p style="display: inline; margin-left: 5px;" th:text="${product.productOffer.discountPrice + '% OFF'}"></p>-->
-                            </div>
-                            <!-- Use inline CSS for the style -->
-                            <div style="display: block;">
-                                <p class="product__price" th:text="${relatedProduct.myPrice}"></p>
-                            </div>
+                        <div style="display: inline;">
+                            <del th:text="${product.actualPrice}" th:if="${product.myPrice < product.actualPrice}"></del>
+                        </div>
+                        <!-- Use inline CSS for the style -->
+                        <div  style="display: block;">
+                            <p class="product__price" th:text="${product.myPrice}"></p>
                         </div>
                     </div>
                 </div>

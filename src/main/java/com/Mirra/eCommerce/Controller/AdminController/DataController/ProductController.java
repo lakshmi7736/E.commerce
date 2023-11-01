@@ -125,7 +125,7 @@ public class ProductController {
         product.setImageBlob(imageBlob);
         product.setStock(product.getStock() + product.getUpdateStock());
         product.setActive(true);
-        product.setMyPrice(BigDecimal.ZERO);
+        product.setMyPrice(product.getActualPrice());
         productsService.saveProduct(product);
     }
 

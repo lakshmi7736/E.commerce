@@ -1,6 +1,7 @@
 package com.Mirra.eCommerce.Controller.HomePageController;
 
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
+import com.Mirra.eCommerce.Models.Users.Related.AddToCart;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Product;
 import com.Mirra.eCommerce.Models.datas.ProductReview;
@@ -81,8 +82,21 @@ public class ProductViewController {
                 int loggedInUserId = user.getId();
                 totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
                 wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+                AddToCart cart=cartlistService.findCart(user,product);
+                if(cart!=null){
+                    int productQuantity=cart.getQuantity();
+                    model.addAttribute("productQuantity", productQuantity);
+                }
+                boolean productInList=wishlistService.existsByUserAndProduct(user,product);
+                model.addAttribute("productInList", productInList);
+
+//                boolean productInCartList=cartlistService.existsByUserAndProduct(user,product);
+//                model.addAttribute("productInCartList", productInCartList);
+
+
             }
         }
+
 
         model.addAttribute("totalQuantity", totalQuantity);
         model.addAttribute("wishListCount", wishListCount);

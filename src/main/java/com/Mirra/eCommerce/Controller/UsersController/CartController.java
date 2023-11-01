@@ -84,13 +84,16 @@ public class CartController {
         double grandTotal = 0.0;
         for (AddToCart cartItem : cartList) {
             BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
-            BigDecimal actualPrice = cartItem.getProducts().getActualPrice();
+            BigDecimal actualPrice = cartItem.getProducts().getMyPrice();
             BigDecimal total = actualPrice.multiply(quantity);
             cartItem.setTotal(total.doubleValue());
             grandTotal += total.doubleValue();
         }
         return grandTotal;
     }
+
+
+
 
     private List<String> encodeImages(List<AddToCart> cartList) throws IOException, ClassNotFoundException {
         List<String> encodedImagesList = new ArrayList<>();
@@ -126,33 +129,41 @@ public class CartController {
         Product product = productService.getProductById(productId);
 
         if (cartlistService.existsByUserAndProduct(user, product)) {
-
             int stock= product.getStock();
             if(stock !=0 && add==true){
                AddToCart cart=cartlistService.findCart(user,product);
-               cart.setQuantity(cart.getQuantity()+1);
-               cartlistService.updateCart(cart);
-                ra.addFlashAttribute("success", "Quantity updated");
+               if (cart.getQuantity()==product.getStock()){
+                   ra.addFlashAttribute("error", "cart item can't exceed the stock");
+               }else {
+                   cart.setQuantity(cart.getQuantity()+1);
+                   cartlistService.updateCart(cart);
+                   ra.addFlashAttribute("success", "Quantity updated");
+               }
+
             }else if(stock !=0 && add==false){
                 AddToCart cart=cartlistService.findCart(user,product);
-                cart.setQuantity(cart.getQuantity()-1);
-                cartlistService.updateCart(cart);
-                ra.addFlashAttribute("success", "Quantity updated");
+                if(cart.getQuantity()>1){
+                    cart.setQuantity(cart.getQuantity()-1);
+                    cartlistService.updateCart(cart);
+                    ra.addFlashAttribute("success", "Quantity updated");
+                }else{
+                    ra.addFlashAttribute("error", "Can't decrease quantity.Please do remove product");
+                }
+
             }
-            else if(stock ==1 && add==false){
-                ra.addFlashAttribute("error", "Can't decrease quantity.Please do remove");
-            }
+
             else {
                 ra.addFlashAttribute("error", "Product out-of stock");
             }
 
         } else {
             cartlistService.addToCartlist(productId, username);
-            ra.addFlashAttribute("success", "Added to the wishlist");
+            ra.addFlashAttribute("success", "Added to the cart");
         }
 
         return "redirect:" + request.getHeader("Referer");
     }
+
 
 
     @RequestMapping("removeProduct/{cartlistItem}")
