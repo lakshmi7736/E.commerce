@@ -1,9 +1,13 @@
 package com.Mirra.eCommerce.Controller.UsersController;
 
+import com.Mirra.eCommerce.Models.Coupons.Referral;
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.Address;
 import com.Mirra.eCommerce.Models.Users.User;
+import com.Mirra.eCommerce.Service.Coupons.ReferralService;
 import com.Mirra.eCommerce.Service.User.AddressService;
+import com.Mirra.eCommerce.Service.User.Related.CartlistService;
+import com.Mirra.eCommerce.Service.User.Related.WishlistService;
 import com.Mirra.eCommerce.Service.User.UserAdditionalService;
 import com.Mirra.eCommerce.Service.User.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +33,15 @@ public class UserProfileController {
     private UserAdditionalService userAdditionalService;
 
     @Autowired
+    private WishlistService wishlistService;
+
+    @Autowired
+    private CartlistService cartlistService;
+
+    @Autowired
+    private ReferralService referralService;
+
+    @Autowired
     private AddressService addressService;
 
 
@@ -49,6 +62,20 @@ public class UserProfileController {
             List<Address> activeAddresses = addresses.stream()
                     .filter(Address::isActive)
                     .collect(Collectors.toList());
+        int totalQuantity = 0;
+        int wishListCount = 0;
+
+
+                int loggedInUserId = user.getId();
+                totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+                wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+        Referral referral=referralService.findCodeByUser(user);
+        String code=referral.getCode();
+        model.addAttribute("referralCode",code);
+
+
+        model.addAttribute("totalQuantity", totalQuantity);
+        model.addAttribute("wishListCount", wishListCount);
 
             model.addAttribute("addresses", activeAddresses); // Add the list of active addresses to the model
             model.addAttribute("user", user); // Add the user object to the model

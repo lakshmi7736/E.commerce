@@ -94,8 +94,7 @@
                        <span>Quantity:</span>
                        <div class="pro-qty">
                          <span class="dec qtybtn"><a th:href="'/user/cart/add/' + ${product.id} + '?add=false'">-</a></span>
-                           <input type="text" th:if="${productQuantity}" th:value="${productQuantity}" th:max="${product.stock}" />
-                           <input type="text" th:unless="${productQuantity}" th:value="0" th:max="${product.stock}" />
+                           <input type="text" th:value="${productQuantity}" th:max="${product.stock}" />
                               <span  class="inc qtybtn"><a th:href="'/user/cart/add/' + ${product.id}" >+</a></span>
                          </div>
                     </div>
@@ -111,8 +110,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a th:href="@{'/checkOut/check?productId=' + ${product.id}}"
-                                   onclick="return checkStock(${product.stock});">
+                                <a th:href="@{'/user/checkOut/single?productId=' + ${product.id} + '&productQuantity=' + ${productQuantity} }">
                                     <span class="icon_adjust-horiz"></span>
                                 </a>
                             </li>

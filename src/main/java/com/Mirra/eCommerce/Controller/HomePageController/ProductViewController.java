@@ -72,6 +72,11 @@ public class ProductViewController {
         }
         int totalQuantity = 0;
         int wishListCount = 0;
+        int productQuantity=0;
+
+        if(product.getStock()!=0){
+            productQuantity=1;
+        }
         JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
 
         if (jwtResponse != null) {
@@ -84,8 +89,7 @@ public class ProductViewController {
                 wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
                 AddToCart cart=cartlistService.findCart(user,product);
                 if(cart!=null){
-                    int productQuantity=cart.getQuantity();
-                    model.addAttribute("productQuantity", productQuantity);
+                     productQuantity=cart.getQuantity();
                 }
                 boolean productInList=wishlistService.existsByUserAndProduct(user,product);
                 model.addAttribute("productInList", productInList);
@@ -95,9 +99,10 @@ public class ProductViewController {
 
 
             }
+
         }
 
-
+        model.addAttribute("productQuantity", productQuantity);
         model.addAttribute("totalQuantity", totalQuantity);
         model.addAttribute("wishListCount", wishListCount);
 

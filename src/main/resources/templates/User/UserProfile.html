@@ -66,7 +66,6 @@
         <br>
         <br>
         <a th:href="@{'/user/getPass/'+ ${user.id}}" >Change password ?</a>
-        <a th:href="@{/referral}">Create Referral ?</a>
       </div>
     </div>
   </div>
@@ -113,6 +112,22 @@
           </tbody>
         </table>
 
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="col-md-6 col-lg-4 col-xxl-2 ">
+    <div class="card mb-0">
+      <div class="card-body">
+        <div th:if="${success}">
+          <p th:text="${success}" class="alert alert-info"></p>
+        </div>
+        <div class="mb-2">
+          <a class="btn btn-primary col-md-8 " th:href="@{/user/referral}" >+ Create Referral Code</a>
+        </div>
+        <p>Referral Code: <span th:text="${referralCode}"></span></p>
       </div>
     </div>
   </div>

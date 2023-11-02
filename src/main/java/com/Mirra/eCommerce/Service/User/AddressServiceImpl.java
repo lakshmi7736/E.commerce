@@ -58,7 +58,7 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public List<Address> findAddressesByUserId(int userId) {
-        return addressRepo.findByUser_Id(userId);
+        return addressRepo.findActiveUserAddressByUser_Id(userId);
     }
 
     @Override

@@ -23,9 +23,8 @@ public class UsersRegistrationController {
 
     @PostMapping("/userRegistration/saveUser")
     public String saveUser(@ModelAttribute("user") UserDto userDto, BindingResult result, Model model) {
-        System.out.println("inside controller");
         if (result.hasErrors()) {
-            return "register"; // Return to the registration form with validation errors.
+            return "register";
         }
 
         boolean validNameType=userAdditionalService.isValidName(userDto.getName());

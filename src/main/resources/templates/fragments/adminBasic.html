@@ -118,12 +118,11 @@
 <!--                        </a>-->
 <!--                    </li>-->
                     <li class="sidebar-item" style="position: relative;">
-                        <a class="sidebar-link" th:href="@{/admin/dashoard}" aria-expanded="false"
-                           onmouseover="showDropdown()" onmouseout="hideDropdown()" onclick="toggleDropdown()">
-        <span>
-            <i class="ti ti-aperture"></i>
-        </span>
-                            <span class="hide-menu">Admin Dash</span>
+                        <a class="sidebar-link" th:href="@{/admin/setReferralPoints}" aria-expanded="false">
+                    <span>
+                        <i class="ti ti-aperture"></i>
+                    </span>
+                            <span class="hide-menu">Referral Points</span>
                         </a>
                         <ul class="dropdown" id="dropdown" style="display: none; position: absolute; background-color: #fff; border: 1px solid #ddd; min-width: 120px; z-index: 1; top: 100%; left: 0; max-height: 200px; overflow-y: auto;" onmouseover="showDropdown()" onmouseout="hideDropdown()">
                             <li><a th:href="@{/admin/user}">Users</a></li>
@@ -551,24 +550,24 @@
     <script src="/assets/js/dashboard.js"></script>
 
 
-    <script>
-    function showDropdown() {
-        document.getElementById("dropdown").style.display = "block";
-    }
+<!--    <script>-->
+<!--    function showDropdown() {-->
+<!--        document.getElementById("dropdown").style.display = "block";-->
+<!--    }-->
 
-    function hideDropdown() {
-        document.getElementById("dropdown").style.display = "none";
-    }
+<!--    function hideDropdown() {-->
+<!--        document.getElementById("dropdown").style.display = "none";-->
+<!--    }-->
 
-    function toggleDropdown() {
-        var dropdown = document.getElementById("dropdown");
-        if (dropdown.style.display === "block") {
-            dropdown.style.display = "none";
-        } else {
-            dropdown.style.display = "block";
-        }
-    }
-</script>
+<!--    function toggleDropdown() {-->
+<!--        var dropdown = document.getElementById("dropdown");-->
+<!--        if (dropdown.style.display === "block") {-->
+<!--            dropdown.style.display = "none";-->
+<!--        } else {-->
+<!--            dropdown.style.display = "block";-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
 
 <script>
 function previewImage(event) {

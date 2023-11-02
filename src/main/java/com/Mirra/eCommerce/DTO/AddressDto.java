@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddressDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
 
     private String country;

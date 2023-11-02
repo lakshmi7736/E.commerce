@@ -57,7 +57,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			return;
 		}
 
-		System.out.println("bububuu");
+
 
 
 		if (user.isAdminDelete()) {
@@ -65,13 +65,11 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			response.sendRedirect("/signin?error");
 			return;
 		}
-		System.out.println("bububuu");
 
 
 		if (user.getFailedAttempt() > 0) {
 			userAdditionalService.resetFailedAttempts(user.getEmail());
 		}
-		System.out.println("bububuu");
 
 
 		UserDetails userDetails1 = userDetailsService.loadUserByUsername(email);
