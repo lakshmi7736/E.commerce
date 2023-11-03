@@ -4,7 +4,7 @@ import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.Related.AddToCart;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Product;
-import com.Mirra.eCommerce.Service.Calculations.CalculationService;
+import com.Mirra.eCommerce.Service.Checkout.CalculationService;
 import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeserialize;
 import com.Mirra.eCommerce.Service.Product.ProductService;
 import com.Mirra.eCommerce.Service.User.Related.CartlistService;

@@ -1,7 +1,6 @@
 package com.Mirra.eCommerce.Controller.AdminController.CheckOutController;
 
 import com.Mirra.eCommerce.Models.Orders.Order;
-import com.Mirra.eCommerce.Models.Orders.OrderItem;
 import com.Mirra.eCommerce.Models.Orders.OrderStatus;
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.Address;
@@ -9,8 +8,7 @@ import com.Mirra.eCommerce.Models.Users.Payment;
 import com.Mirra.eCommerce.Models.Users.Related.AddToCart;
 import com.Mirra.eCommerce.Models.Users.Related.Wallet;
 import com.Mirra.eCommerce.Models.Users.User;
-import com.Mirra.eCommerce.Models.datas.Product;
-import com.Mirra.eCommerce.Service.Calculations.CalculationService;
+import com.Mirra.eCommerce.Service.Checkout.*;
 import com.Mirra.eCommerce.Service.Orders.OrderService;
 import com.Mirra.eCommerce.Service.Product.ProductService;
 import com.Mirra.eCommerce.Service.User.AddressService;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -61,7 +58,22 @@ public class CartCheckout {
     @Autowired
     private ProductService productsService;
 
+    @Autowired
+    private SelectPaymentService paymentService;
 
+    @Autowired
+    private CreateOrderService createOrderService;
+
+    @Autowired
+    private CartOrderItemsService cartOrderItemsService;
+
+
+    @Autowired
+    private UpdateStockService updateStockService;
+
+
+    @Autowired
+    private WalletUpadteService walletUpadteService;
 
 
 
@@ -114,7 +126,10 @@ public class CartCheckout {
                              @RequestParam("grandTotal") BigDecimal grandTotal, @RequestParam("subTotal") BigDecimal subTotal,
                              @RequestParam(value = "selectedAddress", required = false) Integer selectedAddressId,
                              @RequestParam(value = "paymentMethod", required = false) String paymentMethod,
+                             @RequestParam(value = "walletBalanceAmount", required = false) BigDecimal amount,
                              Model model){
+
+        System.out.println("walletBalanceAmount"+amount);;
 
         // Check if selectedAddressId is null or 0
         if (selectedAddressId == null || selectedAddressId == 0) {
@@ -130,13 +145,13 @@ public class CartCheckout {
         // Fetch the selected address from the database
         Address selectedAddress = addressService.getAddressById(selectedAddressId);
         // Create a new order
-        Order order = createOrder(user, selectedAddress, grandTotal,subTotal);
+        Order order =createOrderService.createOrder(user, selectedAddress, grandTotal,subTotal);
 
         List<AddToCart> cartList = cartlistService.getCartListByUserId(user.getId());
 
-        createOrderItems(order, cartList);
+        cartOrderItemsService.createOrderItems(order, cartList);
         // Convert the selected payment method String to the Payment enum
-        Payment selectedPayment = convertPaymentMethod(paymentMethod);
+        Payment selectedPayment = paymentService.selectPaymentMethod(paymentMethod);
         order.setMethod(selectedPayment);
 
         // Set the order date to the current date and time
@@ -147,9 +162,11 @@ public class CartCheckout {
             // Save the order to the database
             orderService.saveOrder(order);
             // Update product stock (assuming you have a method for this)
-            updateProductStock(cartList);
+            updateStockService.updateProductStock(cartList);
             // Clear the user's cart
             cartlistService.clearCartByUser(user);
+            // Handle wallet logic
+            walletUpadteService.handleWallet(order, user, grandTotal, amount);
         }
         model.addAttribute("successMessage", "Order placed successfully!");
         return "redirect:/user/profile";
@@ -157,64 +174,15 @@ public class CartCheckout {
     }
 
 
-    private Order createOrder(User user, Address selectedAddress, BigDecimal grandTotal,BigDecimal subTotal) {
-        Order order = new Order();
-        order.setUser(user);
-        order.setAddress(selectedAddress);
-        order.setGranTotal(subTotal);
-        order.setPurchaseTotal(grandTotal);
-        return order;
-    }
-
-    private void createOrderItems(Order order, List<AddToCart> cartItems) {
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (AddToCart cartItem : cartItems) {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            orderItem.setProduct(cartItem.getProducts());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getProducts().getMyPrice());
-            orderItem.setActualPrice(cartItem.getProducts().getActualPrice());
-            orderItems.add(orderItem);
-        }
-        order.setOrderItems(orderItems);
-    }
-
-
-    private Payment convertPaymentMethod(String paymentMethod) {
-        switch (paymentMethod) {
-            case "COD":
-                return Payment.COD;
-            case "UPI":
-                return Payment.UPI;
-            case "WALLET":
-                return Payment.WALLET;
-            // Handle other payment methods or invalid input if needed
-            default:
-                throw new IllegalArgumentException("Invalid payment method: " + paymentMethod);
-        }
-    }
 
 
 
-    private void updateProductStock(List<AddToCart> cartItems) {
-        for (AddToCart cartItem : cartItems) {
-            Product product = cartItem.getProducts();
-            int quantityInCart = cartItem.getQuantity();
-            int updatedStock = product.getStock() - quantityInCart;
 
-            if (updatedStock > 0) {
-                // Only update the stock if it won't go negative
-                product.setStock(updatedStock);
-                productsService.saveProduct(product); // Save the updated product
-            } else {
-                product.setActive(false);
-                // Only update the stock if it won't go negative
-                product.setStock(updatedStock);;
-                productsService.saveProduct(product); // Save the updated product
 
-            }
-        }
-    }
+
+
+
+
+
 
 }

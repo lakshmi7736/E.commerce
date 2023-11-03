@@ -123,6 +123,13 @@
                                     <li>Subtotal <span  th:text="${subTotal}"></span></li>
                                     <li>Total <span  th:text="${grandTotal}"></span></li>
                                 </ul>
+
+                                <!-- Add a button for "Redeem from Wallet" -->
+                                <label th:if="${walletAmount !=null}">
+                                    Redeem
+                                    <input type="radio" id="redeemCheckbox">
+                                </label>
+                                <p th:text="'Wallet Amount: ' + ${walletAmount}"></p>
                             </div>
 
 
@@ -137,9 +144,19 @@
                                     <input type="checkbox" id="upi" name="paymentMethod" value="UPI">
                                     <span class="checkmark"></span>
                                 </label>
+
+                                <label for="wallet" id="walletLabel">
+                                    Wallet payment
+                                    <input type="radio" id="wallet" name="paymentMethod" value="WALLET" >
+                                    <span class="checkmark"></span>
+                                </label>
                             </div>
 
+                            <!-- Hidden input field for the discounted amount -->
+                            <input type="hidden" id="discountedAmount" name="walletBalanceAmount" value="0">
 
+                            <!-- Hidden input field to hold the totalAmount value -->
+                            <input type="hidden" name="totalAmount" id="totalAmount">
 
                             <button type="submit" class="site-btn">Place Order</button>
                         </div>
@@ -176,6 +193,34 @@
 
 <!-- Js Plugins -->
 <div data-th-replace="~{fragments/basic::script}"> </div>
+
+<script>
+    document.getElementById('redeemCheckbox').addEventListener('change', function() {
+        var grandTotal = parseFloat([[${grandTotal}]]);
+        var walletAmount = parseFloat([[${walletAmount}]]);
+        var redeemCheckbox = document.getElementById('redeemCheckbox');
+        var discountedAmountField = document.getElementById('discountedAmount');
+
+        if (redeemCheckbox.checked) {
+            var originalGrandTotal = grandTotal; // Store the original grandTotal
+            if (grandTotal >= walletAmount) {
+                grandTotal -= walletAmount;
+            } else {
+                grandTotal = 0;
+            }
+
+            // Calculate the difference and update the hidden input field
+            var discountedAmount = originalGrandTotal - grandTotal;
+            discountedAmountField.value = discountedAmount;
+        } else {
+            grandTotal += walletAmount;
+            discountedAmountField.value = 0;
+        }
+
+        document.querySelector('.checkout__order__total li:last-child span').textContent = grandTotal.toFixed(2);
+    });
+</script>
+
 
 
 </body>

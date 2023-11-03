@@ -1,4 +1,4 @@
-package com.Mirra.eCommerce.Service.Calculations;
+package com.Mirra.eCommerce.Service.Checkout;
 
 import com.Mirra.eCommerce.Models.Users.Related.AddToCart;
 import org.springframework.stereotype.Service;
