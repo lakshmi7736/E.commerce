@@ -98,29 +98,28 @@
                     <th>Product</th>
                     <th>Quantity</th>
                     <th>Price</th>
-                    <th>Offer Price</th>
+                    <th th:if="${cart.products.myPrice < cart.products.actualPrice}">Offer Price</th>
                   </tr>
                   </thead>
                   <tbody>
                   <!-- Check if product is not null (single product view) -->
-                  <tr th:if="${product != null}">
-                    <td th:text="${product.name}">Product Name</td>
-                    <td th:text="${productQuantity}"></td>
+                  <tr th:if="${cart != null}">
+                    <td th:text="${cart.products.name}">Product Name</td>
+                    <td th:text="${cart.quantity}">Quantity</td>
                     <td>
-                      <span th:text="${product.actualPrice}">Total Price</span>
+                      <span th:text="${cart.products.actualPrice}">Total Price</span>
                     </td>
-                    <td  th:text="${product.myPrice}">
-
-                    </td>
+                    <td th:if="${cart.products.myPrice < cart.products.actualPrice}" th:text="${cart.products.myPrice}">Offer Price</td>
                   </tr>
                   </tbody>
                 </table>
               </div>
               <div class="checkout__order__total">
                 <ul>
-                  <li>Subtotal <span  th:text="${product.actualPrice * productQuantity}"></span></li>
-                  <li>Total <span  th:text="${product.myPrice * productQuantity}"></span></li>
+                  <li th:if="${cart.products.myPrice < cart.products.actualPrice}">Subtotal <span  th:text="${cart.products.actualPrice * cart.quantity}"></span></li>
+                  <li>Total <span  th:text="${cart.products.myPrice * cart.quantity}"></span></li>
                 </ul>
+
               </div>
 
               <div class="checkout__order__widget">

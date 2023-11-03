@@ -19,4 +19,6 @@ public interface CartlistReppository extends JpaRepository<AddToCart,Integer> {
 
     AddToCart findCartByUserAndProducts(User user, Product products);
 
+    void deleteCartByUser(User user);
+
 }

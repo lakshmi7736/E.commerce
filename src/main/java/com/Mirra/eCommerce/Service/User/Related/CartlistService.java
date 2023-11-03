@@ -19,4 +19,6 @@ public interface CartlistService {
     AddToCart findCart(User user, Product products);
 
     AddToCart updateCart(AddToCart cart);
+
+    public void clearCartByUser(User user);
 }

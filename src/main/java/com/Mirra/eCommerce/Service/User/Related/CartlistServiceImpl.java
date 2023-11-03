@@ -60,4 +60,10 @@ public class CartlistServiceImpl implements CartlistService{
     public AddToCart updateCart(AddToCart cart) {
         return  cartlistReppository.save(cart);
     }
+
+
+    @Override
+    public void clearCartByUser(User user) {
+        cartlistReppository.deleteCartByUser(user);
+    }
 }

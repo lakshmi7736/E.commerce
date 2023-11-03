@@ -94,8 +94,7 @@
               </td>
               <td><b th:text="${cartlistItem.products.name}"></b></td>
               <!-- Display the product price or discounted price based on the presence of a coupon -->
-              <td th:if="${cartlistItem.products.myPrice ne 0}"  th:text="${cartlistItem.products.myPrice}"></td>
-              <td th:unless="${cartlistItem.products.myPrice ne 0}"  th:text="${cartlistItem.products.actualPrice}"></td>
+              <td><del th:text="${cartlistItem.products.actualPrice}" th:if="${cartlistItem.products.myPrice < cartlistItem.products.actualPrice}"></del><p th:text="${cartlistItem.products.myPrice}"></p></td>
 
               <td>
                 <div class="quantity-controls">
@@ -105,7 +104,8 @@
                 </div>
               </td>
               <!-- Display the product price or discounted price based on the presence of a coupon -->
-              <td  th:text="${cartlistItem.products.myPrice * cartlistItem.quantity}"></td>
+              <td><del th:text="${cartlistItem.products.actualPrice * cartlistItem.quantity} " th:if="${cartlistItem.products.myPrice < cartlistItem.products.actualPrice}"></del><p th:text="${cartlistItem.products.myPrice * cartlistItem.quantity}"></p></td>
+
 
               <td>
                 <a onclick="return confirm('Are you sure you want to delete this product?')" th:href="@{'/user/cart/removeProduct/' + ${cartlistItem.id}}" class="remove-item">x</a>
@@ -163,10 +163,13 @@
         <div class="cart__total__procced">
           <h6>Cart total</h6>
           <ul>
-            <li>Subtotal <span th:text="${grandTotal}"></span></li>
+            <li>Subtotal
+              <span> <del th:text="${subTotal}" th:if="${subTotal > grandTotal}"></del></span>
+              <span th:text="${subTotal}" th:if="${subTotal <= grandTotal}"></span>
+            </li>
             <li>Total <span th:text="${grandTotal}"></span></li>
           </ul>
-          <a href="/checkOut" class="primary-btn">Proceed to checkout</a>
+          <a href="/cart/checkout" class="primary-btn">Proceed to checkout</a>
         </div>
       </div>
     </div>

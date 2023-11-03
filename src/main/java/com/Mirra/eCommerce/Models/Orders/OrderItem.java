@@ -30,6 +30,8 @@ public class OrderItem {
 
     private BigDecimal price;
 
+    private BigDecimal actualPrice;
+
     @Enumerated(EnumType.STRING)
     private ReturnStatus returnStatus;
 

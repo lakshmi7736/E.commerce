@@ -4,6 +4,7 @@ import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.Related.AddToCart;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Product;
+import com.Mirra.eCommerce.Service.Calculations.CalculationService;
 import com.Mirra.eCommerce.Service.ImageSerilizrAndDeserilize.SerializeAndDeserialize;
 import com.Mirra.eCommerce.Service.Product.ProductService;
 import com.Mirra.eCommerce.Service.User.Related.CartlistService;
@@ -46,6 +47,9 @@ public class CartController {
     private ProductService productService;
 
     @Autowired
+    private CalculationService calculateActualTotal;
+
+    @Autowired
     private SerializeAndDeserialize serializeAndDeserialize;
     @GetMapping
     public String cart(Model model, HttpSession session) throws IOException, ClassNotFoundException {
@@ -63,7 +67,8 @@ public class CartController {
 
             List<AddToCart> cartList = cartlistService.getCartListByUserId(loggedInUserId);
 
-            double grandTotal = calculateGrandTotal(cartList);
+            BigDecimal grandTotal = calculateActualTotal.calculateGrandTotal(cartList);
+            BigDecimal subTotal = calculateActualTotal.calculateActualTotal(cartList);
             List<String> encodedImagesList = encodeImages(cartList);
 
             int totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
@@ -73,26 +78,14 @@ public class CartController {
 
             model.addAttribute("grandTotal", grandTotal);
 
+            model.addAttribute("subTotal",subTotal);
+
             model.addAttribute("cartlist", cartList);
             model.addAttribute("encodedImagesList", encodedImagesList);
         }
 
         return "User/Related/myCart";
     }
-
-    private double calculateGrandTotal(List<AddToCart> cartList) {
-        double grandTotal = 0.0;
-        for (AddToCart cartItem : cartList) {
-            BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
-            BigDecimal actualPrice = cartItem.getProducts().getMyPrice();
-            BigDecimal total = actualPrice.multiply(quantity);
-            cartItem.setTotal(total.doubleValue());
-            grandTotal += total.doubleValue();
-        }
-        return grandTotal;
-    }
-
-
 
 
     private List<String> encodeImages(List<AddToCart> cartList) throws IOException, ClassNotFoundException {
