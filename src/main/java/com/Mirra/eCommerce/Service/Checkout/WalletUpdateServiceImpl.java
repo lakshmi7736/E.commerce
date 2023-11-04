@@ -18,8 +18,7 @@ public class WalletUpdateServiceImpl implements WalletUpadteService {
     @Override
     public void handleWallet(Order order, User user, BigDecimal grandTotaled, BigDecimal amount) {
         if (amount != null) {
-            order.setPurchaseTotal(amount);
-            order.setGranTotal(grandTotaled);
+            order.setPurchaseTotal(grandTotaled.subtract(amount));
             Wallet wallet = walletRepository.findByUser(user);
 
             if (wallet != null) {
@@ -32,15 +31,12 @@ public class WalletUpdateServiceImpl implements WalletUpadteService {
                     newBalance = BigDecimal.ZERO;
                 }
                 order.setRedeemedFromWallet(true);
-                order.setRedeemedAmount(grandTotaled.subtract(amount));
+                order.setRedeemedAmount(amount);
                 wallet.setAmount(newBalance);
 
                 // Save the updated wallet
                 walletRepository.save(wallet);
             }
-        } else {
-            order.setPurchaseTotal(grandTotaled);
-            order.setGranTotal(grandTotaled);
         }
     }
 }

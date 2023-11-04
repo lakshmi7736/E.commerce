@@ -127,19 +127,23 @@ public class CartCheckout {
                              @RequestParam(value = "selectedAddress", required = false) Integer selectedAddressId,
                              @RequestParam(value = "paymentMethod", required = false) String paymentMethod,
                              @RequestParam(value = "walletBalanceAmount", required = false) BigDecimal amount,
-                             Model model){
+                             Model model,HttpSession session) throws IOException, ClassNotFoundException {
 
-        System.out.println("walletBalanceAmount"+amount);;
 
         // Check if selectedAddressId is null or 0
         if (selectedAddressId == null || selectedAddressId == 0) {
             model.addAttribute("errorMessage", "Please select a valid address.");
-            return "Admin/Checkout/CartCheckout";
+            return cart(model,session);
         }
-
         if (paymentMethod == null || paymentMethod.isEmpty()) {
             model.addAttribute("errorMessage", "Please select a payment method.");
-            return "Admin/Checkout/CartCheckout";
+            return cart(model,session);
+        }
+
+        if (grandTotal.subtract(amount).compareTo(BigDecimal.ZERO) == 0 && !paymentMethod.equals("WALLET")) {
+            System.out.println("not wallet");
+            model.addAttribute("errorMessage", "Invalid payment selection.");
+            return cart(model, session);
         }
 
         // Fetch the selected address from the database
@@ -165,11 +169,14 @@ public class CartCheckout {
             updateStockService.updateProductStock(cartList);
             // Clear the user's cart
             cartlistService.clearCartByUser(user);
-            // Handle wallet logic
-            walletUpadteService.handleWallet(order, user, grandTotal, amount);
+            if(!amount.equals(BigDecimal.ZERO)){
+                // Handle wallet logic
+                walletUpadteService.handleWallet(order, user, grandTotal, amount);
+            }
+
         }
-        model.addAttribute("successMessage", "Order placed successfully!");
-        return "redirect:/user/profile";
+        int id = order.getId();
+        return "redirect:/invoice/" + id;
 
     }
 

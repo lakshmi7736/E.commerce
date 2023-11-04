@@ -18,7 +18,6 @@
 <header data-th-replace="~{fragments/basic::header}">
 </header>
 <!--End of Header Section  -->
-
 <!-- Breadcrumb Begin -->
 <div class="breadcrumb-option">
     <div class="container">
@@ -91,6 +90,9 @@
 
                     <div class="col-lg-6" >
                         <div class="checkout__order">
+                            <div th:if="${errorMessage}" class="alert alert-danger">
+                                <p th:text="${errorMessage}" style="color: red;"></p>
+                            </div>
                             <h5>Your order</h5>
                             <div class="checkout__order__product">
 
@@ -118,10 +120,11 @@
                                     </tbody>
                                 </table>
                             </div>
+
                             <div class="checkout__order__total">
                                 <ul>
                                     <li>Subtotal <span  th:text="${subTotal}"></span></li>
-                                    <li>Total <span  th:text="${grandTotal}"></span></li>
+                                    <li>Total <span id="total"  th:text="${grandTotal}"></span></li>
                                 </ul>
 
                                 <!-- Add a button for "Redeem from Wallet" -->
@@ -136,12 +139,12 @@
                             <div class="checkout__order__widget">
                                 <label for="cod">
                                     Cash on delivery
-                                    <input type="checkbox" id="cod" name="paymentMethod" value="COD">
+                                    <input type="radio" id="cod" name="paymentMethod" value="COD">
                                     <span class="checkmark"></span>
                                 </label>
                                 <label for="upi">
                                     UPI
-                                    <input type="checkbox" id="upi" name="paymentMethod" value="UPI">
+                                    <input type="radio" id="upi" name="paymentMethod" value="UPI">
                                     <span class="checkmark"></span>
                                 </label>
 
@@ -194,6 +197,8 @@
 <!-- Js Plugins -->
 <div data-th-replace="~{fragments/basic::script}"> </div>
 
+
+
 <script>
     document.getElementById('redeemCheckbox').addEventListener('change', function() {
         var grandTotal = parseFloat([[${grandTotal}]]);
@@ -201,10 +206,12 @@
         var redeemCheckbox = document.getElementById('redeemCheckbox');
         var discountedAmountField = document.getElementById('discountedAmount');
 
+
         if (redeemCheckbox.checked) {
             var originalGrandTotal = grandTotal; // Store the original grandTotal
             if (grandTotal >= walletAmount) {
                 grandTotal -= walletAmount;
+
             } else {
                 grandTotal = 0;
             }
@@ -221,6 +228,36 @@
     });
 </script>
 
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const totalSpan = document.getElementById("total");
+        const walletLabel = document.getElementById("walletLabel");
+        const otherOptions = document.querySelectorAll("input[name='paymentMethod']:not(#wallet)");
+
+        // Function to toggle visibility of payment options
+        function togglePaymentOptions() {
+            const totalValue = parseFloat(totalSpan.textContent);
+            if (totalValue === 0) {
+                walletLabel.style.display = "block"; // Show the wallet option
+                otherOptions.forEach(option => {
+                    option.parentNode.style.display = "none"; // Hide other options
+                });
+            } else {
+                walletLabel.style.display = "none"; // Hide the wallet option
+                otherOptions.forEach(option => {
+                    option.parentNode.style.display = "block"; // Show other options
+                });
+            }
+        }
+
+        // Initial check
+        togglePaymentOptions();
+
+        // Listen for changes in the total value
+        totalSpan.addEventListener("DOMSubtreeModified", togglePaymentOptions);
+    });
+</script>
 
 
 </body>
