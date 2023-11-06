@@ -202,6 +202,8 @@
 
 <!--RazorPayments-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
 <script>
     // Add an event listener for the form submission
     document.getElementById('paymentForm').addEventListener('submit', function (e) {
@@ -216,7 +218,7 @@
             // Use Razorpay API to initiate the payment modal
             var options = {
                 key: 'rzp_test_Nlwpx9fQN5A6U8',
-                amount: parseInt(totalSpan.textContent) * 100, // Convert to paise
+                amount: parseFloat(totalSpan.textContent) * 100, // Convert to paise
                 name: 'Your Store Name',
                 description: 'Payment for your order',
                 handler: function (response) {

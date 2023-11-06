@@ -167,7 +167,7 @@ public class CartCheckout {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.ORDERED); // Assuming the initial status is ORDERED
 
-        if (selectedPayment != Payment.UPI) {
+
             // Save the order to the database
             orderService.saveOrder(order);
             // Update product stock (assuming you have a method for this)
@@ -179,7 +179,7 @@ public class CartCheckout {
                 walletUpadteService.handleWallet(order, user, grandTotal, amount);
             }
 
-        }
+
         int id = order.getId();
         return "redirect:/user/orders/invoice/" + id;
 
