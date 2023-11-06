@@ -44,7 +44,7 @@
         </div>
 
         <th:block th:if="${user != null}">
-            <form th:action="@{/cart/checkout}" class="checkout__form" method="post">
+            <form id="paymentForm" th:action="@{/cart/checkout}" class="checkout__form" method="post">
 
                 <input type="hidden" name="grandTotal" th:value="${grandTotal}">
                 <input type="hidden" name="subTotal" th:value="${subTotal}" />
@@ -161,7 +161,7 @@
                             <!-- Hidden input field to hold the totalAmount value -->
                             <input type="hidden" name="totalAmount" id="totalAmount">
 
-                            <button type="submit" class="site-btn">Place Order</button>
+                            <button type="submit" class="site-btn" >Place Order</button>
                         </div>
                     </div>
 
@@ -197,6 +197,43 @@
 <!-- Js Plugins -->
 <div data-th-replace="~{fragments/basic::script}"> </div>
 
+<!--razorpay.api.key=rzp_test_Nlwpx9fQN5A6U8-->
+<!--razorpay.api.secret=aA6DILSLE62cK7uurHauWZk0-->
+
+<!--RazorPayments-->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    // Add an event listener for the form submission
+    document.getElementById('paymentForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Get the selected payment method (in this case, the UPI radio button)
+        const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        const totalSpan = document.getElementById("total");
+
+        // Check if UPI is selected
+        if (selectedPaymentMethod && selectedPaymentMethod.value === "UPI") {
+            // Use Razorpay API to initiate the payment modal
+            var options = {
+                key: 'rzp_test_Nlwpx9fQN5A6U8',
+                amount: parseInt(totalSpan.textContent) * 100, // Convert to paise
+                name: 'Your Store Name',
+                description: 'Payment for your order',
+                handler: function (response) {
+                    // Handle the payment success here, e.g., submit the form
+                    document.getElementById('totalAmount').value = response.amount;
+                    document.getElementById('paymentForm').submit();
+                },
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            // For other payment methods, submit the form as usual
+            document.getElementById('paymentForm').submit();
+        }
+    });
+</script>
 
 
 <script>

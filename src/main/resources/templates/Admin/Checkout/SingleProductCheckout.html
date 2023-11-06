@@ -45,7 +45,7 @@
     </div>
 
     <th:block th:if="${user != null}">
-      <form th:action="@{/user/checkOut/single}" class="checkout__form" method="post">
+      <form id="paymentForm" th:action="@{/user/checkOut/single}" class="checkout__form" method="post">
         <div class="row">
           <div class="col-lg-6">
             <h5>Billing detail</h5>
@@ -198,6 +198,44 @@
 <div data-th-replace="~{fragments/basic::script}"> </div>
 
 
+<!--RazorPayments-->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    // Add an event listener for the form submission
+    document.getElementById('paymentForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Get the selected payment method (in this case, the UPI radio button)
+        const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        const totalSpan = document.getElementById("total");
+
+        // Check if UPI is selected
+        if (selectedPaymentMethod && selectedPaymentMethod.value === "UPI") {
+            // Use Razorpay API to initiate the payment modal
+            var options = {
+                key: 'rzp_test_Nlwpx9fQN5A6U8',
+                amount: parseInt(totalSpan.textContent) * 100, // Convert to paise
+                name: 'Your Store Name',
+                description: 'Payment for your order',
+                handler: function (response) {
+                    // Handle the payment success here, e.g., submit the form
+                    document.getElementById('totalAmount').value = response.amount;
+                    document.getElementById('paymentForm').submit();
+                },
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            // For other payment methods, submit the form as usual
+            document.getElementById('paymentForm').submit();
+        }
+    });
+</script>
+<!--end-of-razor-payment-->
+
+
+<!--redeem amount from wallet-->
 <script>
     document.getElementById('redeemCheckbox').addEventListener('change', function() {
         var grandTotal = parseFloat([[${grandTotal}]]);
@@ -231,6 +269,7 @@
 </script>
 
 
+<!--if redeemed and amount == 0 means wallet paymet . so option visible only wallet-payment-->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
         const totalSpan = document.getElementById("total");
