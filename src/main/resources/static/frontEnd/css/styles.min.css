@@ -14,6 +14,28 @@ body{
 }
 
 
+.close-icon {
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: #fc6203;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.close-icon:hover {
+    background-color: #00ff00;
+}
+
+.close-icon:active {
+    background-color: #ff0000;
+}
+
+
+
 .card{
     margin: auto;
     width: 700px;

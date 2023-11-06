@@ -34,4 +34,22 @@ public class UpdateStockServiceImpl implements UpdateStockService {
             }
         }
     }
+
+    @Override
+    public void updateProductStock(AddToCart cart) {
+        Product product = cart.getProducts();
+        int quantityInCart = cart.getQuantity();
+        int updatedStock = product.getStock() - quantityInCart;
+
+        if (updatedStock > 0) {
+            // Only update the stock if it won't go negative
+            product.setStock(updatedStock);
+            productRepository.save(product); // Save the updated product
+        } else {
+            product.setActive(false);
+            // Only update the stock if it won't go negative
+            product.setStock(updatedStock);;
+            productRepository.save(product); // Save the updated product
+        }
+    }
 }

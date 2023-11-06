@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 public class CreateOrderServiceImpl implements CreateOrderService{
     @Override
     public Order createOrder(User user, Address selectedAddress, BigDecimal grandTotal,BigDecimal subTotal) {
+        System.out.println("grandTotal "+grandTotal);
         Order order = new Order();
         order.setUser(user);
         order.setAddress(selectedAddress);

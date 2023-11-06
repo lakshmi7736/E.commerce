@@ -66,4 +66,9 @@ public class CartlistServiceImpl implements CartlistService{
     public void clearCartByUser(User user) {
         cartlistReppository.deleteCartByUser(user);
     }
+
+    @Override
+    public AddToCart findById(int cartId) {
+        return cartlistReppository.findById(cartId).get();
+    }
 }

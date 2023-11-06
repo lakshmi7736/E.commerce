@@ -69,9 +69,13 @@ public class UserProfileController {
                 int loggedInUserId = user.getId();
                 totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
                 wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+
         Referral referral=referralService.findCodeByUser(user);
-        String code=referral.getCode();
-        model.addAttribute("referralCode",code);
+        if(referral!=null){
+            String code=referral.getCode();
+            model.addAttribute("referralCode",code);
+        }
+
 
 
         model.addAttribute("totalQuantity", totalQuantity);

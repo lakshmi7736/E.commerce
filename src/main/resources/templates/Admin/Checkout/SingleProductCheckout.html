@@ -45,7 +45,7 @@
     </div>
 
     <th:block th:if="${user != null}">
-      <form th:action="@{/checkOut/check}" class="checkout__form" method="post">
+      <form th:action="@{/cart/checkout/single}" class="checkout__form" method="post">
         <div class="row">
           <div class="col-lg-6">
             <h5>Billing detail</h5>
@@ -113,27 +113,49 @@
                   </tr>
                   </tbody>
                 </table>
+                <input type="hidden" name="cart.id" th:value="${cart.id}" />
               </div>
               <div class="checkout__order__total">
                 <ul>
                   <li th:if="${cart.products.myPrice < cart.products.actualPrice}">Subtotal <span  th:text="${cart.products.actualPrice * cart.quantity}"></span></li>
-                  <li>Total <span  th:text="${cart.products.myPrice * cart.quantity}"></span></li>
+                  <li>Total <span id="total"  th:text="${grandTotal}"></span></li>
                 </ul>
+
+                <!-- Add a button for "Redeem from Wallet" -->
+                <label th:if="${walletAmount !=null}">
+                  Redeem
+                  <input type="radio" id="redeemCheckbox">
+                </label>
+                <p th:text="'Wallet Amount: ' + ${walletAmount}"></p>
 
               </div>
 
               <div class="checkout__order__widget">
                 <label for="cod">
                   Cash on delivery
-                  <input type="checkbox" id="cod" name="paymentMethod" value="COD">
+                  <input type="radio" id="cod" name="paymentMethod" value="COD">
                   <span class="checkmark"></span>
                 </label>
                 <label for="upi">
                   UPI
-                  <input type="checkbox" id="upi" name="paymentMethod" value="UPI">
+                  <input type="radio" id="upi" name="paymentMethod" value="UPI">
+                  <span class="checkmark"></span>
+                </label>
+
+                <label for="wallet" id="walletLabel">
+                  Wallet payment
+                  <input type="radio" id="wallet" name="paymentMethod" value="WALLET" >
                   <span class="checkmark"></span>
                 </label>
               </div>
+
+              <!-- Hidden input field for the discounted amount -->
+              <input type="hidden" id="discountedAmount" name="walletBalanceAmount" value="0">
+
+              <!-- Hidden input field to hold the totalAmount value -->
+              <input type="hidden" name="totalAmount" id="totalAmount">
+
+              <input type="hidden" name="grandTotal" th:value="${grandTotal}">
 
               <button type="submit" class="site-btn">Place Order</button>
             </div>
@@ -171,6 +193,69 @@
 <!-- Js Plugins -->
 <div data-th-replace="~{fragments/basic::script}"> </div>
 
+
+<script>
+    document.getElementById('redeemCheckbox').addEventListener('change', function() {
+        var grandTotal = parseFloat([[${grandTotal}]]);
+         console.log('grandTotal',grandTotal);
+
+        var walletAmount = parseFloat([[${walletAmount}]]);
+        var redeemCheckbox = document.getElementById('redeemCheckbox');
+        var discountedAmountField = document.getElementById('discountedAmount');
+
+
+        if (redeemCheckbox.checked) {
+            var originalGrandTotal = grandTotal; // Store the original grandTotal
+            if (grandTotal >= walletAmount) {
+                grandTotal -= walletAmount;
+
+            } else {
+                grandTotal = 0;
+            }
+
+            // Calculate the difference and update the hidden input field
+            var discountedAmount = originalGrandTotal - grandTotal;
+            discountedAmountField.value = discountedAmount;
+        } else {
+            grandTotal += walletAmount;
+            discountedAmountField.value = 0;
+        }
+        console.log('grandTotal',grandTotal);
+        console.log('discountedAmount',discountedAmount);
+        document.querySelector('.checkout__order__total li:last-child span').textContent = grandTotal.toFixed(2);
+    });
+</script>
+
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        const totalSpan = document.getElementById("total");
+        const walletLabel = document.getElementById("walletLabel");
+        const otherOptions = document.querySelectorAll("input[name='paymentMethod']:not(#wallet)");
+
+        // Function to toggle visibility of payment options
+        function togglePaymentOptions() {
+            const totalValue = parseFloat(totalSpan.textContent);
+            if (totalValue === 0) {
+                walletLabel.style.display = "block"; // Show the wallet option
+                otherOptions.forEach(option => {
+                    option.parentNode.style.display = "none"; // Hide other options
+                });
+            } else {
+                walletLabel.style.display = "none"; // Hide the wallet option
+                otherOptions.forEach(option => {
+                    option.parentNode.style.display = "block"; // Show other options
+                });
+            }
+        }
+
+        // Initial check
+        togglePaymentOptions();
+
+        // Listen for changes in the total value
+        totalSpan.addEventListener("DOMSubtreeModified", togglePaymentOptions);
+    });
+</script>
 
 </body>
 

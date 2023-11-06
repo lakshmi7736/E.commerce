@@ -232,6 +232,8 @@
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
         const totalSpan = document.getElementById("total");
+                console.log('totalSpan',totalSpan);
+
         const walletLabel = document.getElementById("walletLabel");
         const otherOptions = document.querySelectorAll("input[name='paymentMethod']:not(#wallet)");
 

@@ -21,4 +21,6 @@ public interface CartlistService {
     AddToCart updateCart(AddToCart cart);
 
     public void clearCartByUser(User user);
+
+    AddToCart findById (int cartId);
 }

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head data-th-replace="~{fragments/basic::head}">
+</head>
+
+<body>
+
+<!-- Offcanvas Menu Begin -->
+<div data-th-replace="~{fragments/basic::offcanvas}"></div>
+<!-- Offcanvas Menu End -->
+
+<!-- Header Section Begin -->
+<header data-th-replace="~{fragments/basic::header}">
+</header>
+<!--End of Header Section  -->
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb__links">
+          <a href="index.html"><i class="fa fa-home"></i> Home</a>
+          <span>My Orders</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Breadcrumb End -->
+<br>
+<!-- HTML -->
+<div class="row justify-content-center">
+  <div class="col-md-10 col-lg-8 col-xxl-15 ">
+    <div class="card mb-0">
+      <div class="card-body">
+        <p class="text-center"> ORDERS </p>
+        <div th:if="${orderMessage}">
+          <p th:text="${orderMessage}" class="alert alert-info"></p>
+        </div>
+
+        <table style="width: 100%;">
+          <thead>
+          <tr>
+            <th>Order Date</th>
+            <th>Payment Method</th>
+            <th>Total Amt</th>
+            <th>Address</th>
+            <th>Order status</th>
+            <th>Track My Order</th>
+            <th>Cancel Order</th>
+            <th>Return</th>
+            <th>Invoice</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="order : ${orders}">
+            <td th:text="${order.orderDate.toLocalDate()}"></td> <!-- Display Date -->
+            <td th:text="${order.method}"></td>
+            <td th:text="${order.purchaseTotal}"></td>
+            <td th:text="${order.address.address}"></td>
+            <td th:text="${order.status}"></td>
+            <td> <a th:href="@{/orders/track-order/{orderId}(orderId=${order.id})}">Track</a>
+            </td>
+            <td>
+              <a th:href="@{/orders/cancel/{orderId}(orderId=${order.id})}"
+                 onclick="return confirm('Are you sure you want to cancel this order?')">
+                Cancel
+              </a>
+            </td>
+            <td> <a  th:href="@{/orders/return/{orderId}(orderId=${order.id})}">Return</a></td>
+            <td> <a <a th:href="@{/user/orders/invoice/{orderId}(orderId=${order.id})}">Invoice</a></td>
+
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Js Plugins -->
+<div data-th-replace="~{fragments/basic::script}"> </div>
+
+
+
+</body>
+</html>

@@ -21,17 +21,17 @@ public class CalculationServiceImpl implements CalculationService{
         return grandTotal;
     }
 
-//    public BigDecimal calculateGrandTotal(List<AddToCart> cartList) {
-//        double grandTotal = 0.0;
-//        for (AddToCart cartItem : cartList) {
-//            BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
-//            BigDecimal actualPrice = cartItem.getProducts().getMyPrice();
-//            BigDecimal total = actualPrice.multiply(quantity);
-//            cartItem.setTotal(total.doubleValue());
-//            grandTotal += total.doubleValue();
-//        }
-//        return grandTotal;
-//    }
+    @Override
+    public BigDecimal calculateGrandTotal(AddToCart cart) {
+        BigDecimal grandTotal = BigDecimal.ZERO;
+            BigDecimal quantity = BigDecimal.valueOf(cart.getQuantity());
+            BigDecimal actualPrice = cart.getProducts().getMyPrice();
+            BigDecimal total = actualPrice.multiply(quantity);
+            cart.setTotal(total.doubleValue());
+            grandTotal = grandTotal.add(total);
+        return grandTotal;
+    }
+
 
     @Override
     public BigDecimal calculateActualTotal(List<AddToCart> cartList) {
@@ -46,17 +46,6 @@ public class CalculationServiceImpl implements CalculationService{
         return subTotal;
     }
 
-//    public BigDecimal calculateActualTotal(List<AddToCart> cartList) {
-//        double subTotal = 0.0;
-//        for (AddToCart cartItem : cartList) {
-//            BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
-//            BigDecimal actualPrice = cartItem.getProducts().getActualPrice();
-//            BigDecimal total = actualPrice.multiply(quantity);
-//            cartItem.setTotal(total.doubleValue());
-//            subTotal += total.doubleValue();
-//        }
-//        return subTotal;
-//    }
 
 
 

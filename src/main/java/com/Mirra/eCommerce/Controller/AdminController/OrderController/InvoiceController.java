@@ -15,7 +15,7 @@ import java.io.IOException;
 
 
 @Controller
-@RequestMapping("/invoice")
+@RequestMapping("/user/orders/invoice")
 public class InvoiceController {
 
     @Autowired

@@ -7,4 +7,6 @@ import java.util.List;
 public interface UpdateStockService {
 
     public void updateProductStock(List<AddToCart> cartItems);
+
+    public void updateProductStock(AddToCart cart);
 }

@@ -26,4 +26,20 @@ public class CartOrderItemsServiceImpl implements CartOrderItemsService{
         }
         order.setOrderItems(orderItems);
     }
+
+    @Override
+    public void createOrderItems(Order order, AddToCart cart) {
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(order);
+        orderItem.setProduct(cart.getProducts());
+        orderItem.setQuantity(cart.getQuantity());
+        orderItem.setPrice(cart.getProducts().getMyPrice());
+        orderItem.setActualPrice(cart.getProducts().getActualPrice());
+        orderItems.add(orderItem);
+
+        order.setOrderItems(orderItems);
+    }
 }
