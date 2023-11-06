@@ -45,7 +45,7 @@
     </div>
 
     <th:block th:if="${user != null}">
-      <form th:action="@{/cart/checkout/single}" class="checkout__form" method="post">
+      <form th:action="@{/user/checkOut/single}" class="checkout__form" method="post">
         <div class="row">
           <div class="col-lg-6">
             <h5>Billing detail</h5>
@@ -89,6 +89,9 @@
 
           <div class="col-lg-6" >
             <div class="checkout__order">
+              <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}" style="color: red;"></p>
+              </div>
               <h5>Your order</h5>
               <div class="checkout__order__product">
 
@@ -156,6 +159,7 @@
               <input type="hidden" name="totalAmount" id="totalAmount">
 
               <input type="hidden" name="grandTotal" th:value="${grandTotal}">
+
 
               <button type="submit" class="site-btn">Place Order</button>
             </div>

@@ -94,7 +94,17 @@ public class CartCheckout {
                 model.addAttribute("walletAmount", wallet.getAmount());
             }
 
+
+
             int loggedInUserId = user.getId();
+
+            int totalQuantity = 0;
+            int wishListCount = 0;
+
+            totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+            wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+            model.addAttribute("totalQuantity", totalQuantity);
+            model.addAttribute("wishListCount", wishListCount);
 
             List<Address> addresses = addressService.findAddressesByUserId(loggedInUserId);
             model.addAttribute("addresses", addresses);
@@ -109,12 +119,6 @@ public class CartCheckout {
             BigDecimal subTotal = calculateActualTotal.calculateActualTotal(cartList);
             model.addAttribute("subTotal",subTotal);
 
-
-            int totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
-            model.addAttribute("totalQuantity", totalQuantity);
-
-            int wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
-            model.addAttribute("wishListCount", wishListCount);
 
         return "Admin/Checkout/CartCheckout";
     }
@@ -179,78 +183,6 @@ public class CartCheckout {
         return "redirect:/user/orders/invoice/" + id;
 
     }
-
-
-
-
-
-
-
-    @Transactional
-    @PostMapping("/single")
-    public String placeSingleOrder(@ModelAttribute("user") User user,
-                                   @RequestParam("cart.id") int cartId,
-                                   @RequestParam(value ="grandTotal", required = false) BigDecimal grandTotal,
-                                   @RequestParam(value = "selectedAddress", required = false) Integer selectedAddressId,
-                                   @RequestParam(value = "paymentMethod", required = false) String paymentMethod,
-                                   @RequestParam(value = "walletBalanceAmount", required = false) BigDecimal amount,
-                                   Model model,HttpSession session) throws IOException, ClassNotFoundException {
-
-
-
-        AddToCart cart=cartlistService.findById(cartId);
-        System.out.println("grandTotal"+grandTotal);
-        // Check if selectedAddressId is null or 0
-        if (selectedAddressId == null || selectedAddressId == 0) {
-            model.addAttribute("errorMessage", "Please select a valid address.");
-            return cart(model,session);
-        }
-        if (paymentMethod == null || paymentMethod.isEmpty()) {
-            model.addAttribute("errorMessage", "Please select a payment method.");
-            return cart(model,session);
-        }
-
-        if (grandTotal.subtract(amount).compareTo(BigDecimal.ZERO) == 0 && !paymentMethod.equals("WALLET")) {
-            System.out.println("not wallet");
-            model.addAttribute("errorMessage", "Invalid payment selection.");
-            return cart(model, session);
-        }
-
-        // Fetch the selected address from the database
-        Address selectedAddress = addressService.getAddressById(selectedAddressId);
-        // Create a new order
-        Order order =createOrderService.createOrder(user, selectedAddress, grandTotal,cart.getProducts().getActualPrice());
-
-        cartOrderItemsService.createOrderItems(order, cart);
-        // Convert the selected payment method String to the Payment enum
-        Payment selectedPayment = paymentService.selectPaymentMethod(paymentMethod);
-        order.setMethod(selectedPayment);
-
-        // Set the order date to the current date and time
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(OrderStatus.ORDERED); // Assuming the initial status is ORDERED
-
-        if (selectedPayment != Payment.UPI) {
-            // Save the order to the database
-            orderService.saveOrder(order);
-            // Update product stock (assuming you have a method for this)
-            updateStockService.updateProductStock(cart);
-            // Clear the user's cart
-            cartlistService.removeCartItem(cartId);
-            if(!amount.equals(BigDecimal.ZERO)){
-                // Handle wallet logic
-                walletUpadteService.handleWallet(order, user, grandTotal, amount);
-            }
-
-        }
-        int id = order.getId();
-        return "redirect:/user/orders/invoice/" + id;
-
-    }
-
-
-
-
 
 
 

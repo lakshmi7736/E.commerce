@@ -84,6 +84,7 @@
               <th>Quantity</th>
               <th>Total</th>
               <th>Remove</th>
+              <th>Check-out</th>
             </tr>
             </thead>
             <tbody>
@@ -108,7 +109,16 @@
 
 
               <td>
+                <div class="quantity-controls">
                 <a onclick="return confirm('Are you sure you want to delete this product?')" th:href="@{'/user/cart/removeProduct/' + ${cartlistItem.id}}" class="remove-item">x</a>
+                </div>
+              </td>
+              <td>
+                <div class="quantity-controls">
+                <a th:href="@{'/user/checkOut/single?productId=' + ${cartlistItem.products.id} + '&productQuantity=' + ${cartlistItem.quantity} }">
+                  <span class="icon_adjust-horiz"></span>
+                </a>
+                </div>
               </td>
             </tr>
             <tr>
