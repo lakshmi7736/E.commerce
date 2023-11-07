@@ -17,6 +17,7 @@ import org.thymeleaf.ITemplateEngine;
 
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -160,6 +161,78 @@ public class SalesReportController {
         }
 
         return totalPurchase;
+    }
+
+//
+//    @GetMapping("/perMonth/delivered-orders")
+//    public String getDeliveredOrdersPerMonth(Model model,
+//                                             @RequestParam(name = "filterType", required = false) String filterType,
+//                                             @RequestParam(name = "filterMonth", required = false) String filterMonth) {
+//
+//        List<Order> deliveredOrders = getDeliveredOrdersByFilterMonth(filterType, filterMonth, model);
+//
+//        // Calculate the total purchase amount
+//        BigDecimal totalPurchase = calculateTotalPurchase(deliveredOrders);
+//
+//        List<String> orderDates = new ArrayList<>();
+//        List<BigDecimal> purchaseTotals = new ArrayList<>();
+//
+//        for (Order order : deliveredOrders) {
+//            orderDates.add(String.valueOf(order.getOrderDate()));
+//            purchaseTotals.add(order.getPurchaseTotal());
+//        }
+//
+//
+//        // Add the totalPurchase to the model
+//        model.addAttribute("totalPurchase", totalPurchase);
+//        System.out.println(totalPurchase);
+//        model.addAttribute("orders", deliveredOrders);
+//
+//        return "fragments/adminBasic"; // Thymeleaf view name
+//    }
+
+    @GetMapping("/perMonth/delivered-orders")
+    public String getDeliveredOrdersPerMonth(Model model,
+                                     @RequestParam(name = "filterType", required = false) String filterType,
+
+                                     @RequestParam(name = "filterMonth", required = false) String filterMonth) {
+
+
+        List<Order> deliveredOrders = getDeliveredOrdersByFilterMonth(filterType,filterMonth,model);
+
+
+        // Calculate the total purchase amount
+        BigDecimal totalPurchase = calculateTotalPurchase(deliveredOrders);
+
+        // Add the totalPurchase to the model
+        model.addAttribute("totalPurchase", totalPurchase);
+        System.out.println("totalPurchase"+totalPurchase);
+
+
+        model.addAttribute("orders", deliveredOrders);
+        return "fragments/adminBasic"; // Thymeleaf view name
+    }
+
+    private List<Order> getDeliveredOrdersByFilterMonth(
+            String filterType,
+           String filterMonth, Model model) {
+        List<Order> deliveredOrders = new ArrayList<>();
+
+        if(filterMonth != null  && !filterMonth.trim().isEmpty()) {
+            filterType = "Per Month";
+            try {
+                String[] yearMonthParts = filterMonth.split("-");
+                if (yearMonthParts.length == 2) {
+                    int year = Integer.parseInt(yearMonthParts[0]);
+                    int month = Integer.parseInt(yearMonthParts[1]);
+                    YearMonth yearMonth = YearMonth.of(year, month);
+                    deliveredOrders = orderAdditionalService.getDeliveredOrdersByMonth(yearMonth);
+                }
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                // Handle invalid month input
+            }
+        }
+        return deliveredOrders;
     }
 
 
