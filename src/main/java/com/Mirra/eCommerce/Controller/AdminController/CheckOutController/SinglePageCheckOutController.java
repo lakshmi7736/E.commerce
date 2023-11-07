@@ -3,6 +3,7 @@ package com.Mirra.eCommerce.Controller.AdminController.CheckOutController;
 
 import com.Mirra.eCommerce.Models.Orders.Order;
 import com.Mirra.eCommerce.Models.Orders.OrderStatus;
+import com.Mirra.eCommerce.Models.Orders.OrderStatusHistory;
 import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.Address;
 
@@ -31,6 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -198,11 +200,32 @@ public class SinglePageCheckOutController {
 
         // Set the order date to the current date and time
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus(OrderStatus.ORDERED); // Assuming the initial status is ORDERED
 
 
-            // Save the order to the database
-            orderService.saveOrder(order);
+
+
+
+        // Create a new status change history entry
+        OrderStatusHistory statusHistory = new OrderStatusHistory();
+        statusHistory.setOrder(order);
+        statusHistory.setNewStatus(OrderStatus.ORDERED);
+        statusHistory.setChangeTimestamp(LocalDateTime.now());
+
+        // Update the order's status
+        order.setStatus(OrderStatus.ORDERED);
+
+        // Add the status change history entry to the order
+        if (order.getStatusHistory() == null) {
+            order.setStatusHistory(new ArrayList<>());
+        }
+        order.getStatusHistory().add(statusHistory);
+
+        // Save the updated order
+        orderService.saveOrder(order);
+
+
+
+
             // Update product stock (assuming you have a method for this)
             updateStockService.updateProductStock(cart);
             // Clear the user's cart
