@@ -105,9 +105,11 @@ public class ReturnControllerByAdmin {
 
         OrderItem orderItem = orderService.getOrderItemById(orderItemId);
 
-        if (orderItem == null || orderItem.getReturnStatus() != ReturnStatus.PENDING) {
+        if (orderItem == null || orderItem.getReturnStatus() != ReturnStatus.PENDING &&  orderItem.getReturnStatus() != ReturnStatus.COMPLAINT) {
             return handleInvalidOrderItem(redirectAttributes);
         }
+
+
 
         List<ReturnRequest> returnRequests = returnRequestService.getReturnRequestsByOrderItemId(orderItemId);
 
@@ -115,7 +117,16 @@ public class ReturnControllerByAdmin {
             return handleNoReturnRequests(redirectAttributes);
         }
 
+
         BigDecimal totalReturnedAmount = processReturnRequests(orderItem, returnRequests);
+
+        ReturnStatus statusToFetch=orderItem.getReturnStatus();
+        if(statusToFetch==ReturnStatus.PENDING){
+
+            updateStock(orderItem,returnRequests);
+        }
+
+
 
         updateUserWallet(order, totalReturnedAmount);
 
@@ -142,9 +153,7 @@ public class ReturnControllerByAdmin {
         return "redirect:/admin/myOrders";
     }
 
-    private BigDecimal processReturnRequests(OrderItem orderItem, List<ReturnRequest> returnRequests) {
-        BigDecimal totalReturnedAmount = BigDecimal.ZERO;
-
+    private void updateStock(OrderItem orderItem, List<ReturnRequest> returnRequests) {
         for (ReturnRequest returnRequest : returnRequests) {
             Product product = orderItem.getProduct();
             int returnedQuantity = returnRequest.getReturnQuantity();
@@ -154,6 +163,20 @@ public class ReturnControllerByAdmin {
                 product.setStock(currentStock + returnedQuantity);
                 product.setActive(currentStock > 0);
                 productsService.saveProduct(product);
+
+                returnRequest.setStatus(ReturnStatus.APPROVED);
+                orderItem.setReturnStatus(ReturnStatus.APPROVED);
+            }
+        }
+    }
+
+    private BigDecimal processReturnRequests(OrderItem orderItem, List<ReturnRequest> returnRequests) {
+        BigDecimal totalReturnedAmount = BigDecimal.ZERO;
+
+        for (ReturnRequest returnRequest : returnRequests) {
+            int returnedQuantity = returnRequest.getReturnQuantity();
+
+            if (orderItem.getReturnStatus() == ReturnStatus.PENDING ||orderItem.getReturnStatus() == ReturnStatus.COMPLAINT ) {
 
                 returnRequest.setStatus(ReturnStatus.APPROVED);
                 orderItem.setReturnStatus(ReturnStatus.APPROVED);
