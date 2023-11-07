@@ -10,11 +10,7 @@
 <body>
 
 <div class="card">
-    <div class="close-icon"><a th:href="@{/user/myOrders}">X</a></div>
-
-
-<!--    <span style="display: inline-block; width: 20px; height: 20px; background-color: #fc6203; border-radius: 50%; text-align: center; line-height: 20px; cursor: pointer;" onmouseover="this.style.backgroundColor='#00ff00';" onmouseout="this.style.backgroundColor='#ff0000';"><a th:href="@{/user/myOrders}">x</a></span>-->
-
+    <div th:if="${!excludeCloseIcon}" class="close-icon"><a th:href="@{/user/myOrders}">X</a></div>
 
     <div class="title">Purchase Receipt</div>
     <div class="info">
@@ -27,10 +23,6 @@
             <div class="col-5 pull-right">
                 <span class="heading">Ordered Address</span><br />
                 <span class="detail" th:text="${order.address.address}"></span>
-            </div>
-            <div class="col-5 pull-right">
-                <span class="heading">Payment Method</span><br />
-                <span class="detail" th:text="${order.method}"></span>
             </div>
         </div>
     </div>
@@ -47,9 +39,7 @@
                     <tr>
                         <th>Product Name</th>
                         <th>Ordered Quantity</th>
-                        <th>Price</th>
-                        <th>Discount Price</th>
-
+                        <th>Purchase Amount</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -57,7 +47,6 @@
                     <tr th:each="orderItem, rowStat : ${order.orderItems}">
                         <td th:text="${orderItem.product.name}"></td>
                         <td th:text="${orderItem.quantity}"></td>
-                        <td th:text="${orderItem.actualPrice}"></td>
                         <td th:text="${orderItem.price}"></td>
                     </tr>
                     </tbody>
@@ -69,7 +58,6 @@
     <div class="total">
         <div class="row">
             <div class="col-3">
-                <p>Sub Total: <span th:text="${order.granTotal}"></span></p>
                 <big>Grand Total: <span th:text="${order.purchaseTotal}"></span></big>
             </div>
         </div>
@@ -80,7 +68,7 @@
             <div class="col-2">
                 <img class="img-fluid" src="https://i.imgur.com/YBWc55P.png" />&nbsp;&nbsp;&nbsp;
 
-                <a th:href="'/invoice/' + ${order.id} + '/pdf'" class="btn btn-primary">Download PDF</a>
+                <a th:href="'/user/orders/invoice/' + ${order.id} + '/pdf'" class="btn btn-primary">Download PDF</a>
             </div>
             <div class="col-10">Want any help? Please &nbsp;<a>contact us</a></div>
         </div>
@@ -88,3 +76,5 @@
 </div>
 </body>
 </html>
+
+
