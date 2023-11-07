@@ -70,7 +70,7 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" th:href="@{/salesReport/delivered-orders}" aria-expanded="false">
+                        <a class="sidebar-link" th:href="@{/admin/salesReport/delivered-orders}" aria-expanded="false">
                          <span>
                              <i class="ti ti-file-description" ></i>
                          </span>
@@ -109,29 +109,21 @@
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span class="hide-menu">EXTRA</span>
                     </li>
-<!--                    <li class="sidebar-item">-->
-<!--                        <a class="sidebar-link" th:href="@{/sec/icon-tabler}" aria-expanded="false">-->
-<!--                <span>-->
-<!--                  <i class="ti ti-mood-happy"></i>-->
-<!--                </span>-->
-<!--                            <span class="hide-menu">Icons</span>-->
-<!--                        </a>-->
-<!--                    </li>-->
-                    <li class="sidebar-item" style="position: relative;">
+                    <li class="sidebar-item">
                         <a class="sidebar-link" th:href="@{/admin/setReferralPoints}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-mood-happy"></i>
+                </span>
+                            <span class="hide-menu">Referral Points</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item" >
+                        <a class="sidebar-link" th:href="@{/admin/reports}" aria-expanded="false">
                     <span>
                         <i class="ti ti-aperture"></i>
                     </span>
-                            <span class="hide-menu">Referral Points</span>
+                            <span class="hide-menu">Reports</span>
                         </a>
-                        <ul class="dropdown" id="dropdown" style="display: none; position: absolute; background-color: #fff; border: 1px solid #ddd; min-width: 120px; z-index: 1; top: 100%; left: 0; max-height: 200px; overflow-y: auto;" onmouseover="showDropdown()" onmouseout="hideDropdown()">
-                            <li><a th:href="@{/admin/user}">Users</a></li>
-                            <li><a th:href="@{/subCategories}">Sub-category</a></li>
-                            <li><a th:href="@{/admin/ordersController}">Orders</a></li>
-                            <li><a th:href="@{/categories}">Category</a></li>
-                            <li><a th:href="@{/product}">Add product</a></li>
-                            <li><a href="/product/productList">Product Details</a></li>
-                        </ul>
                     </li>
                 </ul>
             </nav>

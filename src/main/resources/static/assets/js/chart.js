@@ -113,7 +113,7 @@ $(function () {
 
     xaxis: {
 
-      type: "Order Date",
+      type: "category",
       categories: dateArray,
       labels: {
         style: { cssClass: "grey--text lighten-2--text fill-color" },

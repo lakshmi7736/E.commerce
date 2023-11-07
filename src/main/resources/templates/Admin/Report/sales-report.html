@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Delivered Orders</title>
+  <link rel="stylesheet" href="/frontEnd/css/styles.min.css" type="text/css"  />
+</head>
+<body>
+
+
+<!-- You can add more logic for displaying the filter options based on the user's selection -->
+
+<div class="card">
+  <a th:href="@{/admin/dashboard}" style="color: black;"> < dashboard </a>
+  <br/>
+  <div class="title">Sales Report</div>
+  <div class="info">
+    <div class="row">
+      <form th:action="@{/admin/salesReport/delivered-orders}" method="get">
+        <div class="form-group">
+          <label class="heading" for="filterDate">Date:</label>
+          <input class="detail" type="date" id="filterDate" name="filterDate" />
+        </div>
+
+        <div class="form-group">
+          <label class="heading" for="filterWeek">Week:</label>
+          <input class="detail" type="week" id="filterWeek" name="filterWeek" />
+        </div>
+
+        <div class="form-group">
+          <label class="heading" for="filterMonth">Month:</label>
+          <input class="detail" type="month" id="filterMonth" name="filterMonth" />
+        </div>
+
+        <div class="form-group">
+          <label class="heading" for="filterYear">Year:</label>
+          <input class="detail" type="number" id="filterYear" name="filterYear" />
+        </div>
+
+        <div class="form-group">
+          <label for="startDate">Start Date:</label>
+          <input type="date" id="startDate" name="startDate" />
+        </div>
+
+        <div class="form-group">
+          <label for="endDate">End Date:</label>
+          <input type="date" id="endDate" name="endDate" />
+        </div>
+
+        <br /><br />
+        <div class="form-group">
+          <button type="submit">Apply Filter</button>
+        </div>
+      </form>
+
+      <div class="col-7">
+        <span class="heading">Report Filter Type: </span><br />
+        <span class="detail" th:text="${selectedFilterType}"></span>
+      </div>
+
+      <div class="col-5 pull-right">
+        <span class="heading">Selected Filter Date: </span><br />
+        <span class="detail" th:text="${selectedFilterDate}"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pricing">
+    <div class="row">
+      <div class="col-9">
+        <span id="name">ORDERED DETAILS</span>
+      </div>
+      <div class="col-3">
+        <table style="width: 100%; text-align: center;">
+          <!-- Display the flash attribute message if it exists -->
+          <thead>
+          <tr>
+            <th>SL No:</th>
+            <th>Order Date</th>
+            <th>Purchase Total</th>
+            <!-- Add more table headers as needed -->
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="order, orderStat : ${orders}">
+            <td th:text="${orderStat.index + 1}"></td>
+            <td id="dateTd" th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"></td>
+            <td id="orderTd" th:text="${order.purchaseTotal}"></td>
+            <!-- Add more table data as needed -->
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="total">
+    <div class="row">
+      <div class="col-3">
+        <big>Turn-over: <span id="grandTd" th:text="${totalPurchase}"></span></big>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="row">
+      <div class="col-2">
+        <img class="img-fluid" src="https://i.imgur.com/YBWc55P.png" />&nbsp;&nbsp;&nbsp;
+
+      </div>
+      <div class="col-10">Want any help? Please &nbsp;<a>contact us</a></div>
+    </div>
+  </div>
+</div>
+<div id="chartSalesReport"></div>
+</body>
+
+<div data-th-replace="~{fragments/adminBasic :: script}">
+</div>
+<script src="/assets/js/chart.js"></script>
+
+
+
+
+
+
+
+</html>
+

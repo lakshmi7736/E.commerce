@@ -18,10 +18,13 @@ public class AdminDashBoardController {
 
     @Autowired
     private OrderService orderService;
+
+
     @GetMapping("/dashBoard")
     public String adminDashBoard(){
         return "Admin/admindashBoard";
     }
+
 
 
     @GetMapping("/users")
@@ -40,5 +43,11 @@ public class AdminDashBoardController {
         model.addAttribute("orders", orders);
 
         return "Admin/dashBoard/orders/OderManagement";
+    }
+
+    @GetMapping("/reports")
+    public String report(){
+
+        return "fragments/adminBasic";
     }
 }
