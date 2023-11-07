@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head data-th-replace="~{fragments/adminBasic::head}">
+</head>
+
+<body>
+<!-- Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+  <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center w-100">
+      <div class="row justify-content-center w-100">
+        <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
+          <div class="card mb-100">
+            <div class="card-body">
+              <a th:href="@{/index}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+              </a>
+              <p class="text-center">Return request of Bee&Baa</p>
+              <h3>Order List</h3>
+              <br>
+              <div class="table-responsive"> <!-- Added table-responsive class -->
+
+                <div th:if="${message}">
+                  <p th:text="${message}" class="alert alert-info"></p>
+                </div>
+
+                <table style="width: 100%; text-align: center;">
+                  <!-- Display the flash attribute message if it exists -->
+                  <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Ordered Quantity</th>
+                    <th>Reason for Return</th>
+                    <th>Return Quantity</th>
+                    <th>Complaint</th>
+                    <th>Return</th>
+                    <!-- Add more columns as needed -->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="orderItem, rowStat : ${order.orderItems}">
+                    <td>
+                      <!-- Display the product image -->
+                      <img th:src="'data:image/png;base64,' + ${encodedImagesList[rowStat.index]}" width="100" height="100" alt="Product Image"/>
+                      <p th:text="${orderItem.product.name}"></p>
+                    </td>
+                    <td th:text="${orderItem.quantity}"></td>
+                    <td>
+                      <form th:action="@{/user/request/initiate/{orderItemId}(orderItemId=${orderItem.id})}" method="post">
+
+                        <textarea id="reason" name="reason" class="form-control" required></textarea>
+                    </td>
+                    <td>
+                      <input type="number"
+                             th:value="${orderItem.quantity}"
+                             name="returnQuantity"
+                             th:min="${orderItem.quantity == 0 ? 0 : 1}"
+                             th:max="${orderItem.quantity}" />
+                    </td>
+                    <td>
+                      <!-- Add the checkbox for raising a complaint -->
+                      <label for="raiseComplaint">Raise Complaint:</label>
+                      <input type="checkbox" id="raiseComplaint" name="raiseComplaint" />
+
+                    </td>
+                    <td>
+                      <button type="submit">Return</button>
+                      </form>
+                    </td>
+                  </tr>
+
+                  <!-- Use Thymeleaf to iterate through the list of order items and populate the table rows -->
+                  <!--                  <tr th:each="orderItem, rowStat : ${order.orderItems}">-->
+                  <!--                    <td>-->
+                  <!--                      &lt;!&ndash; Display the product image &ndash;&gt;-->
+                  <!--                      <img th:src="'data:image/png;base64,' + ${encodedImagesList[rowStat.index]}" width="100" height="100" alt="Product Image"/>-->
+                  <!--                      <p th:text="${orderItem.product.name}"></p>-->
+                  <!--                    </td>-->
+                  <!--                    <td th:text="${orderItem.quantity}"></td>-->
+                  <!--                    <td>-->
+                  <!--                      <form th:action="@{/return/initiate/{orderItemId}(orderItemId=${orderItem.id})}" method="post">-->
+
+                  <!--                        <label for="reason">Reason for Return:</label>-->
+                  <!--                        <textarea id="reason" name="reason" class="form-control" required></textarea>-->
+                  <!--                    </td>-->
+                  <!--                    <td>-->
+                  <!--                      <input type="number"-->
+                  <!--                             th:value="${orderItem.quantity}"-->
+                  <!--                             name="returnQuantity"-->
+                  <!--                             th:min="${orderItem.quantity == 0 ? 0 : 1}"-->
+                  <!--                             th:max="${orderItem.quantity}" />-->
+
+
+                  <!--                    </td>-->
+                  <!--                    <td>-->
+                  <!--                      <button type="submit">Return</button>-->
+                  <!--                      </form>-->
+                  <!--                    </td>-->
+                  <!--                  </tr>-->
+                  </tbody>
+                </table>
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+
+
+
+</body>
+</html>

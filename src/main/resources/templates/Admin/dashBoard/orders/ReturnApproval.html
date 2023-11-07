@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head data-th-replace="~{fragments/adminBasic::head}">
+</head>
+
+<body>
+<!-- Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+
+  <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center justify-content-center w-100">
+      <div class="row justify-content-center w-100">
+        <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
+          <div class="card mb-100">
+            <div class="card-body">
+              <a th:href="@{/index}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+              </a>
+              <p class="text-center">Return request of Bee&Baa</p>
+              <h3>Order List</h3>
+              <br>
+              <div class="table-responsive"> <!-- Added table-responsive class -->
+
+
+                <div th:if="${message}">
+                  <p th:text="${message}" class="alert alert-info"></p>
+                </div>
+
+                <table style="width: 100%; text-align: center;">
+                  <!-- Display the flash attribute message if it exists -->
+                  <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Ordered Quantity</th>
+                    <th>Reason for Return</th>
+                    <th>Return Quantity</th>
+                    <th>Approve</th>
+                    <th>Denied</th>
+                    <!-- Add more columns as needed -->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <!-- Use Thymeleaf to iterate through the list of return requests and populate the table rows -->
+                  <tr th:each="returnRequest,rowStat : ${returnRequests}">
+                    <td>
+                      <img th:src="'data:image/png;base64,' + ${encodedImagesList[rowStat.index]}" width="100" height="100" alt="Product Image"/>
+
+                      <!-- Display the product name -->
+                      <p th:text="${returnRequest.orderItem.product.name}"></p>
+                    </td>
+                    <td th:text="${returnRequest.orderItem.quantity  }"></td>
+                    <!--                                        + returnRequest.returnQuantity-->
+                    <td>
+                      <!-- Display the reason for return -->
+                      <p th:text="${returnRequest.reason}"></p>
+                    </td>
+                    <td th:text="${returnRequest.returnQuantity}"></td>
+
+                    <td>
+                      <form method="POST" th:action="@{'/admin/viewReturn/approveReturn/' + ${returnRequest.orderItem.order.id} + '/' + ${returnRequest.orderItem.id}}">
+                        <button type="submit">
+                          <i class="ti ti-circle-check"></i>
+                        </button>
+                      </form>
+                    </td>
+
+                    <td>
+                      <form method="POST" th:action="@{'/admin/viewReturn/denyReturn/' + ${returnRequest.orderItem.order.id} + '/' + ${returnRequest.orderItem.id}}">
+                        <button type="submit">
+                          <i class="ti ti-circle-minus"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                  </tbody>
+
+                </table>
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div data-th-replace="~{fragments/adminBasic :: script}"></div>
+
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="/frontEnd/css/styles.min.css" type="text/css">
+</head>
+<body>
+<div class="card">
+  <div class="title">Ordered Items</div>
+  <table style="width: 100%; text-align: center;">
+    <!-- Display the flash attribute message if it exists -->
+    <thead>
+    <tr>
+      <th>Product Name</th>
+      <th>Ordered Quantity</th>
+      <th>Purchase Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Use Thymeleaf to iterate through the list of order items and populate the table rows -->
+    <tr th:each="orderItem, rowStat : ${order.orderItems}">
+      <td>
+        <!-- Display the product image -->
+        <img th:src="'data:image/png;base64,' + ${encodedImagesList[rowStat.index]}" width="100" height="100" alt="Product Image"/>
+        <p th:text="${orderItem.product.name}"></p>
+      </td>
+      <td th:text="${orderItem.quantity}"></td>
+      <td th:text="${orderItem.price}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="title">Purchase Reciept</div>
+  <div class="info">
+    <div class="row">
+      <div class="col-7">
+        <span class="heading">Order Date</span><br>
+        <span class="detail" th:text="${order.orderDate.toLocalDate()}"></span>
+      </div>
+      <div class="col-5 pull-right">
+        <span class="heading">Purchase Total.</span><br>
+        <span class="detail" th:text="${order.purchaseTotal}"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pricing">
+    <div class="row">
+      <div class="col-9">
+        <span id="name">ORDERED ADDRESS</span>
+      </div>
+      <div class="col-3">
+        <span  th:text="${order.address.address}"></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-9">
+        <span th:if="${not #strings.equalsIgnoreCase(order.status, 'CANCELED')}" th:text="${order.status}"></span>
+        <span th:if="${#strings.equalsIgnoreCase(order.status, 'CANCELED')}">
+        <span th:text="${order.status}"></span>
+        <span th:text="${#temporals.format(order.orderDate.toLocalDate(), 'dd-MM-yyyy')}"></span>
+        <span th:text="${#temporals.format(order.orderDate.toLocalTime(), 'HH:mm')}"></span>
+
+    </span>
+      </div>
+
+    </div>
+  </div>
+  <div class="total">
+    <div class="row">
+      <div class="col-9"></div>
+      <div class="col-3"><big th:text="${order.purchaseTotal}"></big></div>
+    </div>
+  </div>
+  <div class="tracking">
+    <div class="title">Tracking Order</div>
+  </div>
+
+
+  <th:block th:if="${not #strings.equalsIgnoreCase(order.status, 'CANCELED')}">
+    <div>
+      <ul>
+        <li th:each="history : ${orderHistories}" style="display: inline-block; font-size: 9px; white-space: nowrap; margin-left: 2%">
+          <div style="transform: rotate(-40deg);">
+            <span th:text="${#temporals.format(history.changeTimestamp.toLocalDate(), 'dd/MM/yyyy')}"></span>
+
+          </div>
+          <div style="transform: rotate(-40deg);">
+            <span th:text="${#temporals.format(history.changeTimestamp.toLocalTime(), 'HH:mm')}"></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="progress-track">
+      <ul id="progressbar">
+        <li class="step0" id="ORDERED">Ordered</li>
+        <li class="step0 text-center" id="PACKED">Packed</li>
+        <li class="step0 text-right" id="SHIPPED">Shipped</li>
+        <li class="step0 text-right" id="DELIVERED">Delivered</li>
+        <li class="step0 text-right" th:if="${ #strings.equalsIgnoreCase(order.status, 'RETURNED')}"  id="RETURNED">Returned</li>
+      </ul>
+    </div>
+  </th:block>
+
+
+
+  <div class="footer">
+    <div class="row">
+      <div class="col-2"><img class="img-fluid" src="https://i.imgur.com/YBWc55P.png"></div>
+      <div class="col-10">Want any help? Please &nbsp;<a> contact us</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script th:inline="javascript">
+  var orderStatus = /*[[${order.status}]]*/ '';
+  console.log(orderStatus);
+
+  var progressSteps = document.querySelectorAll(".progress-track #progressbar li");
+
+  // Iterate through all the steps and set the "active" class
+  for (var i = 0; i < progressSteps.length; i++) {
+    var step = progressSteps[i];
+
+    if (step.id === orderStatus) {
+      // When the current step is the active status, add "active" class and break
+      step.classList.add("active");
+      break;
+    } else {
+      // For previous steps, add "active" class
+      step.classList.add("active");
+    }
+  }
+</script>
+
+
+
+</body>
+</html>

@@ -125,10 +125,7 @@
                 </ul>
 
                 <!-- Add a button for "Redeem from Wallet" -->
-                <label th:if="${walletAmount !=null}">
-                  Redeem
-                  <input type="radio" id="redeemCheckbox">
-                </label>
+                <label th:unless="${walletAmount == null or walletAmount == 0}">
                 <p th:text="'Wallet Amount: ' + ${walletAmount}"></p>
 
               </div>

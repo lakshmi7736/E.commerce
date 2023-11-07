@@ -81,7 +81,7 @@
 
                         </li>
                         <li><a th:href="@{/contact}">Contact</a></li>
-                        <li th:if="${session.jwtResponse != null}"> <a href=""> <i class="fa fa-user"></i><span th:text="${#strings.substringBefore(session.jwtResponse.name, ' ')}"></span>
+                        <li th:if="${session.jwtResponse != null}"> <a href=""> <i class="fa fa-user"></i>
                         </a>
                             <ul class="dropdown">
                                 <li><a th:href="@{/user/profile}">My Profile</a></li>

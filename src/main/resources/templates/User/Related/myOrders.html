@@ -61,7 +61,7 @@
             <td th:text="${order.purchaseTotal}"></td>
             <td th:text="${order.address.address}"></td>
             <td th:text="${order.status}"></td>
-            <td> <a th:href="@{/orders/track-order/{orderId}(orderId=${order.id})}">Track</a>
+            <td> <a th:href="@{/user/orders/track-order/{orderId}(orderId=${order.id})}">Track</a>
             </td>
             <td>
               <a th:href="@{/orders/cancel/{orderId}(orderId=${order.id})}"
@@ -69,8 +69,8 @@
                 Cancel
               </a>
             </td>
-            <td> <a  th:href="@{/orders/return/{orderId}(orderId=${order.id})}">Return</a></td>
-            <td> <a <a th:href="@{/user/orders/invoice/{orderId}(orderId=${order.id})}">Invoice</a></td>
+            <td> <a  th:href="@{/user/request/return/{orderId}(orderId=${order.id})}">Return</a></td>
+            <td>  <a th:href="@{/user/orders/invoice/{orderId}(orderId=${order.id})}">Invoice</a></td>
 
           </tr>
           </tbody>
