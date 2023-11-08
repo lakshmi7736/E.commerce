@@ -3,7 +3,9 @@ package com.Mirra.eCommerce.Controller.AdminController.ReportController;
 
 
 import com.Mirra.eCommerce.Models.Orders.Order;
+import com.Mirra.eCommerce.Models.Orders.OrderItem;
 import com.Mirra.eCommerce.Service.Orders.OrderAdditionalService;
+import com.Mirra.eCommerce.Service.Orders.OrderItemsAdditionalService;
 import com.Mirra.eCommerce.Service.Orders.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,6 +33,10 @@ public class SalesReportController {
 
     @Autowired
     private OrderAdditionalService orderAdditionalService;
+
+
+    @Autowired
+    private OrderItemsAdditionalService orderItemsAdditionalService;
 
     @Autowired
     private ITemplateEngine templateEngine;
@@ -163,34 +169,6 @@ public class SalesReportController {
         return totalPurchase;
     }
 
-//
-//    @GetMapping("/perMonth/delivered-orders")
-//    public String getDeliveredOrdersPerMonth(Model model,
-//                                             @RequestParam(name = "filterType", required = false) String filterType,
-//                                             @RequestParam(name = "filterMonth", required = false) String filterMonth) {
-//
-//        List<Order> deliveredOrders = getDeliveredOrdersByFilterMonth(filterType, filterMonth, model);
-//
-//        // Calculate the total purchase amount
-//        BigDecimal totalPurchase = calculateTotalPurchase(deliveredOrders);
-//
-//        List<String> orderDates = new ArrayList<>();
-//        List<BigDecimal> purchaseTotals = new ArrayList<>();
-//
-//        for (Order order : deliveredOrders) {
-//            orderDates.add(String.valueOf(order.getOrderDate()));
-//            purchaseTotals.add(order.getPurchaseTotal());
-//        }
-//
-//
-//        // Add the totalPurchase to the model
-//        model.addAttribute("totalPurchase", totalPurchase);
-//        System.out.println(totalPurchase);
-//        model.addAttribute("orders", deliveredOrders);
-//
-//        return "fragments/adminBasic"; // Thymeleaf view name
-//    }
-
     @GetMapping("/perMonth/delivered-orders")
     public String getDeliveredOrdersPerMonth(Model model,
                                      @RequestParam(name = "filterType", required = false) String filterType,
@@ -199,7 +177,7 @@ public class SalesReportController {
 
 
         List<Order> deliveredOrders = getDeliveredOrdersByFilterMonth(filterType,filterMonth,model);
-
+        model.addAttribute("orders", deliveredOrders);
 
         // Calculate the total purchase amount
         BigDecimal totalPurchase = calculateTotalPurchase(deliveredOrders);
@@ -209,9 +187,28 @@ public class SalesReportController {
         System.out.println("totalPurchase"+totalPurchase);
 
 
-        model.addAttribute("orders", deliveredOrders);
+
+        List<OrderItem> refundedOrders = getDeliveredOrdersAndNotReturnedByFilterMonth(filterType,filterMonth,model);
+
+        model.addAttribute("refundedOrders", refundedOrders);
+
+
+        BigDecimal refundedAmount= calculateRefundGiven(refundedOrders);
+
+        // Add the totalPurchase to the model
+        model.addAttribute("refundedAmount", refundedAmount);
+        System.out.println("refundedAmount"+refundedAmount);
+
+
+        BigDecimal profit=totalPurchase.subtract(refundedAmount);
+        model.addAttribute("profit",profit);
+
+
         return "fragments/adminBasic"; // Thymeleaf view name
     }
+
+
+
 
     private List<Order> getDeliveredOrdersByFilterMonth(
             String filterType,
@@ -234,6 +231,48 @@ public class SalesReportController {
         }
         return deliveredOrders;
     }
+
+
+    private List<OrderItem> getDeliveredOrdersAndNotReturnedByFilterMonth(
+            String filterType,
+            String filterMonth, Model model) {
+        List<OrderItem> deliveredOrders = new ArrayList<>();
+
+        if(filterMonth != null  && !filterMonth.trim().isEmpty()) {
+            filterType = "Per Month";
+            try {
+                String[] yearMonthParts = filterMonth.split("-");
+                if (yearMonthParts.length == 2) {
+                    int year = Integer.parseInt(yearMonthParts[0]);
+                    int month = Integer.parseInt(yearMonthParts[1]);
+                    YearMonth yearMonth = YearMonth.of(year, month);
+                    deliveredOrders = orderItemsAdditionalService.getDeliveredOrdersByMonth(yearMonth);
+
+                }
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                // Handle invalid month input
+            }
+        }
+        return deliveredOrders;
+    }
+
+
+    private BigDecimal calculateRefundGiven(List<OrderItem> orders) {
+        BigDecimal totalPurchase = BigDecimal.ZERO;
+
+        for (OrderItem order : orders) {
+            System.out.println("on text"+order.getId());
+
+            // Assuming there's a method in your 'Order' class to get the purchase total
+            BigDecimal purchaseTotal = order.getPrice();
+            // Add the purchase total to the running total
+            totalPurchase = totalPurchase.add(purchaseTotal);
+            System.out.println("test totalPurchase"+totalPurchase);
+        }
+
+        return totalPurchase;
+    }
+
 
 
 }

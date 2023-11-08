@@ -1,8 +1,11 @@
 package com.Mirra.eCommerce.Service.Orders;
 
 import com.Mirra.eCommerce.Models.Orders.Order;
+import com.Mirra.eCommerce.Models.Orders.OrderItem;
 import com.Mirra.eCommerce.Models.Orders.OrderStatus;
+import com.Mirra.eCommerce.Models.Returns.ReturnStatus;
 import com.Mirra.eCommerce.Models.Users.User;
+import com.Mirra.eCommerce.Repository.Orders.OrderItemsRepository;
 import com.Mirra.eCommerce.Repository.Orders.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,9 @@ public class OrderAdditionalServiceImpl implements OrderAdditionalService{
     @Autowired
     private OrderRepository orderRepo;
 
+    @Autowired
+    private OrderItemsRepository orderItemsRepository;
+
     @Override
     public User findMostOrderedUser() {
         List<Object[]> result = orderRepo.findMostOrderedUser();
@@ -31,8 +37,14 @@ public class OrderAdditionalServiceImpl implements OrderAdditionalService{
 
     @Override
     public List<Order> getDeliveredOrders() {
-        return orderRepo.findByStatus(OrderStatus.DELIVERED);
+
+        List<Order> orders= orderRepo.findByStatus(OrderStatus.DELIVERED);
+
+        return  orders;
+
     }
+
+
 
     @Override
     public List<Order> getDeliveredOrdersByDay(LocalDate date) {
