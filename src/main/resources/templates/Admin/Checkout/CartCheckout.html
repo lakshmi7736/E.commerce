@@ -33,15 +33,29 @@
 </div>
 <!-- Breadcrumb End -->
 
+
 <!-- Checkout Section Begin -->
 <section class="checkout spad">
     <div class="container">
+        <div th:if="${coupon}">
+            <p th:text="${coupon}" class="alert alert-info"></p>
+        </div>
         <div class="row">
-            <div class="col-lg-12">
-                <h6 class="coupon__link"><span class="icon_tag_alt"></span> <a href="#">Have a coupon?</a> Click
-                    here to enter your code.</h6>
+            <div class="col-lg-12" th:if="${user != null}">
+                <h6 class="coupon__link"><span class="icon_tag_alt"></span> <a href="#">Have a coupon?</a>
+                    <div class="discount__content">
+                      <form th:action="@{/admin/coupons/applyCoupon}" method="post">
+                        <input type="text" name="couponCode" placeholder="Enter your coupon code">
+                        <input type="hidden" name="grandTotal" th:value="${grandTotal}">
+
+                        <input type="hidden" id="cartList" name="cartList" value="" />
+                        <button type="submit" class="site-btn">Apply</button>
+                    </form>
+                    </div>
+                </h6>
             </div>
         </div>
+
 
         <th:block th:if="${user != null}">
             <form id="paymentForm" th:action="@{/cart/checkout}" class="checkout__form" method="post">
@@ -298,6 +312,16 @@
         // Listen for changes in the total value
         totalSpan.addEventListener("DOMSubtreeModified", togglePaymentOptions);
     });
+</script>
+
+<script>
+$(document).ready(function() {
+    // Assuming cartList is a JSON array, convert it to a string
+    var cartList = JSON.stringify(${cartlist});
+
+    // Set the value of the hidden input field
+    $('#cartList').val(cartList);
+});
 </script>
 
 

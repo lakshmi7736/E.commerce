@@ -103,13 +103,7 @@ public class CartCheckout {
 
             int loggedInUserId = user.getId();
 
-            int totalQuantity = 0;
-            int wishListCount = 0;
 
-            totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
-            wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
-            model.addAttribute("totalQuantity", totalQuantity);
-            model.addAttribute("wishListCount", wishListCount);
 
             List<Address> addresses = addressService.findAddressesByUserId(loggedInUserId);
             model.addAttribute("addresses", addresses);
@@ -117,6 +111,10 @@ public class CartCheckout {
             List<AddToCart> cartList = cartlistService.getCartListByUserId(loggedInUserId);
             model.addAttribute("cartlist", cartList);
 
+            int totalQuantity = cartList.size();
+            int wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+            model.addAttribute("totalQuantity", totalQuantity);
+            model.addAttribute("wishListCount", wishListCount);
 
             BigDecimal grandTotal = calculateActualTotal.calculateGrandTotal(cartList);
             model.addAttribute("grandTotal", grandTotal);
@@ -190,11 +188,6 @@ public class CartCheckout {
 
         // Save the updated order
         orderService.saveOrder(order);
-
-
-
-
-
 
 
             // Update product stock (assuming you have a method for this)

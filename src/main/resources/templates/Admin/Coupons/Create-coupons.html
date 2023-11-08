@@ -1,7 +1,8 @@
-
-<html xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 <head data-th-replace="~{fragments/adminBasic::head}">
 </head>
+
 <body>
 <!-- Body Wrapper -->
 <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
@@ -12,48 +13,45 @@
   <div class="body-wrapper">
     <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
       <div class="d-flex align-items-center justify-content-center w-100">
-        <div class="row justify-content-center w-90">
+        <div class="row justify-content-center w-100">
           <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
             <div class="card mb-100">
               <div class="card-body">
-                <div>
-                  <a th:href="@{/admin/dashboard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
-                </div>
-                <div class="table-responsive"> <!-- Added table-responsive class -->
+                <a th:href="@{/index}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                  <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                </a>
+                <form method="post" th:object="${coupon}" th:action="@{/admin/coupons/create}">
+                  <h1>Create Coupon</h1>
+                  <div class="mb-3">
+                    <label for="code">Coupon Code:</label>
+                    <input type="text" id="code" th:field="*{code}" class="form-control"  required /><br/>
+                    <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
+                  </div>
 
-                  <form method="post" th:object="${coupon}" th:action="@{/coupons/create}">
-                    <h1>Create Coupon</h1>
-                    <div class="mb-3">
-                      <label for="code">Coupon Code:</label>
-                      <input type="text" id="code" th:field="*{code}" class="form-control"  required /><br/>
-                      <p class="text-danger" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></p>
-                    </div>
+                  <div class="mb-3">
+                    <label for="minPurchaseAmt">Minimum Purchase Amount:</label>
+                    <input type="number" id="minPurchaseAmt" th:field="*{minPurchaseAmt}" class="form-control" required /><br/>
+                    <p class="text-danger" th:if="${#fields.hasErrors('minPurchaseAmt')}" th:errors="*{minPurchaseAmt}"></p>
 
-                    <div class="mb-3">
-                      <label for="minPurchaseAmt">Minimum Purchase Amount:</label>
-                      <input type="number" id="minPurchaseAmt" th:field="*{minPurchaseAmt}" class="form-control" required /><br/>
-                      <p class="text-danger" th:if="${#fields.hasErrors('minPurchaseAmt')}" th:errors="*{minPurchaseAmt}"></p>
+                  </div>
 
-                    </div>
+                  <div class="mb-3">
+                    <label for="discountAmount">Discount Amount:</label>
+                    <input type="number" id="discountAmount" name="discountAmount" th:field="*{discountAmount}" class="form-control" required/><br/>
+                    <p class="text-danger" th:if="${#fields.hasErrors('discountAmount')}" th:errors="*{discountAmount}"></p>
 
-                    <div class="mb-3">
-                      <label for="discountAmount">Discount Amount:</label>
-                      <input type="number" id="discountAmount" name="discountAmount" th:field="*{discountAmount}" class="form-control" required/><br/>
-                      <p class="text-danger" th:if="${#fields.hasErrors('discountAmount')}" th:errors="*{discountAmount}"></p>
+                  </div>
 
-                    </div>
+                  <div class="mb-3">
+                    <label for="expirationDate">Expiration Date:</label>
+                    <input type="date" id="expirationDate" name="expirationDate" th:field="*{expirationDate}" class="form-control" /><br/>
+                    <p class="text-danger" th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"></p>
 
-                    <div class="mb-3">
-                      <label for="expirationDate">Expiration Date:</label>
-                      <input type="date" id="expirationDate" name="expirationDate" th:field="*{expirationDate}" class="form-control" /><br/>
-                      <p class="text-danger" th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"></p>
-
-                    </div>
-                    <button type="submit" class="btn btn-primary col-md-12">Create </button>
-                  </form>
-                  <!-- Link to view the product list -->
-                  <a href="/coupons">Back to Coupon List</a>
-                </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary col-md-12">Create </button>
+                </form>
+                <!-- Link to view the product list -->
+                <a href="/coupons">Back to Coupon List</a>
               </div>
             </div>
           </div>
@@ -62,5 +60,7 @@
     </div>
   </div>
 </div>
+
+  <div data-th-replace="~{fragments/adminBasic :: script}"></div>
 </body>
 </html>

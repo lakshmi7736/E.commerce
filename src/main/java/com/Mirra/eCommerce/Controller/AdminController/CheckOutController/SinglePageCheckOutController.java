@@ -110,12 +110,10 @@ public class SinglePageCheckOutController {
         retrieveAndAddAddresses(user, model);
 
 
-        int totalQuantity = 0;
-        int wishListCount = 0;
 
         int loggedInUserId = user.getId();
-        totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
-        wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
+        int totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
+        int wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
         model.addAttribute("totalQuantity", totalQuantity);
         model.addAttribute("wishListCount", wishListCount);
 
