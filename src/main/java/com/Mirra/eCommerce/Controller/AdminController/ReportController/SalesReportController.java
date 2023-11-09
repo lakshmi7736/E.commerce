@@ -178,22 +178,13 @@ public class SalesReportController {
         List<Order> deliveredOrders = getDeliveredOrdersByFilterMonth(filterMonth);
         model.addAttribute("orders", deliveredOrders);
 
-
         // Calculate the total purchase amount
         BigDecimal totalPurchase = calculateTotalPurchase(deliveredOrders);
-
         // Add the totalPurchase to the model
         model.addAttribute("totalPurchase", totalPurchase);
-        System.out.println("totalPurchase"+totalPurchase);
+        System.out.println("totalsPurchasePer Month "+totalPurchase);
 
-//        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-//        List<OrderItem> deliveredOrderPerYear=getDeliveredOrdersByFilterYear(currentYear);
-//        model.addAttribute("deliveredOrderPerYear",deliveredOrderPerYear);
-//
-//        BigDecimal yearlyProfit=orderItemsAdditionalService.getSumOfPurchaseTotalDeliveredOrdersByYear(currentYear);
-//        System.out.println("yearly profit :"+yearlyProfit);
-//
-//
+
 
         List<OrderItem> refundedOrders = getDeliveredOrdersAndNotReturnedByFilterMonth(filterMonth);
 
@@ -201,7 +192,6 @@ public class SalesReportController {
 
 
         BigDecimal refundedAmount= calculateRefundGiven(refundedOrders);
-
         // Add the totalPurchase to the model
         model.addAttribute("refundedAmount", refundedAmount);
         System.out.println("refundedAmount"+refundedAmount);
@@ -212,26 +202,39 @@ public class SalesReportController {
 
         System.out.println("prfit of month "+profit);
 
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+
+
+        List<Order> deliveredOrdersPerYear = getDeliveredOrdersByFilterYear(currentYear);
+        model.addAttribute("ordersPerYear", deliveredOrdersPerYear);
+
+        // Calculate the total purchase amount
+        BigDecimal totalPurchasePerYear = calculateTotalPurchase(deliveredOrdersPerYear);
+        // Add the totalPurchase to the model
+        model.addAttribute("totalPurchasePerYear", totalPurchasePerYear);
+        System.out.println("totalPurchasePerYear"+totalPurchasePerYear);
+
+        List<OrderItem> refundedOrdersPerYear = getDeliveredOrdersAndNotReturnedByFilterYear(currentYear);
+
+        model.addAttribute("refundedOrdersPerYear", refundedOrdersPerYear);
+
+
+        BigDecimal refundedAmountPerYear= calculateRefundGiven(refundedOrdersPerYear);
+        // Add the totalPurchase to the model
+        model.addAttribute("refundedAmountPerYear", refundedAmountPerYear);
+        System.out.println("refundedAmountPerYear"+refundedAmountPerYear);
+
+
+        BigDecimal profitPerYear=totalPurchasePerYear.subtract(refundedAmountPerYear);
+        model.addAttribute("profitPerYear",profitPerYear);
+        System.out.println("prfit of year "+profitPerYear);
+
 
         return "fragments/adminBasic"; // Thymeleaf view name
     }
 
 
-    private List<OrderItem> getDeliveredOrdersByFilterYear(
-            int filterYear) {
-        List<OrderItem> deliveredOrders = new ArrayList<>();
-
-        if(filterYear!=0 ) {
-            try {
-                deliveredOrders = orderItemsAdditionalService.getDeliveredOrdersByYear(filterYear);
-            } catch (NumberFormatException e) {
-                // Handle invalid year input
-            } catch (ArrayIndexOutOfBoundsException e) {
-                // Handle invalid month input
-            }
-        }
-        return deliveredOrders;
-    }
 
 
     private List<Order> getDeliveredOrdersByFilterMonth(
@@ -291,6 +294,37 @@ public class SalesReportController {
         }
 
         return totalPurchase;
+    }
+
+
+    private List<Order> getDeliveredOrdersByFilterYear(
+            int filterYear) {
+        List<Order> deliveredOrders = new ArrayList<>();
+
+        if(filterYear != 0) {
+            try {
+                deliveredOrders = orderAdditionalService.getDeliveredOrdersByYear(filterYear);
+
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                // Handle invalid month input
+            }
+        }
+        return deliveredOrders;
+    }
+
+
+    private List<OrderItem> getDeliveredOrdersAndNotReturnedByFilterYear(
+            int filterYear) {
+        List<OrderItem> deliveredOrders = new ArrayList<>();
+
+        if(filterYear != 0) {
+            try {
+                    deliveredOrders = orderItemsAdditionalService.getDeliveredOrdersByYear(filterYear);
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                // Handle invalid month input
+            }
+        }
+        return deliveredOrders;
     }
 
 
