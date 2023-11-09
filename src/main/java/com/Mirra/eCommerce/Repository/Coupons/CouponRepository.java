@@ -14,10 +14,8 @@ public interface CouponRepository extends JpaRepository<Coupon,Integer> {
 
     boolean existsByCode(String code);
 
-//    @Query("SELECT c FROM Coupon c WHERE c.minPurchaseAmt >=minRange AND  c.minPurchaseAmt<=maxRange")
     List<Coupon> findByMinPurchaseAmtBetween(double minRange, double maxRange);
 
     List<Coupon> findByExpirationDateAfter(LocalDate currentDate);
-
     Coupon findByCode(String code);
 }

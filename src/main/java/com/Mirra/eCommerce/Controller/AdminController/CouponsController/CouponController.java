@@ -5,6 +5,7 @@ import com.Mirra.eCommerce.Models.Token.JwtResponse;
 import com.Mirra.eCommerce.Models.Users.Related.AddToCart;
 import com.Mirra.eCommerce.Models.Users.User;
 import com.Mirra.eCommerce.Models.datas.Product;
+import com.Mirra.eCommerce.Service.Checkout.CalculationService;
 import com.Mirra.eCommerce.Service.Coupons.CouponService;
 import com.Mirra.eCommerce.Service.User.Related.CartlistService;
 import com.Mirra.eCommerce.Service.User.UserService;
@@ -37,6 +38,9 @@ public class CouponController {
 
     @Autowired
     private CartlistService cartService;
+
+    @Autowired
+    private CalculationService calculationService;
 
     @GetMapping
     public String showCoupons(Model model) {
@@ -85,176 +89,7 @@ public class CouponController {
 
 
 
-    @PostMapping("/applyCoupon")
-    public String applyCoupon(@RequestParam("couponCode") String couponCode, @RequestParam("cartList") String cartListData, @RequestParam("grandTotal") BigDecimal grandTotal, HttpSession session, Model model, RedirectAttributes ra) {
-        System.out.println(couponCode);
 
-        System.out.println("cartListData "+cartListData);
-        Coupon coupon = couponService.findByCode(couponCode);
-
-
-        // Parse the cartListData string back to a List of AddToCart objects
-        List<AddToCart> cartList = parseCartListData(cartListData);
-        for (AddToCart cart:cartList){
-            System.out.println("cart "+cart.getId());
-        }
-
-//        BigDecimal minPurchase = BigDecimal.valueOf(coupon.getMinPurchaseAmt());
-
-
-
-//        if (grandTotal.compareTo(minPurchase) < 0) {
-//            ra.addFlashAttribute("coupon", "Can't apply coupon; didn't reach the minimum purchase.");
-//            return "redirect:/checkOut";
-//        }
-
-        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-        User user = userService.findByEmail(jwtResponse.getUsername());
-
-//        boolean couponApplied = applyCouponLogic(couponCode, user.getId(), cartList);
-//
-//        if (couponApplied) {
-//            model.addAttribute("couponApplied", true);
-//            ra.addFlashAttribute("coupon", "Added Coupon.");
-//        }
-
-        return "redirect:/checkOut";
-    }
-
-//    public boolean applyCouponLogic(String couponCode, int userId, List<AddToCart> cart) {
-//        Coupon validCoupon = couponService.findByCode(couponCode);
-//
-//        if (validCoupon != null) {
-//            int totalQuantity = 0;
-//
-//            for (AddToCart toCart : cart) {
-//                totalQuantity += toCart.getQuantity();
-//            }
-//
-//            BigDecimal discountAmount = BigDecimal.valueOf(validCoupon.getDiscountAmount());
-//            BigDecimal equalDiscountPerQuantity = discountAmount.divide(BigDecimal.valueOf(totalQuantity), 2, RoundingMode.HALF_UP);
-//
-//            for (AddToCart cartItem : cart) {
-//                Product product = cartItem.getProducts();
-//                BigDecimal actualPrice = product.getActualPrice();
-//                BigDecimal discountedPricePerQuantity = actualPrice.subtract(equalDiscountPerQuantity);
-//
-//                // No need to compare with zero, just set the calculated value
-//                cartItem.setDiscountPrice(discountedPricePerQuantity);
-//
-//                // Save the updated product (if needed)
-//                cartService.updateCart(cartItem);
-//            }
-//
-//            return true;
-//        }
-//
-//        return false;
-//    }
-
-
-    public List<AddToCart> parseCartListData(String cartListData) {
-        if (cartListData == null || cartListData.isEmpty()) {
-            return Collections.emptyList(); // Return an empty list or handle the empty case as needed
-        }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            List<AddToCart> cartList = objectMapper.readValue(cartListData, new TypeReference<List<AddToCart>>() {});
-            return cartList;
-        } catch (IOException e) {
-            // Handle parsing errors
-            e.printStackTrace(); // You may want to log or handle the error differently
-            return Collections.emptyList(); // Return an empty list or handle the error as needed
-        }
-    }
-
-//    @PostMapping("/applyCoupon")
-//    public String applyCoupon(@RequestParam("couponCode") String couponCode,@RequestParam("cartlist")List<AddToCart> cart, @RequestParam("grandTotal") BigDecimal grandTotal, HttpSession session, Model model, RedirectAttributes ra) {
-//
-//        Coupon coupon = couponService.findByCode(couponCode);
-//
-//        // Convert minPurchase (double) to a BigDecimal for comparison
-//        BigDecimal minPurchase = BigDecimal.valueOf(coupon.getMinPurchaseAmt());
-//
-//        // Compare BigDecimal using compareTo
-//        if (grandTotal.compareTo(minPurchase) < 0) {
-//            ra.addFlashAttribute("coupon", "Can't apply coupon; didn't reach the minimum purchase.");
-//            return "redirect:/checkOut"; // Redirect to the cart page
-//        }
-//
-//
-//        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-//
-//
-//        User user = userService.findByEmail(jwtResponse.getUsername());
-//
-//
-//        boolean couponApplied = applyCouponLogic(couponCode,user.getId(),cart); // Replace with your coupon application logic
-//
-//        if (couponApplied) {
-//            model.addAttribute("couponApplied", true);
-//            // Add other coupon-related data to the model if needed
-//            ra.addFlashAttribute("coupon", "Added Coupon.");
-//        }
-//
-//        // Redirect back to the cart page or wherever you want
-//        return "redirect:/checkOut"; // Redirect to the cart page
-//    }
-//
-//
-//
-//    public boolean applyCouponLogic(String couponCode, int userId,List<AddToCart> cart) {
-//        // Assuming you have a list of valid coupon codes and their details
-//        // You can replace this with your actual coupon validation logic
-//        Coupon validCoupon = couponService.findByCode(couponCode);
-//
-//        if (validCoupon != null) {
-//
-//            // Calculate the discount amount based on the coupon's rules
-//            BigDecimal discountAmount = BigDecimal.valueOf(validCoupon.getDiscountAmount());
-//
-//            for (AddToCart toCart:cart){
-//                // Calculate the total quantity of products in the cart
-//                int totalQuantity = toCart.getQuantity();
-//            }
-//
-//
-//
-//            // Calculate the equal discount amount per product quantity
-//            BigDecimal equalDiscountPerQuantity = discountAmount.divide(BigDecimal.valueOf(totalQuantity), 2, RoundingMode.HALF_UP);
-//
-//            // Apply the discount to each cart item's product
-//            for (AddToCart cartItem : cart) {
-//                Product product = cartItem.getProducts();
-//
-//                // Calculate the discounted price for each quantity
-//                BigDecimal actualPrice = product.getActualPrice();
-//
-////                BigDecimal discountedPricePerQuantity = actualPrice.subtract(equalDiscountPerQuantity);
-//
-//                BigDecimal discountedPricePerQuantity = actualPrice.subtract(equalDiscountPerQuantity);
-//
-//// Set discountedPricePerQuantity to zero if it's less than zero
-//                discountedPricePerQuantity = discountedPricePerQuantity.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : discountedPricePerQuantity;
-//
-//                System.out.println(discountedPricePerQuantity);
-//
-//                // Update the product's discountPrice for each quantity
-//                cartItem.setDiscountPrice(discountedPricePerQuantity);
-//
-//                // Save the updated product (if needed)
-//                cartService.saveOrUpdateCartItem(cartItem);
-//            }
-//
-//            // The coupon has been successfully applied
-//            return true;
-//        }
-//
-//        // Coupon code does not match any valid coupon
-//        return false;
-//    }
 
 
 }

@@ -116,7 +116,14 @@ public class CartController {
     }
 
     private List<AddToCart> getCartListForUser(User user) {
-        return cartlistService.getCartListByUserId(user.getId());
+
+        List<AddToCart> cartList= cartlistService.getCartListByUserId(user.getId());
+        for (AddToCart list :cartList){
+            list.setDiscountPrice(null);
+            cartlistService.updateCart(list);
+        }
+
+        return cartList;
     }
 
 

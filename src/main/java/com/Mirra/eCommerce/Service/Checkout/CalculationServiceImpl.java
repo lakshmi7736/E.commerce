@@ -48,5 +48,33 @@ public class CalculationServiceImpl implements CalculationService{
 
 
 
+    @Override
+    public BigDecimal calculateGrandCouponTotal(List<AddToCart> cartList) {
+        BigDecimal grandCouponTotal = BigDecimal.ZERO;
+        for (AddToCart cartItem : cartList) {
+            BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
+            BigDecimal actualPrice = cartItem.getDiscountPrice();
+            BigDecimal total = actualPrice.multiply(quantity);
+            cartItem.setTotal(total.doubleValue());
+            grandCouponTotal = grandCouponTotal.add(total);
+        }
+        return grandCouponTotal;
+    }
+
+
+    @Override
+    public BigDecimal calculateGrandCouponTotal(AddToCart cart) {
+        BigDecimal grandCouponTotal = BigDecimal.ZERO;
+
+            BigDecimal quantity = BigDecimal.valueOf(cart.getQuantity());
+            BigDecimal actualPrice = cart.getDiscountPrice();
+            BigDecimal total = actualPrice.multiply(quantity);
+            cart.setTotal(total.doubleValue());
+            grandCouponTotal = grandCouponTotal.add(total);
+
+        return grandCouponTotal;
+    }
+
+
 
 }

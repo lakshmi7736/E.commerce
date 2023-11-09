@@ -12,4 +12,8 @@ public interface CalculationService {
 
     public BigDecimal calculateActualTotal(List<AddToCart> cartList) ;
 
+    public BigDecimal calculateGrandCouponTotal(List<AddToCart> cartList);
+
+    public BigDecimal calculateGrandCouponTotal(AddToCart cart);
+
 }

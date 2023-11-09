@@ -33,5 +33,6 @@ public class AddToCart {
     @JoinColumn(name = "user_id")
     private User user;
 
+
 }
 

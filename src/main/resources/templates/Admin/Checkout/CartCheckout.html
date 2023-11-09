@@ -42,15 +42,15 @@
         </div>
         <div class="row">
             <div class="col-lg-12" th:if="${user != null}">
-                <h6 class="coupon__link"><span class="icon_tag_alt"></span> <a href="#">Have a coupon?</a>
+                <h6 class="coupon__link"><span class="icon_tag_alt"></span> <a th:if="${appliedCoupon}==null"  href="/user/cart">Have a coupon?</a>
                     <div class="discount__content">
-                      <form th:action="@{/admin/coupons/applyCoupon}" method="post">
+                      <form th:if="${appliedCoupon}==null" th:action="@{/cart/checkout/applyCoupon/cart}" method="post">
                         <input type="text" name="couponCode" placeholder="Enter your coupon code">
                         <input type="hidden" name="grandTotal" th:value="${grandTotal}">
-
-                        <input type="hidden" id="cartList" name="cartList" value="" />
                         <button type="submit" class="site-btn">Apply</button>
                     </form>
+                        <button  th:unless="${appliedCoupon}==null" class="site-btn">Coupon Applied</button>
+
                     </div>
                 </h6>
             </div>
@@ -60,7 +60,9 @@
         <th:block th:if="${user != null}">
             <form id="paymentForm" th:action="@{/cart/checkout}" class="checkout__form" method="post">
 
+                <input type="hidden" name="appliedCoupon" th:value="${appliedCoupon}">
                 <input type="hidden" name="grandTotal" th:value="${grandTotal}">
+
                 <input type="hidden" name="subTotal" th:value="${subTotal}" />
                 <div class="row">
                     <div class="col-lg-6">
@@ -124,12 +126,13 @@
                                     <tr th:each="cartlistItem, itemIndex : ${cartlist}">
                                         <td th:text="${cartlistItem.products.name}">Product Name</td>
                                         <td th:text="${cartlistItem.quantity}"></td>
+                                        <td  th:text="${cartlistItem.products.actualPrice}"></td>
                                         <td>
-                                            <span  th:text="${cartlistItem.products.myPrice}">Total Price</span>
-                                        </td>
-                                        <td  th:text="${cartlistItem.products.actualPrice}">
+                                            <span th:if="${cartlistItem.discountPrice ==null}"  th:text="${cartlistItem.products.myPrice}">Total Price</span>
+                                            <span th:unless="${cartlistItem.discountPrice ==null}"  th:text="${cartlistItem.discountPrice}">Total Price</span>
 
                                         </td>
+
                                     </tr>
                                     </tbody>
                                 </table>
@@ -138,15 +141,17 @@
                             <div class="checkout__order__total">
                                 <ul>
                                     <li>Subtotal <span  th:text="${subTotal}"></span></li>
-                                    <li>Total <span id="total"  th:text="${grandTotal}"></span></li>
+                                    <li>Total <span th:if="${appliedCoupon}==null" id="total"  th:text="${grandTotal}"></span>
+                                        <span th:unless="${appliedCoupon}==null"   th:text="${appliedCoupon}"></span></li>
                                 </ul>
 
                                 <!-- Add a button for "Redeem from Wallet" -->
-                                <label th:if="${walletAmount !=null}">
+                                <label th:unless="${walletAmount == null or walletAmount == 0}">
                                     Redeem
                                     <input type="radio" id="redeemCheckbox">
+                                    <p th:text="'Wallet Amount: ' + ${walletAmount}"></p>
+
                                 </label>
-                                <p th:text="'Wallet Amount: ' + ${walletAmount}"></p>
                             </div>
 
 
@@ -211,50 +216,70 @@
 <!-- Js Plugins -->
 <div data-th-replace="~{fragments/basic::script}"> </div>
 
-<!--razorpay.api.key=rzp_test_Nlwpx9fQN5A6U8-->
-<!--razorpay.api.secret=aA6DILSLE62cK7uurHauWZk0-->
+
 
 <!--RazorPayments-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
-<script>
-    // Add an event listener for the form submission
-    document.getElementById('paymentForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Prevent the default form submission
 
-        // Get the selected payment method (in this case, the UPI radio button)
-        const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-        const totalSpan = document.getElementById("total");
+<script>// Option 2: Calculate total amount inside the if block
+document.getElementById('paymentForm').addEventListener('submit', function (e) {
+  e.preventDefault(); // Prevent the default form submission
 
-        // Check if UPI is selected
-        if (selectedPaymentMethod && selectedPaymentMethod.value === "UPI") {
-            // Use Razorpay API to initiate the payment modal
-            var options = {
-                key: 'rzp_test_Nlwpx9fQN5A6U8',
-                amount: parseFloat(totalSpan.textContent) * 100, // Convert to paise
-                name: 'Your Store Name',
-                description: 'Payment for your order',
-                handler: function (response) {
-                    // Handle the payment success here, e.g., submit the form
-                    document.getElementById('totalAmount').value = response.amount;
-                    document.getElementById('paymentForm').submit();
-                },
-            };
+  // Get the selected payment method (in this case, the UPI radio button)
+  const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
 
-            var rzp = new Razorpay(options);
-            rzp.open();
-        } else {
-            // For other payment methods, submit the form as usual
-            document.getElementById('paymentForm').submit();
-        }
-    });
+  var totalSpan;
+  var appliedCoupon = parseFloat([[${appliedCoupon}]]); // Check if appliedCoupon exists
+
+      if (appliedCoupon && !isNaN(appliedCoupon)) {
+      totalSpan = parseFloat(appliedCoupon);
+      console.log('totalSpan pay:', totalSpan);
+    } else {
+      totalSpan = parseFloat(document.getElementById("total").textContent);
+      console.log('Total span checked:', totalSpan);
+    }
+
+  // Check if UPI is selected
+  if (selectedPaymentMethod && selectedPaymentMethod.value === 'UPI') {
+    // Use Razorpay API to initiate the payment modal
+    var options = {
+      key: 'rzp_test_Nlwpx9fQN5A6U8',
+      amount: parseInt(totalSpan) * 100, // Convert to paise
+      name: 'Your Store Name',
+      description: 'Payment for your order',
+      handler: function (response) {
+        // Handle the payment success here, e.g., submit the form
+        document.getElementById('totalAmount').value = response.amount;
+        document.getElementById('paymentForm').submit();
+      },
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+  } else {
+    // For other payment methods, submit the form as usual
+    document.getElementById('paymentForm').submit();
+  }
+});
 </script>
+
 
 
 <script>
     document.getElementById('redeemCheckbox').addEventListener('change', function() {
-        var grandTotal = parseFloat([[${grandTotal}]]);
+    var appliedCoupon = parseFloat([[${appliedCoupon}]]); // Check if appliedCoupon exists
+    var grandTotal;
+
+    if (appliedCoupon && !isNaN(appliedCoupon)) {
+      totalSpan = parseFloat(appliedCoupon);
+      console.log('totalSpan:', totalSpan);
+    } else {
+      totalSpan = parseFloat(document.getElementById("total").textContent);
+      console.log('Total span checked:', totalSpan);
+    }
+
         var walletAmount = parseFloat([[${walletAmount}]]);
         var redeemCheckbox = document.getElementById('redeemCheckbox');
         var discountedAmountField = document.getElementById('discountedAmount');
@@ -282,11 +307,10 @@
 </script>
 
 
+<!--if redeemed and amount == 0 means wallet paymet . so option visible only wallet-payment-->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
         const totalSpan = document.getElementById("total");
-                console.log('totalSpan',totalSpan);
-
         const walletLabel = document.getElementById("walletLabel");
         const otherOptions = document.querySelectorAll("input[name='paymentMethod']:not(#wallet)");
 
@@ -312,16 +336,6 @@
         // Listen for changes in the total value
         totalSpan.addEventListener("DOMSubtreeModified", togglePaymentOptions);
     });
-</script>
-
-<script>
-$(document).ready(function() {
-    // Assuming cartList is a JSON array, convert it to a string
-    var cartList = JSON.stringify(${cartlist});
-
-    // Set the value of the hidden input field
-    $('#cartList').val(cartList);
-});
 </script>
 
 
