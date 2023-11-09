@@ -2,6 +2,7 @@ package com.Mirra.eCommerce.Service.Orders;
 
 import com.Mirra.eCommerce.Models.Orders.OrderItem;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -19,4 +20,6 @@ public interface OrderItemsAdditionalService {
     public List<OrderItem> getDeliveredOrdersByYear(int year);
 
     public List<OrderItem> getDeliveredOrdersByDateRange(LocalDate startDate, LocalDate endDate);
+
+    public BigDecimal getSumOfPurchaseTotalDeliveredOrdersByYear(int year);
 }

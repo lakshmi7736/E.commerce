@@ -5,6 +5,7 @@ import com.Mirra.eCommerce.Repository.Orders.OrderItemsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -23,7 +24,7 @@ public class OrderItemsAdditionalServiceImpl implements OrderItemsAdditionalServ
     @Override
     public List<OrderItem>  getDeliveredOrders() {
 
-        List<OrderItem>  orderItems= orderItemsRepository.findByReturnStatusAndDeliveredOrder();
+        List<OrderItem> orderItems= orderItemsRepository.findByReturnStatusAndDeliveredOrder();
 
         return orderItems;
     }
@@ -54,6 +55,17 @@ public class OrderItemsAdditionalServiceImpl implements OrderItemsAdditionalServ
                 .filter(order -> YearMonth.from(order.getOrder().getOrderDate()).equals(yearMonth))
                 .collect(Collectors.toList());
     }
+
+
+    @Override
+    public BigDecimal getSumOfPurchaseTotalDeliveredOrdersByYear(int year) {
+        List<OrderItem> deliveredOrders = getDeliveredOrders();
+        return deliveredOrders.stream()
+                .filter(order -> order.getOrder().getOrderDate().toLocalDate().getYear() == year)
+                .map(order -> order.getOrder().getPurchaseTotal())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 
     @Override
     public List<OrderItem> getDeliveredOrdersByYear(int year) {
