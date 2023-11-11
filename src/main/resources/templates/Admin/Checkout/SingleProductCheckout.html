@@ -218,6 +218,16 @@
 <!--RazorPayments-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+<script>
+    $(document).ready(function () {
+        $('.address-checkbox').change(function () {
+            if ($(this).is(':checked')) {
+                $('.address-checkbox').not(this).prop('checked', false);
+            }
+        });
+    });
+</script>
+
 
 
 <script>// Option 2: Calculate total amount inside the if block

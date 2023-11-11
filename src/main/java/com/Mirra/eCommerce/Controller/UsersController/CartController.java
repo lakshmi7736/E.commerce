@@ -16,6 +16,7 @@ import com.Mirra.eCommerce.Service.User.Related.WishlistService;
 import com.Mirra.eCommerce.Service.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -153,84 +154,6 @@ public class CartController {
     }
 
 
-//    @GetMapping
-//    public String cart(Model model, HttpSession session) throws IOException, ClassNotFoundException {
-//        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-//
-//        if (jwtResponse == null) {
-//            return "redirect:/signin"; // Use a meaningful URL
-//        }
-//
-//        String username = jwtResponse.getUsername();
-//        User user = userService.findByEmail(username);
-//
-//        if (user != null) {
-//            int loggedInUserId = user.getId();
-//
-//            List<AddToCart> cartList = cartlistService.getCartListByUserId(loggedInUserId);
-//
-//            BigDecimal grandTotal = calculateActualTotal.calculateGrandTotal(cartList);
-//            BigDecimal subTotal = calculateActualTotal.calculateActualTotal(cartList);
-//            List<String> encodedImagesList = encodeImages(cartList);
-//
-//            int totalQuantity = cartlistService.getCartListCountForUser(loggedInUserId);
-//            int wishListCount = wishlistService.getWishListCountForUser(loggedInUserId);
-//            model.addAttribute("totalQuantity", totalQuantity);
-//            model.addAttribute("wishListCount", wishListCount);
-//
-//            model.addAttribute("grandTotal", grandTotal);
-//
-//            model.addAttribute("subTotal",subTotal);
-//
-//            model.addAttribute("cartlist", cartList);
-//            model.addAttribute("encodedImagesList", encodedImagesList);
-//
-//            BigDecimal subtractedValue = grandTotal.subtract(new BigDecimal(500));
-//            double subtractedDouble = subtractedValue.doubleValue();
-//
-//            BigDecimal addedValue = grandTotal.add(new BigDecimal(500));
-//            double addedDouble = addedValue.doubleValue();
-//
-//
-//
-//            // Retrieve coupons within the specified range
-//            List<Coupon> couponsInRange = couponService.getCouponsInRange(subtractedDouble, addedDouble);
-//
-//            for(Coupon c:couponsInRange){
-//                System.out.println(c.getCode());
-//            }
-//            List<Coupon> nonExpiredCoupons = new ArrayList<>(); // Create a new list to store non-expired coupons
-//            User mostOrderedUser = orderService.findMostOrderedUser();
-//            System.out.println("mostOrderedUser "+mostOrderedUser);
-//            System.out.println("user "+user);
-//
-//            LocalDate currentDate = LocalDate.now();
-//
-//            if(mostOrderedUser!=null && user!=null && user.getId()== mostOrderedUser.getId()){
-//                System.out.println("inside yes");
-//                List<Coupon> userCoupon =couponService.getCouponsForUser();
-//                nonExpiredCoupons = userCoupon;
-//
-//            }
-//            else {
-//                for (Coupon coupon : couponsInRange) {
-//                    System.out.println("to fetch coupons");
-//                    LocalDate expirationDate = coupon.getExpirationDate();
-//                    if (expirationDate != null && !expirationDate.isBefore(currentDate)&& coupon.getMinPurchaseAmt()!=0) {
-//                        nonExpiredCoupons.add(coupon); // Add non-expired coupons to the new list
-//                    }
-//                }
-//                model.addAttribute("couponsInRange", nonExpiredCoupons); // Add the new list to the model
-//
-//            }
-//        }
-//
-//        return "User/Related/myCart";
-//    }
-//
-
-
-
 
 
     private List<String> encodeImages(List<AddToCart> cartList) throws IOException, ClassNotFoundException {
@@ -313,6 +236,18 @@ public class CartController {
 
         return "redirect:/user/cart";
     }
+
+    @Transactional
+    @RequestMapping("/clear")
+    public String clearCartByUserId(HttpSession session) {
+        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
+        if (jwtResponse != null) {
+            User user = userService.findByEmail(jwtResponse.getUsername());
+            cartlistService.clearCartByUser(user);
+        }
+        return "redirect:/user/cart";
+    }
+
 
 
 }

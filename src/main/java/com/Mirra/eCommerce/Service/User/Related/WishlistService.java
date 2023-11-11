@@ -15,4 +15,7 @@ public interface WishlistService {
     public void removeCartItem(int wishlistId);
 
     boolean existsByUserAndProduct(User user, Product products);
+
+    public void clearWishlistByUser(User user);
+
 }

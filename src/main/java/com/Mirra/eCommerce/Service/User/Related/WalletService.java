@@ -6,4 +6,6 @@ import com.Mirra.eCommerce.Models.Users.User;
 public interface WalletService {
     public Wallet findByUser(User user);
     public Wallet save(Wallet wallet);
+
+
 }

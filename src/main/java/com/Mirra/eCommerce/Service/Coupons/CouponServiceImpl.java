@@ -66,19 +66,22 @@ public class CouponServiceImpl implements CouponService{
                 .collect(Collectors.toList());
     }
 
+
+
     @Override
     public Coupon findByCode(String code) {
-        System.out.println("inside service" + code);
-        Coupon coupon = couponRepo.findByCode(code);
+        System.out.println("inside service: " + code);
+        Coupon coupon = couponRepo.findByCodeIgnoreCase(code);
 
         if (coupon != null) {
-            System.out.println("from repo" + coupon.getCode());
+            System.out.println("from repo: " + coupon.getCode());
         } else {
             System.out.println("Coupon with code " + code + " not found");
         }
 
         return coupon;
     }
+
 
 
 }

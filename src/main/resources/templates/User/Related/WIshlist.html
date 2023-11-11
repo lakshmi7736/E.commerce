@@ -68,7 +68,7 @@
                             <td th:text="${wishlistItem.products.actualPrice}"></td>
                             <td>
                                 <!-- Add to cart button or link -->
-                                <button class="add-to-cartlist" th:data-product-id="${wishlistItem.products.id}">Add to Cart</button>
+                                <button class="add-to-cartlist" th:data-product-id="${wishlistItem.products.id}"><a th:href="'/user/cart/add/' + ${wishlistItem.products.id}">Add to Cart</a></button>
                             </td>
                             <td>
                                 <a class="remove-item"  th:href="@{'/user/wishlist/removeProduct/' + ${wishlistItem.id}}"  onclick="return confirm('Are you sure you want to delete this category?')">x</a>
@@ -89,7 +89,7 @@
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6">
                 <div class="cart__btn update__btn">
-                    <a href="#"><span class="icon_loading"></span> Clear List</a>
+                    <a th:href="@{/user/wishlist/clear}"><span class="icon_loading"></span> Clear List</a>
                 </div>
             </div>
         </div>

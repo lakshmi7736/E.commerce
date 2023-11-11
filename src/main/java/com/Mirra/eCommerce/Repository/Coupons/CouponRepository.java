@@ -3,6 +3,7 @@ package com.Mirra.eCommerce.Repository.Coupons;
 import com.Mirra.eCommerce.Models.Coupons.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -17,5 +18,7 @@ public interface CouponRepository extends JpaRepository<Coupon,Integer> {
     List<Coupon> findByMinPurchaseAmtBetween(double minRange, double maxRange);
 
     List<Coupon> findByExpirationDateAfter(LocalDate currentDate);
-    Coupon findByCode(String code);
+
+    @Query("SELECT c FROM Coupon c WHERE UPPER(TRIM(c.code)) = UPPER(TRIM(:code))")
+    Coupon findByCodeIgnoreCase(@Param("code") String code);
 }

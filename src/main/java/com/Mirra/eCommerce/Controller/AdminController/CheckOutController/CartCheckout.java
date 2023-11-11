@@ -242,42 +242,87 @@ public class CartCheckout {
 
 
     @PostMapping("/applyCoupon/cart")
-    public String applyCoupon(@RequestParam("couponCode") String couponCode,@RequestParam("grandTotal") BigDecimal grandTotal, HttpSession session, Model model, RedirectAttributes ra) throws IOException, ClassNotFoundException {
-        System.out.println("INIDE COUPON POST");
-        System.out.println(couponCode);
-        System.out.println(grandTotal);
+    public String applyCoupon(@RequestParam("couponCode") String couponCode, @RequestParam("grandTotal") BigDecimal grandTotal,
+                              HttpSession session, Model model, RedirectAttributes ra) throws IOException, ClassNotFoundException {
 
-        Coupon coupon = couponService.findByCode(couponCode);
-        System.out.println(coupon.getCode());
+        try {
+            if (couponCode == null || couponCode.isEmpty()) {
+                ra.addFlashAttribute("coupon", "Coupon code is empty.");
+                return "redirect:/cart/checkout"; // Redirect to the cart page
+            }
 
-        // Convert minPurchase (double) to a BigDecimal for comparison
-        BigDecimal minPurchase = BigDecimal.valueOf(coupon.getMinPurchaseAmt());
+            Coupon coupon = couponService.findByCode(couponCode);
+            System.out.println(coupon.getCode());
 
-        // Compare BigDecimal using compareTo
-        if (grandTotal.compareTo(minPurchase) < 0) {
-            ra.addFlashAttribute("coupon", "Can't apply coupon; didn't reach the minimum purchase.");
+            // Convert minPurchase (double) to a BigDecimal for comparison
+            BigDecimal minPurchase = BigDecimal.valueOf(coupon.getMinPurchaseAmt());
+
+            // Compare BigDecimal using compareTo
+            if (grandTotal.compareTo(minPurchase) < 0) {
+                ra.addFlashAttribute("coupon", "Can't apply coupon; didn't reach the minimum purchase.");
+                return "redirect:/cart/checkout"; // Redirect to the cart page
+            }
+
+            JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
+            User user = userService.findByEmail(jwtResponse.getUsername());
+
+            boolean couponApplied = applyCouponLogic(couponCode, user.getId()); // Replace with your coupon application logic
+
+            if (couponApplied) {
+                model.addAttribute("couponApplied", true);
+                return cart(model, session);
+            }
+
             return "redirect:/cart/checkout"; // Redirect to the cart page
+        } catch (Exception e) {
+            // Log the exception for debugging purposes
+            e.printStackTrace();
+            // Handle the exception and redirect or show an error message to the user
+            ra.addFlashAttribute("coupon", "Error applying coupon: " + e.getMessage());
+            return "redirect:/cart/checkout";
         }
-
-
-        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
-
-
-        User user = userService.findByEmail(jwtResponse.getUsername());
-
-
-        boolean couponApplied = applyCouponLogic(couponCode,user.getId()); // Replace with your coupon application logic
-
-        if (couponApplied) {
-            System.out.println("CHECKED COUPON APPLIED");
-            model.addAttribute("couponApplied", true);
-            // Add other coupon-related data to the model if needed
-            ra.addFlashAttribute("coupon", "Added Coupon.");
-        }
-
-        return "redirect:/cart/checkout"; // Redirect to the cart page
-
     }
+
+
+//    @PostMapping("/applyCoupon/cart")
+//    public String applyCoupon(@RequestParam("couponCode") String couponCode,@RequestParam("grandTotal") BigDecimal grandTotal, HttpSession session, Model model, RedirectAttributes ra) throws IOException, ClassNotFoundException {
+//
+//        if(couponCode==null||couponCode.isEmpty()){
+//            ra.addFlashAttribute("coupon", "Coupon code is empty.");
+//            return "redirect:/cart/checkout"; // Redirect to the cart page
+//        }
+//
+//        Coupon coupon = couponService.findByCode(couponCode);
+//        System.out.println(coupon.getCode());
+//
+//        // Convert minPurchase (double) to a BigDecimal for comparison
+//        BigDecimal minPurchase = BigDecimal.valueOf(coupon.getMinPurchaseAmt());
+//
+//        // Compare BigDecimal using compareTo
+//        if (grandTotal.compareTo(minPurchase) < 0) {
+//            ra.addFlashAttribute("coupon", "Can't apply coupon; didn't reach the minimum purchase.");
+//            return "redirect:/cart/checkout"; // Redirect to the cart page
+//        }
+//
+//
+//        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
+//
+//
+//        User user = userService.findByEmail(jwtResponse.getUsername());
+//
+//
+//        boolean couponApplied = applyCouponLogic(couponCode,user.getId()); // Replace with your coupon application logic
+//
+//        if (couponApplied) {
+//            model.addAttribute("couponApplied", true);
+//            return cart(model,session);
+//        }
+//
+//        return "redirect:/cart/checkout"; // Redirect to the cart page
+//
+//    }
+
+
 
     public boolean applyCouponLogic(String couponCode, int userId) {
         // Assuming you have a list of valid coupon codes and their details

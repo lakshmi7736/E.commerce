@@ -11,6 +11,7 @@ import com.Mirra.eCommerce.Service.User.Related.WishlistService;
 import com.Mirra.eCommerce.Service.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -128,6 +129,18 @@ public class WishListController {
             // Remove the product from the cart
             wishlistService.removeCartItem(wishlistId);
 
+        return "redirect:/user/wishlist";
+    }
+
+
+    @Transactional
+    @RequestMapping("/clear")
+    public String clearWishlistByUser(HttpSession session) {
+        JwtResponse jwtResponse = (JwtResponse) session.getAttribute("jwtResponse");
+        if (jwtResponse != null) {
+            User user = userService.findByEmail(jwtResponse.getUsername());
+            wishlistService.clearWishlistByUser(user);
+        }
         return "redirect:/user/wishlist";
     }
 

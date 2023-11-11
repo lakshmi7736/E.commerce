@@ -53,5 +53,10 @@ public class WishlistServiceImpl implements WishlistService{
         return wishlistRepository.existsByUserAndProducts(user,products);
     }
 
+    @Override
+    public void clearWishlistByUser(User user) {
+        wishlistRepository.deleteWishlistByUser(user);
+    }
+
 
 }

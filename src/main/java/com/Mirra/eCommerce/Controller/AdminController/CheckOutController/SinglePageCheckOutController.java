@@ -252,15 +252,11 @@ public class SinglePageCheckOutController {
 
 
 
-
-
-
-
-
     @PostMapping("/applyCoupon")
     public String applyCoupon(@RequestParam("couponCode") String couponCode,@RequestParam("grandTotal") BigDecimal grandTotal,@RequestParam("cartId")Integer cartId, HttpSession session, HttpServletRequest request, Model model, RedirectAttributes ra) throws IOException, ClassNotFoundException {
 
-        Coupon coupon = couponService.findByCode(couponCode);
+    try{
+           Coupon coupon = couponService.findByCode(couponCode);
         System.out.println(coupon.getCode());
 
         // Convert minPurchase (double) to a BigDecimal for comparison
@@ -279,7 +275,7 @@ public class SinglePageCheckOutController {
         User user = userService.findByEmail(jwtResponse.getUsername());
 
 
-        boolean couponApplied = applyCouponLogic(couponCode,user.getId(),cartId); // Replace with your coupon application logic
+        boolean couponApplied = applyCouponLogic(couponCode, cartId); // Replace with your coupon application logic
 
         if (couponApplied) {
             System.out.println("CHECKED COUPON APPLIED");
@@ -289,10 +285,18 @@ public class SinglePageCheckOutController {
         }
 
         return "redirect:" + request.getHeader("Referer");
+    }
+        catch (Exception e) {
+            // Log the exception for debugging purposes
+            e.printStackTrace();
+            // Handle the exception and redirect or show an error message to the user
+            ra.addFlashAttribute("coupon", "Error applying coupon: " + e.getMessage());
+            return "redirect:/cart/checkout";
+        }
 
     }
 
-    public boolean applyCouponLogic(String couponCode, int userId,int cartId) {
+    public boolean applyCouponLogic(String couponCode,int cartId) {
         // Assuming you have a list of valid coupon codes and their details
         // You can replace this with your actual coupon validation logic
         Coupon validCoupon = couponService.findByCode(couponCode);
@@ -309,7 +313,6 @@ public class SinglePageCheckOutController {
 
             // Calculate the equal discount amount per product quantity
             BigDecimal equalDiscountPerQuantity = discountAmount.divide(BigDecimal.valueOf(totalQuantity), 2, RoundingMode.HALF_UP);
-            System.out.println("equalDiscountPerQuantity "+equalDiscountPerQuantity);
 
 
                 // Calculate the discounted price for each quantity

@@ -45,7 +45,7 @@
                 <h6 class="coupon__link"><span class="icon_tag_alt"></span> <a th:if="${appliedCoupon}==null"  href="/user/cart">Have a coupon?</a>
                     <div class="discount__content">
                       <form th:if="${appliedCoupon}==null" th:action="@{/cart/checkout/applyCoupon/cart}" method="post">
-                        <input type="text" name="couponCode" placeholder="Enter your coupon code">
+                        <input type="text" name="couponCode" placeholder="Enter your coupon code" required />
                         <input type="hidden" name="grandTotal" th:value="${grandTotal}">
                         <button type="submit" class="site-btn">Apply</button>
                     </form>
@@ -220,7 +220,15 @@
 
 <!--RazorPayments-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
+<script>
+    $(document).ready(function () {
+        $('.address-checkbox').change(function () {
+            if ($(this).is(':checked')) {
+                $('.address-checkbox').not(this).prop('checked', false);
+            }
+        });
+    });
+</script>
 
 
 <script>// Option 2: Calculate total amount inside the if block

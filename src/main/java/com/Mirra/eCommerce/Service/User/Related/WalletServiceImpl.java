@@ -21,4 +21,6 @@ public class WalletServiceImpl implements WalletService{
     public Wallet save(Wallet wallet) {
         return walletRepo.save(wallet);
     }
+
+
 }
