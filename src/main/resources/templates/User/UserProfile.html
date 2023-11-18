@@ -127,7 +127,66 @@
         <div class="mb-2">
           <a class="btn btn-primary col-md-8 " th:href="@{/user/referral}" >+ Create Referral Code</a>
         </div>
-        <p>Referral Code: <span th:text="${referralCode}"></span></p>
+        <p>Referral Code: <span id="referralCode"  th:text="${referralCode}"></span></p>
+
+
+        <button onclick="copyReferralLink()">Copy Referral Link</button>
+
+        <script>
+    function getReferralLink() {
+      var referralCode = document.getElementById('referralCode').innerText;
+      return "https://yourdomain.com/user/referral/referralRegister?code=" + referralCode;
+    }
+
+    function copyReferralLink() {
+      var referralLink = getReferralLink();
+
+      // Create a temporary input element
+      var tempInput = document.createElement("input");
+      tempInput.value = referralLink;
+      document.body.appendChild(tempInput);
+
+      // Select the text in the input element
+      tempInput.select();
+      tempInput.setSelectionRange(0, 99999);
+
+      // Copy the text to the clipboard
+      document.execCommand("copy");
+
+      // Remove the temporary input element
+      document.body.removeChild(tempInput);
+
+      // Inform the user that the link has been copied
+      alert("Referral link copied to clipboard!");
+    }
+  </script>
+
+
+<!--        <button onclick="shareOnFacebook()">Share on Facebook</button>-->
+<!--        <button onclick="shareOnTwitter()">Share on Twitter</button>-->
+<!--        <button onclick="shareOnWhatsApp()">Share on WhatsApp</button>-->
+
+<!--        <script>-->
+<!--    function getReferralLink() {-->
+<!--      var referralCode = document.getElementById('referralCode').innerText;-->
+<!--      return "https://yourdomain.com/user/referral/referralRegister?code=" + referralCode;-->
+<!--    }-->
+
+<!--    function shareOnFacebook() {-->
+<!--      var referralLink = getReferralLink();-->
+<!--      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(referralLink), 'Share on Facebook', 'width=600,height=400');-->
+<!--    }-->
+
+<!--    function shareOnTwitter() {-->
+<!--      var referralLink = getReferralLink();-->
+<!--      window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(referralLink) + '&text=Join using my referral code: ' + encodeURIComponent(referralCode), 'Share on Twitter', 'width=600,height=400');-->
+<!--    }-->
+
+<!--    function shareOnWhatsApp() {-->
+<!--      var referralLink = getReferralLink();-->
+<!--      window.open('https://api.whatsapp.com/send?text=Join using my referral code: ' + encodeURIComponent(referralCode) + ' ' + encodeURIComponent(referralLink), 'Share on WhatsApp', 'width=600,height=400');-->
+<!--    }-->
+<!--  </script>-->
       </div>
     </div>
   </div>
