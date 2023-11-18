@@ -37,12 +37,12 @@ public class CategoryOfferController {
     private ProductService productService;
 
 
-    @GetMapping("/offer")
-    public String categoryOffer(Model model) {
-        model.addAttribute("categories", categoryService.getAllCategories());
-        model.addAttribute("newOffer", new CategoryOffer()); // Add an empty category for the form
-        return "Admin/dashBoard/categories/CategoryOffer";
-    }
+        @GetMapping("/offer")
+        public String categoryOffer(Model model) {
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("newOffer", new CategoryOffer()); // Add an empty category for the form
+            return "Admin/dashBoard/categories/CategoryOffer";
+        }
 
     @PostMapping("/offer")
     public String addCategoryOffer(

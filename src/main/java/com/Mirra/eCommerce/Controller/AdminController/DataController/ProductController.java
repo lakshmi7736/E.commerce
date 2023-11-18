@@ -78,6 +78,7 @@ public class ProductController {
             return handleValidationErrors(model);
         }
 
+
         List<byte[]> imageDataList = new ArrayList<>();
 
         for (MultipartFile file : files) {

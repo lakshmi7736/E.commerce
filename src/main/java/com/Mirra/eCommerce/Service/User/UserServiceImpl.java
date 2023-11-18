@@ -56,6 +56,19 @@ public class UserServiceImpl  implements UserService{
         }
     }
 
+
+    @Override
+    public User deleteUser(User user) {
+        user.setAdminDelete(false);
+        return userRepo.save(user);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        userRepo.save(user);
+    }
+
+
     @Override
     public User findById(int id) {
         return userRepo.findById(id).get();

@@ -20,8 +20,8 @@
                 <div>
                   <a th:href="@{/admin/dashBoard}" style="color: black;"><i class="ti ti-aperture"></i> Dash-Board</a>
                 </div>
-                <a th:href="@{/index}" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                  <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                <a th:href="@{/}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                  <img src="/assets/images/logos/dark-logo.svg" width="180" alt="">
                 </a>
                 <p class="text-center">USER DETAILS OF Bee&Baa</p>
                 <h1>User List</h1>
@@ -40,7 +40,6 @@
                       <th>Email</th>
                       <th>Ph.No</th>
                       <th>Role</th>
-                      <th>Edit</th>
                       <th>Block</th>
                       <th>Delete</th>
                     </tr>
@@ -54,9 +53,7 @@
                       <td th:text="${user.email}"></td>
                       <td th:text="${user.mobileNo}"></td>
                       <td th:text="${user.role}"></td>
-                      <td><a th:href="@{'/admin/users/get/'+ ${user.id}}" >
-                        <i class="ti ti-edit"></i></a>
-                      </td>
+
 
 
                       <td>

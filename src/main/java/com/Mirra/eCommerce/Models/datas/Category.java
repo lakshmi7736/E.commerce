@@ -24,6 +24,7 @@ public class Category {
     @Column(unique = true)
     private String name;
 
+    @Column(length = 225)
     private String description;
 
 

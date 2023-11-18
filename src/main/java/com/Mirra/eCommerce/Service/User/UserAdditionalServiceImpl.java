@@ -103,7 +103,12 @@ public class UserAdditionalServiceImpl implements UserAdditionalService{
 
     @Override
     public List<User> findByRole() {
-        return userRepo.findByRole("ROLE_USER");
+        List<User> users=userRepo.findByRole("ROLE_USER");
+        System.out.println("inisde fservice to find by role");
+        for (User user:users){
+            System.out.println(user.getId());
+        }
+        return users;
     }
 
     @Override

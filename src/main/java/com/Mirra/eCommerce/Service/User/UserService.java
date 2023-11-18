@@ -16,5 +16,9 @@ public interface UserService {
 
     User findById(int id);
 
+    public User deleteUser(User user);
+
+    public void saveUser(User user);
+
 
 }

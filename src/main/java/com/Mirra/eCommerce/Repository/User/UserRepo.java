@@ -24,6 +24,6 @@ public interface UserRepo extends JpaRepository<User,Integer> {
     @Query("UPDATE User u SET u.failedAttempt = :failedAttempt WHERE u.email = :email")
     void updateFailedAttempt(@Param("failedAttempt") int failedAttempt, @Param("email") String email);
 
-    @Query("SELECT u FROM User u WHERE u.role = :role")
+    @Query("SELECT u FROM User u WHERE u.role = :role AND u.adminDelete = false")
     List<User> findByRole(@Param("role") String role);
 }

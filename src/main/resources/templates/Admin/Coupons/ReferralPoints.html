@@ -17,8 +17,8 @@
           <div class="col-md-8 col-lg-6 col-xxl-12"> <!-- Updated class to col-xxl-12 -->
             <div class="card mb-100">
               <div class="card-body">
-                <a th:href="@{/index}" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                  <img src="../assets/images/logos/dark-logo.svg" width="180" alt="">
+                <a th:href="@{/}" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                  <img src="/assets/images/logos/dark-logo.svg" width="180" alt="">
                 </a>
                 <p class="text-center">PRODUCT DETAILS OF Bee&Baa</p>
                 <h1>Product List</h1>
@@ -27,6 +27,7 @@
                   <div th:if="${message}">
                     <p th:text="${message}" class="alert alert-info"></p>
                   </div>
+                  <p style="color: red;">* if new points added old record will be deleted</p>
 
                   <form th:action="@{/admin/setReferralPoints/add}"  method="post"  th:object="${points}">
 

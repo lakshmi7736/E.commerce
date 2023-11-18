@@ -43,6 +43,14 @@ public class CategoryController {
     public String addCategory(@ModelAttribute("newCategory") CategoryDto categoryDto,
                               @RequestParam("imageFile") MultipartFile imageFile,
                               Model model) {
+
+        // Validate description length
+        if (categoryDto.getDescription() != null && categoryDto.getDescription().length() > 225) {
+            model.addAttribute("categoryExistsError", "Description is too long. Maximum length is 255 characters.");
+            // You might want to return to the form view or handle the error appropriately
+            return showCategories(model); // Redirect back to the category list page
+        }
+
         if (categoryService.categoryExistsByName(categoryDto.getName())) {
             model.addAttribute("categoryExistsError", "Category with this name already exists");
             return showCategories(model); // Redirect back to the category list page
